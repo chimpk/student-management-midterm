@@ -1,0 +1,17 @@
+{
+  "project_info": {
+    "project_number": "1234567890",
+    "project_id": "student-mgmt-example",
+    "storage_bucket": "student-mgmt-example.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1234567890:android:example",
+        "android_client_info": {
+          "package_name": "com.example.studentmgmt"
+        }
+      }
+    }
+  ]
+}
