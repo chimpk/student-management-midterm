@@ -1,2 +1,13 @@
-student_id,cert_name,issue_date
-[TODO: IDs],Firebase Expert,2023-10-01
+studentId,certName,issueDate,issuedBy
+SV2024001,TOEIC 750,2025-06-01,IIG Vietnam
+SV2024001,Android Developer Fundamentals,2025-09-15,Google
+SV2024002,IELTS 6.5,2025-03-20,British Council
+SV2024003,Java SE 17 Programmer,2025-08-10,Oracle
+SV2024005,PLC Cơ bản,2025-05-05,Siemens
+SV2024008,Kỹ năng thuyết trình,2025-04-12,Trung tâm Kỹ năng
+SV2024011,Chứng chỉ Kế toán viên,2025-07-01,Hội Kế toán
+SV2024014,JLPT N3,2025-07-06,Japan Foundation
+SV2024015,TOEIC 800,2025-10-01,IIG Vietnam
+SV2024017,Kỹ năng hòa giải,2025-06-20,Đoàn Luật sư
+SV2024018,IELTS 7.0,2025-05-17,IDP
+SV2024020,Tin học văn phòng,2025-02-22,Trung tâm Tin học
