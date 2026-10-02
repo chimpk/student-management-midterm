@@ -1,6 +1,5 @@
 # Đề Cương Báo Cáo
 
-**Ngôn ngữ báo cáo: tiếng Anh** (theo đề bài). Đề cương này viết bằng tiếng Việt để nhóm làm việc.
 **Định dạng nộp:** PDF, theo mẫu báo cáo của Khoa/giảng viên. Nội dung gồm hai phần: (1) tất cả những gì nhóm đã học về Firebase Firestore, giúp người đọc hiểu cách nó hoạt động, (2) chi tiết cách nhóm xây dựng ứng dụng quản lý sinh viên.
 **Mục tiêu độ dài (nhóm tự đặt):** 25–35 trang.
 

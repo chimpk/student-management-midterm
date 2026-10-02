@@ -30,7 +30,7 @@ Dự án chia theo **6 tuần** (04/10/2026 → 14/11/2026). Ai làm gì mỗi t
 │   ├── 1.5.3 Kiểm thử chức năng và bảo mật
 │   └── 1.5.4 Hoàn thiện UI, xử lý lỗi, vá lỗi cuối
 └── 1.6 Sản phẩm nộp
-    ├── 1.6.1 Báo cáo PDF (tiếng Anh)
+    ├── 1.6.1 Báo cáo PDF
     ├── 1.6.2 Video demo (tối đa 20 phút, 720p, có âm thanh)
     └── 1.6.3 Gói source code, hướng dẫn chạy, tài khoản Admin
 ```

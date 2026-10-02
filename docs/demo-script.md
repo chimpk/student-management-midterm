@@ -39,7 +39,7 @@
 
 ## Checklist nộp bài
 
-- [ ] File PDF báo cáo **bằng tiếng Anh**, đủ bìa (theo mẫu của Khoa), mục lục, lời cảm ơn, tài liệu tham khảo, phụ lục
+- [ ] File PDF báo cáo, đủ bìa (theo mẫu của Khoa), mục lục, lời cảm ơn, tài liệu tham khảo, phụ lục
 - [ ] Video demo (≤ 20 phút, 720p, có âm thanh, tên file rõ ràng)
 - [ ] Toàn bộ source code, thư viện và database (gói nộp có `google-services.json` của project Firebase demo, không đưa lên repo công khai)
 - [ ] Hướng dẫn cài đặt và chạy (`README.md`, `docs/test-and-setup.md`)

@@ -125,7 +125,7 @@
 | Xem lịch sử đăng nhập của một người dùng. | FR-USR-06 (Admin xem của bất kỳ ai). FR-ACC-03 là phần mở rộng. |
 | Đề không nêu danh sách trường của sinh viên và chứng chỉ. | Nhóm chọn các trường ở FR-STU-02 và FR-CER-02. |
 
-**Yêu cầu nộp bài theo đề:** báo cáo PDF bằng **tiếng Anh**; video demo (có âm thanh, tối đa 20 phút, 720p); toàn bộ source code, thư viện, database và hướng dẫn chạy; **tài khoản Admin** để giám khảo truy cập ứng dụng.
+**Yêu cầu nộp bài theo đề:** báo cáo PDF; video demo (có âm thanh, tối đa 20 phút, 720p); toàn bộ source code, thư viện, database và hướng dẫn chạy; **tài khoản Admin** để giám khảo truy cập ứng dụng.
 
 **Điểm trừ theo đề:** thiếu video demo (tối đa 2.0 điểm), chia việc không đều, nộp muộn hoặc nộp qua email cá nhân, sai định dạng (thiếu thông tin thành viên, thiếu hướng dẫn chạy, thiếu tài khoản Admin).
 
