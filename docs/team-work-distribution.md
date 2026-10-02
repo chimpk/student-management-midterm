@@ -71,4 +71,5 @@ Ví dụ commit: `feat(auth): add login screen`, `fix(auth): block locked accoun
 ## Quy tắc trung thực
 
 Chỉ đánh dấu **HOÀN THÀNH** khi tính năng đã **lập trình và kiểm thử xong**.
+Chi tiết tiêu chuẩn kiểm tra & nghiệm thu: xem [`definition-of-done.md`](definition-of-done.md).
 Cập nhật `project-progress.xlsx` khi hoàn thành từng công việc.

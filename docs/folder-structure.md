@@ -58,6 +58,7 @@ student-management-midterm/
 | `test-and-setup.md` | Cài đặt, chạy, test case |
 | `project-plan.md` | WBS, Gantt, rủi ro |
 | `team-work-distribution.md` | Phân công theo tuần |
+| `definition-of-done.md` | Quy tắc đánh giá hoàn thành và nghiệm thu tính năng |
 | `report-outline.md` | Đề cương báo cáo |
 | `demo-script.md` | Kịch bản video demo, checklist nộp bài |
 | `folder-structure.md` | Tài liệu này |
