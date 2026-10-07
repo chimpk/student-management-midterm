@@ -3,7 +3,7 @@
 /local.properties
 .idea/
 .DS_Store
-/build
+build/
 /captures
 .externalNativeBuild
 .cxx
@@ -11,3 +11,8 @@ local.properties
 
 # Google Services (Important: DO NOT LEAK)
 google-services.json
+
+# Build outputs
+.build-outputs/
+*.apk
+*.aab

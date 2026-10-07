@@ -1,13 +1,132 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    function signedIn() {
+      return request.auth != null;
     }
+
+    function currentUser() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isAdmin() {
+      return signedIn() && currentUser().data.role == 'admin';
+    }
+
+    function isManagerOrAdmin() {
+      return signedIn()
+        && currentUser().data.role in ['admin', 'manager'];
+    }
+
+    function validUser(userId) {
+      return request.resource.data.keys().hasAll([
+          'uid', 'email', 'name', 'age', 'phone',
+          'status', 'role', 'createdAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'name', 'age', 'phone',
+          'status', 'role', 'avatarUrl', 'createdAt'
+        ])
+        && request.resource.data.uid == userId
+        && request.resource.data.email is string
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.age is int
+        && request.resource.data.age >= 18
+        && request.resource.data.age <= 60
+        && request.resource.data.phone is string
+        && request.resource.data.phone.matches('^0[0-9]{9}$')
+        && request.resource.data.status in ['Normal', 'Locked']
+        && request.resource.data.role in ['admin', 'manager', 'employee']
+        && request.resource.data.createdAt is timestamp;
+    }
+
+    function isBootstrapAdmin(userId) {
+      return signedIn()
+        && request.auth.uid == userId
+        && request.auth.token.email == 'admin@student.app'
+        && validUser(userId)
+        && request.resource.data.email == 'admin@student.app'
+        && request.resource.data.role == 'admin'
+        && request.resource.data.status == 'Normal';
+    }
+
+    function validStudent(studentId) {
+      return request.resource.data.keys().hasAll([
+          'studentId', 'name', 'dateOfBirth',
+          'className', 'faculty', 'createdAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'studentId', 'name', 'dateOfBirth',
+          'className', 'faculty', 'createdAt'
+        ])
+        && request.resource.data.studentId == studentId
+        && request.resource.data.studentId.size() >= 2
+        && request.resource.data.studentId.size() <= 30
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.dateOfBirth is string
+        && request.resource.data.dateOfBirth.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.className is string
+        && request.resource.data.className.size() > 0
+        && request.resource.data.faculty is string
+        && request.resource.data.faculty.size() > 0
+        && request.resource.data.createdAt is timestamp;
+    }
+
+    function validCertificate() {
+      return request.resource.data.keys()
+          .hasAll(['certName', 'issueDate', 'issuedBy'])
+        && request.resource.data.keys()
+          .hasOnly(['certName', 'issueDate', 'issuedBy'])
+        && request.resource.data.certName is string
+        && request.resource.data.certName.size() >= 2
+        && request.resource.data.certName.size() <= 100
+        && request.resource.data.issueDate is string
+        && request.resource.data.issueDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.issuedBy is string
+        && request.resource.data.issuedBy.size() > 0;
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn()
+        && (request.auth.uid == userId || isAdmin());
+      allow create: if (isAdmin() && validUser(userId))
+        || isBootstrapAdmin(userId);
+      allow update: if (isAdmin() && validUser(userId))
+        || (signedIn()
+          && request.auth.uid == userId
+          && request.resource.data.diff(resource.data)
+              .affectedKeys().hasOnly(['avatarUrl'])
+          && request.resource.data.avatarUrl is string);
+      allow delete: if isAdmin();
+
+      match /loginHistory/{logId} {
+        allow read: if signedIn()
+          && (request.auth.uid == userId || isAdmin());
+        allow create: if signedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasAll(['timestamp'])
+          && request.resource.data.keys().hasOnly(['timestamp', 'device'])
+          && request.resource.data.timestamp is timestamp;
+        allow update, delete: if isAdmin();
+      }
+    }
+
     match /students/{studentId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager');
+      allow read: if signedIn();
+      allow create, update: if isManagerOrAdmin()
+        && validStudent(studentId);
+      allow delete: if isManagerOrAdmin();
+
+      match /certificates/{certId} {
+        allow read: if signedIn();
+        allow create, update: if isManagerOrAdmin()
+          && validCertificate();
+        allow delete: if isManagerOrAdmin();
+      }
     }
   }
 }
