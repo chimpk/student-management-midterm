@@ -91,34 +91,33 @@ firebase deploy --only firestore,storage
 
 ### Bước 5: Chạy ứng dụng & Tài khoản mặc định
 Mở ứng dụng lần đầu, cơ chế `AdminSeedService` sẽ tự động khởi tạo tài khoản Quản trị viên:
-- **Email:** `admin@student.app`
-- **Mật khẩu:** `Admin@123456`
+- **Tên đăng nhập (Username):** `admin`
+- **Mật khẩu:** `admin`
 
 ---
 
 ## 5. Tài khoản demo kiểm thử dự kiến
 
-| Vai trò | Email đăng nhập | Mật khẩu | Phạm vi chức năng |
+| Vai trò | Tên đăng nhập (Username) | Mật khẩu | Phạm vi chức năng |
 |---|---|---|---|
-| **Admin** | `admin@student.app` | `Admin@123456` | Quản trị tài khoản, phân quyền, xem log đăng nhập, toàn quyền dữ liệu. |
-| **Manager** | Tạo trong app bởi Admin | Đặt lúc Admin tạo | Quản lý sinh viên, chứng chỉ, tìm kiếm tiếng Việt, Import/Export CSV. |
-| **Employee** | Tạo trong app bởi Admin | Đặt lúc Admin tạo | Xem thông tin sinh viên, đổi ảnh đại diện cá nhân. |
+| **Admin** | `admin` | `admin` | Quản trị tài khoản, phân quyền, xem log đăng nhập, toàn quyền dữ liệu. |
+| **Manager** | `manager` | `manager` | Quản lý sinh viên, chứng chỉ, tìm kiếm tiếng Việt, Import/Export CSV. |
+| **Employee** | `employee` | `employee` | Xem thông tin sinh viên, đổi ảnh đại diện cá nhân. |
 
 ---
 
-## 6. Danh mục tài liệu kỹ thuật dự án
+## 6. Danh mục tài liệu dự án
 
-- **Kế hoạch giao việc & Phân công:** [`docs/team-work-distribution.md`](docs/team-work-distribution.md)
+- **Báo cáo học thuật:** [`docs/final-report.md`](docs/final-report.md)
+- **Kịch bản quay Video Demo:** [`docs/demo-script.md`](docs/demo-script.md)
+- **Thông tin nhóm & Môi trường bàn giao:** [`docs/team-info.md`](docs/team-info.md)
 - **Cài đặt & Kế hoạch 27 Test Cases:** [`docs/test-and-setup.md`](docs/test-and-setup.md)
-- **Cẩm nang Firebase từ A–Z:** [`docs/firebase-setup.md`](docs/firebase-setup.md)
-- **Đặc tả yêu cầu phần mềm:** [`docs/srs.md`](docs/srs.md)
+- **Cẩm nang cấu hình Firebase:** [`docs/firebase-setup.md`](docs/firebase-setup.md)
+- **Đặc tả yêu cầu phần mềm (SRS):** [`docs/srs.md`](docs/srs.md)
 - **Thiết kế cơ sở dữ liệu:** [`docs/firestore-schema.md`](docs/firestore-schema.md)
 - **Kiến trúc hệ thống & UI:** [`docs/design.md`](docs/design.md)
 - **Hệ thống sơ đồ UML:** [`docs/uml.md`](docs/uml.md)
-- **Đề cương báo cáo học thuật:** [`docs/report-outline.md`](docs/report-outline.md)
-- **Cấu trúc mã nguồn chi tiết:** [`docs/folder-structure.md`](docs/folder-structure.md)
-- **Kịch bản quay Video Demo:** [`docs/demo-script.md`](docs/demo-script.md)
-- **Checklist nghiệm thu bàn giao:** [`docs/handover-checklist.md`](docs/handover-checklist.md)
+- **Dữ liệu mẫu kiểm thử CSV:** [`sample-data/`](sample-data/)
 
 ---
 

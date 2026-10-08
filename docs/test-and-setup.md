@@ -217,11 +217,11 @@ Mở PowerShell tại thư mục gốc của dự án:
 
 ## 4. Tài Khoản Kiểm Thử Dự Kiến
 
-| Vai trò | Email đăng nhập | Mật khẩu | Mục đích kiểm thử |
+| Vai trò | Tên đăng nhập (Username) | Mật khẩu | Mục đích kiểm thử |
 |---|---|---|---|
-| **Admin** | `admin@student.app` | `Admin@123456` | Quản lý người dùng, khóa/mở khóa tài khoản, xem lịch sử đăng nhập, toàn quyền sinh viên. |
-| **Manager** | `manager@student.app` *(hoặc Admin tạo mới)* | `Manager@123456` | Quản lý sinh viên, chứng chỉ, tìm kiếm, sắp xếp, import/export CSV. Không vào được Quản lý tài khoản. |
-| **Employee** | `employee@student.app` *(hoặc Admin tạo mới)* | `Employee@123456` | Chỉ xem danh sách sinh viên & chi tiết chứng chỉ; chỉnh sửa ảnh đại diện cá nhân; các nút thêm/sửa/xóa bị ẩn/chặn. |
+| **Admin** | `admin` | `admin` | Quản lý người dùng, khóa/mở khóa tài khoản, xem lịch sử đăng nhập, toàn quyền sinh viên. |
+| **Manager** | `manager` | `manager` | Quản lý sinh viên, chứng chỉ, tìm kiếm, sắp xếp, import/export CSV. Không vào được Quản lý tài khoản. |
+| **Employee** | `employee` | `employee` | Chỉ xem danh sách sinh viên & chi tiết chứng chỉ; chỉnh sửa ảnh đại diện cá nhân; các nút thêm/sửa/xóa bị ẩn/chặn. |
 
 ---
 

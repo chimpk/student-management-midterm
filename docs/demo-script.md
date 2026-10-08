@@ -16,9 +16,9 @@
 4. **Trình duyệt Web:** Mở sẵn tab **Firebase Console** (trang Firestore Database, Authentication, Rules, Storage).
 
 ### 1.2 Dữ liệu mẫu cần chuẩn bị sẵn
-- **Tài khoản Admin:** `admin@student.app` | Mật khẩu: `Admin@123456`
-- **Tài khoản Manager:** Tạo sẵn `manager@student.app` | Mật khẩu: `Manager@123456`
-- **Tài khoản Employee:** Tạo sẵn `employee@student.app` | Mật khẩu: `Employee@123456`
+- **Tài khoản Admin:** Tên đăng nhập: `admin` | Mật khẩu: `admin`
+- **Tài khoản Manager:** Tên đăng nhập: `manager` | Mật khẩu: `manager`
+- **Tài khoản Employee:** Tên đăng nhập: `employee` | Mật khẩu: `employee`
 - **File CSV trong bộ nhớ thiết bị:** Chép file `sample-data/students.csv`, `students-invalid.csv`, `certificates.csv` vào thư mục `Download` của máy ảo.
 
 ---

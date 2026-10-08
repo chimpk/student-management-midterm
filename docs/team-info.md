@@ -44,11 +44,11 @@
 
 ## 4. Danh sách tài khoản kiểm thử cho Giảng viên (Test Credentials Dự kiến)
 
-| Vai trò | Email đăng nhập | Mật khẩu mặc định | Ghi chú kiểm thử chức năng |
+| Vai trò | Tên đăng nhập (Username) | Mật khẩu mặc định | Ghi chú kiểm thử chức năng |
 |---|---|---|---|
-| **Admin** | `admin@student.app` | `Admin@123456` | Tài khoản Quản trị viên tự động seed khi chạy lần đầu. Toàn quyền quản trị user, SV, xuất dữ liệu, xem log. |
-| **Manager** | `manager@student.app` *(Admin tạo)* | `Manager@123456` | Quản lý sinh viên, chứng chỉ, tìm kiếm tiếng Việt, Import/Export CSV. Bị ẩn chức năng User. |
-| **Employee** | `employee@student.app` *(Admin tạo)* | `Employee@123456` | Chế độ chỉ xem (Read-only) sinh viên/chứng chỉ; đổi ảnh đại diện cá nhân; các thao tác ghi bị chặn. |
+| **Admin** | `admin` | `admin` | Tài khoản Quản trị viên tự động seed khi chạy lần đầu. Toàn quyền quản trị user, SV, xuất dữ liệu, xem log. |
+| **Manager** | `manager` | `manager` | Quản lý sinh viên, chứng chỉ, tìm kiếm tiếng Việt, Import/Export CSV. Bị ẩn chức năng User. |
+| **Employee** | `employee` | `employee` | Chế độ chỉ xem (Read-only) sinh viên/chứng chỉ; đổi ảnh đại diện cá nhân; các thao tác ghi bị chặn. |
 
 ---
 
