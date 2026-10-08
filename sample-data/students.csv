@@ -1,21 +1,21 @@
 studentId,name,dateOfBirth,className,faculty
-SV2024001,Nguyễn Văn An,2004-03-12,24DTHD1,Công nghệ thông tin
-SV2024002,Trần Thị Bích,2004-07-25,24DTHD1,Công nghệ thông tin
-SV2024003,Lê Hoàng Cường,2003-11-02,24DTHD2,Công nghệ thông tin
-SV2024004,Phạm Thị Dung,2004-01-18,24DTHD2,Công nghệ thông tin
-SV2024005,Võ Minh Đức,2003-09-30,24DKTP1,Điện - Điện tử
-SV2024006,Đặng Thị Thu Hà,2004-05-09,24DKTP1,Điện - Điện tử
-SV2024007,Bùi Quốc Huy,2003-12-21,24DKTP2,Điện - Điện tử
-SV2024008,Hồ Thị Kim Khánh,2004-02-14,24DQTK1,Quản trị kinh doanh
-SV2024009,Ngô Thanh Lâm,2003-08-07,24DQTK1,Quản trị kinh doanh
-SV2024010,Dương Thị Mai,2004-04-27,24DQTK2,Quản trị kinh doanh
-SV2024011,Lý Văn Nam,2003-10-15,24DKTR1,Kế toán
-SV2024012,Trịnh Thị Oanh,2004-06-03,24DKTR1,Kế toán
-SV2024013,Đỗ Hữu Phúc,2003-07-19,24DKTR2,Kế toán
-SV2024014,Huỳnh Thị Quyên,2004-09-11,24DNNA1,Ngoại ngữ
-SV2024015,Mai Xuân Sơn,2003-03-28,24DNNA1,Ngoại ngữ
-SV2024016,Tô Thị Thảo,2004-12-05,24DNNA2,Ngoại ngữ
-SV2024017,Châu Minh Tuấn,2003-05-23,24DLUA1,Luật
-SV2024018,Lương Thị Uyên,2004-08-16,24DLUA1,Luật
-SV2024019,Cao Văn Vinh,2003-02-09,24DLUA2,Luật
-SV2024020,Thái Thị Xuân,2004-10-31,24DLUA2,Luật
+52400001,Nguyễn Văn An,2004-03-12,24050201,Công nghệ thông tin
+52400002,Trần Thị Bích,2004-07-25,24050201,Công nghệ thông tin
+52400003,Lê Hoàng Cường,2004-11-02,24050301,Công nghệ thông tin
+52400004,Phạm Thị Dung,2004-01-18,24050301,Công nghệ thông tin
+52400005,Võ Minh Đức,2004-09-30,24050401,Công nghệ thông tin
+52400006,Đặng Thị Thu Hà,2004-05-09,24050401,Công nghệ thông tin
+52400007,Bùi Quốc Huy,2004-12-21,24050202,Công nghệ thông tin
+52400008,Hồ Thị Kim Khánh,2004-02-14,24050302,Công nghệ thông tin
+52400009,Ngô Thanh Lâm,2004-08-07,24050402,Công nghệ thông tin
+52400010,Dương Thị Mai,2004-04-27,24050202,Công nghệ thông tin
+524H0011,Lý Văn Nam,2004-10-15,24H50201,Công nghệ thông tin
+524H0012,Trịnh Thị Oanh,2004-06-03,24H50201,Công nghệ thông tin
+524H0013,Đỗ Hữu Phúc,2004-07-19,24H50301,Công nghệ thông tin
+524H0014,Huỳnh Thị Quyên,2004-09-11,24H50301,Công nghệ thông tin
+524H0015,Mai Xuân Sơn,2004-03-28,24H50401,Công nghệ thông tin
+524H0016,Tô Thị Thảo,2004-12-05,24H50401,Công nghệ thông tin
+52400017,Châu Minh Tuấn,2004-05-23,24050203,Công nghệ thông tin
+52400018,Lương Thị Uyên,2004-08-16,24050303,Công nghệ thông tin
+52400019,Cao Văn Vinh,2004-02-09,24050403,Công nghệ thông tin
+52400020,Thái Thị Xuân,2004-10-31,24050203,Công nghệ thông tin

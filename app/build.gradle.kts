@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.gms) apply false
 }
 
 if (file("google-services.json").exists()) {

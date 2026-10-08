@@ -1,6 +1,8 @@
-# Biểu Đồ UML
+# Biểu đồ UML dự kiến
 
-Tên lớp, màn hình và trường dữ liệu trong các biểu đồ khớp với [`design.md`](design.md) và [`firestore-schema.md`](firestore-schema.md).
+> **Trạng thái:** Các biểu đồ mô tả thiết kế mục tiêu, không khẳng định các lớp và màn hình đã tồn tại trong mã nguồn. Khi triển khai xong phải đối chiếu lại với cây mã nguồn.
+
+Tên lớp và trường dữ liệu dự kiến được thống nhất với [thiết kế](design.md) và [schema Firestore](firestore-schema.md).
 
 ## 1. Biểu đồ Use Case
 
@@ -54,6 +56,7 @@ graph TD
 classDiagram
     class User {
         +String uid
+        +String username
         +String email
         +String name
         +int age
@@ -82,7 +85,7 @@ classDiagram
     }
 
     class AuthRepository {
-        +login(email, password)
+        +login(identifier, password)
         +logout()
     }
     class UserRepository {
@@ -135,7 +138,7 @@ classDiagram
     StudentRepository ..> Student
     CertificateRepository ..> Certificate
 ```
-*Hình 2: Biểu đồ lớp chính (model, repository, ViewModel, tiện ích CSV).*
+*Hình 2: Biểu đồ lớp dự kiến (mô hình dữ liệu, kho dữ liệu, ViewModel và tiện ích CSV). Trường `email` là tùy chọn.*
 
 ## 3. Mô hình dữ liệu Firestore (ER)
 
@@ -143,7 +146,8 @@ classDiagram
 erDiagram
     USERS {
         string uid PK
-        string email
+        string username
+        string email "tùy chọn"
         string name
         int age
         string phone
@@ -188,21 +192,21 @@ sequenceDiagram
     participant A as LoginActivity
     participant VM as AuthViewModel
     participant R as AuthRepository
-    participant FB as Firebase Auth
+    participant ID as Dịch vụ xác thực
     participant FS as Firestore
 
-    U->>A: Nhập email, mật khẩu, bấm Đăng nhập
-    A->>VM: login(email, password)
-    VM->>R: login(email, password)
-    R->>FB: signInWithEmailAndPassword()
+    U->>A: Nhập username hoặc email, mật khẩu
+    A->>VM: login(identifier, password)
+    VM->>R: login(identifier, password)
+    R->>ID: authenticate(identifier, password)
     alt Sai thông tin
-        FB-->>R: Lỗi xác thực
+        ID-->>R: Lỗi xác thực
         R-->>A: Hiện lỗi "Sai thông tin đăng nhập"
     else Xác thực thành công
-        FB-->>R: uid
+        ID-->>R: uid
         R->>FS: get users/uid
         alt Không có document hoặc status = Locked
-            R->>FB: signOut()
+            R->>ID: signOut()
             R-->>A: Hiện lỗi "Tài khoản bị khóa"
         else status = Normal
             R->>FS: add users/uid/loginHistory
@@ -280,12 +284,12 @@ sequenceDiagram
     VM-->>F: Hiện bản xem trước và lỗi
     M->>F: Xác nhận import
     VM->>R: importStudents(danh sách hợp lệ)
-    loop Mỗi nhóm tối đa 500 dòng
+    loop Mỗi nhóm tối đa 400 thao tác ghi
         R->>FS: WriteBatch.commit()
     end
     R-->>F: Báo cáo X dòng thành công, Y dòng lỗi
 ```
-*Hình 7: Luồng import sinh viên từ CSV.*
+*Hình 7: Luồng nhập sinh viên từ CSV dự kiến.*
 
 ### 4.5 Admin thêm người dùng
 
@@ -296,17 +300,17 @@ sequenceDiagram
     participant F as UserEditFragment
     participant VM as UserViewModel
     participant R as UserRepository
-    participant FB as Firebase Auth (app phụ)
+    participant ID as Dịch vụ xác thực tin cậy
     participant FS as Firestore
 
-    A->>F: Điền tên, tuổi, SĐT, trạng thái, email, mật khẩu, vai trò
+    A->>F: Điền username, mật khẩu, vai trò và hồ sơ; email tùy chọn
     F->>F: Kiểm tra dữ liệu (ValidationUtils)
     F->>VM: addUser(user, password)
     VM->>R: addUser(user, password)
-    R->>FB: createUserWithEmailAndPassword()
-    FB-->>R: uid
+    R->>ID: createIdentity(username, password, optionalEmail)
+    ID-->>R: uid
     R->>FS: set users/uid
     FS-->>R: Thành công
     R-->>F: Thông báo thành công
 ```
-*Hình 8: Admin tạo tài khoản mới. Dùng FirebaseApp phụ để Admin không bị đăng xuất.*
+*Hình 8: Admin yêu cầu môi trường tin cậy tạo tài khoản; client không lưu mật khẩu thô và không tự nâng quyền.*

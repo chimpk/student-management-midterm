@@ -2,7 +2,9 @@
 
 > **Dự án:** Ứng dụng Quản lý Thông tin Sinh viên Thời gian Thực (Realtime Student Information Management App)  
 > **Package name:** `com.example.studentmgmt`  
-> **Mục đích tài liệu:** Hướng dẫn kỹ thuật và phân công kịch bản kiểm thử **để giao việc** cho các thành viên trong nhóm.
+> **Trạng thái:** BẢN NHÁP KẾ HOẠCH. Ứng dụng hiện mới là khung; các chức năng và kết quả dưới đây là dự kiến.
+>
+> **Mục đích:** Hướng dẫn kỹ thuật và phân công kiểm thử. Không xem tiêu chí mong đợi là kết quả đã đạt.
 
 ---
 
@@ -65,7 +67,7 @@ java -version
 2. Điền thông tin bắt buộc:
    - **Android package name (chính xác tuyệt đối):** `com.example.studentmgmt`
    - **App nickname:** `Student Management`
-   - **Debug signing certificate SHA-1:** Không bắt buộc cho Email/Password auth (có thể bỏ trống).
+   - **Debug signing certificate SHA-1:** Có thể bỏ trống nếu cơ chế xác thực được chọn không yêu cầu.
 3. Nhấn **Register app**.
 
 ---
@@ -84,11 +86,9 @@ java -version
 
 ---
 
-### 2.4 Bật Firebase Authentication
-1. Tại menu bên trái Firebase Console, vào **Build** → **Authentication** → Nhấn **Get started**.
-2. Tại thẻ **Sign-in method**, chọn nhà cung cấp **Email/Password**.
-3. Gạt công tắc **Enable** ở mục đầu tiên (Email/Password). *Không cần bật Email link (passwordless sign-in)*.
-4. Nhấn **Save**.
+### 2.4 Chọn cơ chế xác thực
+
+Giao diện đăng nhập dùng **username/mật khẩu**. Email là thông tin tùy chọn và chỉ được dùng làm bí danh đăng nhập khi tài khoản có email. Nếu nhóm chọn Firebase Authentication Email/Password, cần lưu ý provider này không hỗ trợ username trực tiếp và yêu cầu mật khẩu tối thiểu 6 ký tự; vì vậy cặp `admin/admin` không thể được cấp nguyên trạng. Chỉ bật provider sau khi nhóm đã thống nhất lớp ánh xạ hoặc cơ chế xác thực thay thế và ghi lại đúng cách triển khai thực tế.
 
 ---
 
@@ -103,7 +103,7 @@ java -version
 
 ### 2.6 Triển khai Security Rules (Bắt buộc trước lần chạy đầu tiên)
 
-Dự án áp dụng cơ chế bảo mật phân quyền Role-Based Access Control (RBAC) nghiêm ngặt tại tầng đám mây. Bạn **phải deploy rules trước khi khởi chạy ứng dụng lần đầu** để tính năng seed tài khoản Admin có thể cấp quyền hợp lệ.
+Dự án dự kiến áp dụng phân quyền theo vai trò tại tầng đám mây. Phải triển khai rules trước khi kiểm thử các chức năng Firebase. Tài khoản Admin được cấp ngoài client theo mục 3.2.
 
 #### Cách 1: Sử dụng Firebase CLI (Khuyên dùng)
 1. Cài đặt Firebase CLI qua npm:
@@ -153,7 +153,7 @@ Dự án áp dụng cơ chế bảo mật phân quyền Role-Based Access Contro
 > Dịch vụ Cloud Storage for Firebase hiện yêu cầu dự án phải được nâng cấp lên gói **Blaze (Pay-as-you-go)** và liên kết tài khoản Cloud Billing để kích hoạt bucket lưu trữ.
 > - **Chi phí thực tế:** Vẫn áp dụng **Hạn mức miễn phí hàng tháng (Always Free Tier)** bao gồm 5 GB dung lượng lưu trữ, 1 GB tải xuống/ngày và 20.000 thao tác tải lên/ngày. Đối với việc chạy demo và chấm bài môn học, chi phí phát sinh là **0 VNĐ**.
 > - **Khuyến nghị an toàn:** Hãy đặt **Budget Alert** (ví dụ 1 USD) trên Google Cloud Console để kiểm soát.
-> - **Trường hợp chưa kích hoạt Blaze:** Toàn bộ tính năng Quản lý sinh viên, Chứng chỉ, Đăng nhập, Phân quyền RBAC, Import/Export CSV trên Firestore vẫn hoạt động 100% bình thường; chỉ riêng tính năng tải ảnh đại diện cá nhân (Avatar upload) sẽ báo lỗi quyền lưu trữ.
+> - **Trường hợp chưa kích hoạt Blaze:** Chưa thể kiểm thử tải ảnh đại diện. Các chức năng khác phải được kiểm thử riêng; không suy ra là hoạt động đầy đủ chỉ từ việc Firestore khả dụng.
 
 ---
 
@@ -168,6 +168,19 @@ Mở PowerShell tại thư mục gốc của dự án:
    .\gradlew.bat testDebugUnitTest
    ```
 
+#### Bằng chứng unit test hiện có
+
+`ValidationUtilsTest` hiện có **6 phương thức test** và đã chạy đạt bằng tác vụ `testDebugUnitTest`:
+
+1. Ba username demo hợp lệ.
+2. Username rỗng, sai độ dài, có chữ hoa, khoảng trắng hoặc ký tự email bị từ chối.
+3. MSSV hợp lệ theo cấu trúc `KYYTSSSS`.
+4. MSSV sai độ dài, ký tự, hệ đào tạo hoặc khoảng trắng bị từ chối.
+5. Mã lớp chỉ hợp lệ khi có đúng 8 ký tự chữ hoa hoặc chữ số.
+6. Các mã lớp CNTT đã biết được nhận diện mà không khẳng định danh sách là đầy đủ.
+
+Kết quả này chỉ là unit test cho `ValidationUtils`. Nó **không đồng nghĩa** 27 kịch bản kiểm thử hệ thống bên dưới đã đạt; cả 27 kịch bản vẫn phải thực hiện thủ công và lưu bằng chứng riêng.
+
 2. **Biên dịch bộ cài đặt Debug APK:**
    ```powershell
    .\gradlew.bat assembleDebug
@@ -180,30 +193,32 @@ Mở PowerShell tại thư mục gốc của dự án:
 
 ---
 
-### 3.2 Khởi chạy lần đầu và Cơ chế Tự động Khởi tạo Admin (Seed Admin)
+### 3.2 Cấp ba tài khoản demo từ môi trường đáng tin cậy
 
-1. Mở ứng dụng lần đầu trên thiết bị/máy ảo.
-2. Dịch vụ ngầm `AdminSeedService` sẽ tự động kiểm tra xem tài khoản Quản trị viên hệ thống đã tồn tại hay chưa.
-3. Nếu chưa có, hệ thống tự động:
-   - Đăng ký tài khoản trên Firebase Authentication với Email: `admin@student.app` | Mật khẩu: `Admin@123456`.
-   - Tạo hồ sơ Quản trị viên trong Firestore collection `users/{adminUid}` với `role: "admin"`, `status: "Normal"`, `name: "Quản trị viên"`.
-   - Đăng xuất phiên seed an toàn để người dùng đăng nhập bằng giao diện chính thức.
+Không tự seed hoặc tự nâng quyền Admin từ ứng dụng Android. Chuẩn bị bằng môi trường máy chủ đáng tin cậy:
+
+1. Tạo ba thông tin demo: `admin/admin`, `manager/manager`, `employee/employee`.
+2. Cấp UID bằng cơ chế xác thực đã chọn.
+3. Tạo `users/{uid}` với `username`, `role`, `status: "Normal"` và các trường bắt buộc; `email` có thể bỏ trống.
+4. Đối chiếu UID document với danh tính xác thực trước khi đăng nhập.
+
+Cách này tránh cho client có đường tự cấp quyền Admin. Nếu dùng Firebase Email/Password, phải đổi mật khẩu kỹ thuật `admin` sang giá trị ít nhất 6 ký tự hoặc dùng cơ chế khác; không ghi sai rằng `admin/admin` đã được cấp trực tiếp trên Firebase.
 
 ---
 
 ### 3.3 Cách kiểm tra xác minh Admin trên Firebase Console
 
 Để chắc chắn hệ thống backend đã sẵn sàng:
-1. **Kiểm tra Authentication:**
-   - Vào **Firebase Console** → **Authentication** → Thẻ **Users**.
-   - Phải thấy xuất hiện tài khoản `admin@student.app` với User UID tương ứng.
+1. **Kiểm tra danh tính xác thực:**
+   - Mở hệ thống xác thực đã chọn.
+   - Phải thấy đủ ba tài khoản và UID tương ứng.
 2. **Kiểm tra Cloud Firestore:**
    - Vào **Firestore Database** → Xem collection `users`.
    - Phải có 1 document với Document ID chính là UID của Admin:
      ```json
      {
        "uid": "<admin_uid>",
-       "email": "admin@student.app",
+       "username": "admin",
        "name": "Quản trị viên",
        "role": "admin",
        "status": "Normal",
@@ -215,13 +230,13 @@ Mở PowerShell tại thư mục gốc của dự án:
 
 ---
 
-## 4. Tài Khoản Kiểm Thử Dự Kiến
+## 4. Tài khoản kiểm thử dự kiến
 
-| Vai trò | Tên đăng nhập (Username) | Mật khẩu | Mục đích kiểm thử |
-|---|---|---|---|
-| **Admin** | `admin` | `admin` | Quản lý người dùng, khóa/mở khóa tài khoản, xem lịch sử đăng nhập, toàn quyền sinh viên. |
-| **Manager** | `manager` | `manager` | Quản lý sinh viên, chứng chỉ, tìm kiếm, sắp xếp, import/export CSV. Không vào được Quản lý tài khoản. |
-| **Employee** | `employee` | `employee` | Chỉ xem danh sách sinh viên & chi tiết chứng chỉ; chỉnh sửa ảnh đại diện cá nhân; các nút thêm/sửa/xóa bị ẩn/chặn. |
+| Vai trò | Tên đăng nhập | Mật khẩu | Email tùy chọn | Mục đích kiểm thử |
+|---|---|---|---|---|
+| **Admin** | `admin` | `admin` | Không bắt buộc | Dùng kiểm thử quyền Admin. |
+| **Manager** | `manager` | `manager` | Không bắt buộc | Dùng kiểm thử quyền Manager. |
+| **Employee** | `employee` | `employee` | Không bắt buộc | Dùng kiểm thử quyền chỉ đọc. |
 
 ---
 
@@ -231,7 +246,7 @@ Mở PowerShell tại thư mục gốc của dự án:
 
 | Mã TC | Yêu cầu (FR) | Vai trò | Bước thực hiện | Kết quả mong đợi | Kết quả thực tế | Người test | Ngày test | Ghi chú / Tiêu chí nghiệm thu |
 |---|---|---|---|---|:---:|:---:|:---:|---|
-| **TC-01** | FR-ACC-01 | Tất cả | Nhập email/mật khẩu đúng → Nhấn Đăng nhập | Vào màn hình chính, thanh điều hướng hiện đúng mục theo vai trò | – (Chờ test) | Thành viên B | – | Chuyển hướng tức thì, lưu phiên Firebase Auth |
+| **TC-01** | FR-ACC-01 | Tất cả | Nhập username/mật khẩu đúng; nếu tài khoản có email thì thử thêm email → Nhấn Đăng nhập | Vào màn hình chính, thanh điều hướng hiện đúng mục theo vai trò | – (Chờ test) | Thành viên B | – | Username luôn dùng được; email chỉ dùng được khi đã khai báo |
 | **TC-02** | FR-ACC-01 | Tất cả | Nhập mật khẩu sai | Báo lỗi "Sai thông tin đăng nhập", giữ nguyên màn hình | – (Chờ test) | Thành viên B | – | Toast & TextInputLayout báo lỗi trực quan |
 | **TC-03** | FR-ACC-01 | Employee | Đăng nhập bằng tài khoản có trạng thái `Locked` | Từ chối truy cập, hiển thị thông báo "Tài khoản của bạn đã bị khóa" | – (Chờ test) | Thành viên B | – | Đăng xuất Auth ngay, không nạp MainActivity |
 | **TC-04** | FR-ACC-02 | Employee | Vào Cá nhân → Chọn ảnh từ thư viện → Lưu | Tải lên Firebase Storage, cập nhật avatarUrl và hiển thị ngay | – (Chờ test) | Thành viên B | – | File lưu tại `avatars/{uid}.jpg`, Glide load mượt |
@@ -239,14 +254,14 @@ Mở PowerShell tại thư mục gốc của dự án:
 | **TC-06** | FR-USR-02 | Admin | Thêm người dùng với SĐT 9 chữ số hoặc có chữ cái | Báo lỗi "Số điện thoại phải gồm 10 chữ số hợp lệ" | – (Chờ test) | Thành viên B | – | Regex `^0[0-9]{9}$` kiểm tra chuẩn |
 | **TC-07** | FR-USR-02 | Manager | Cố gắng gọi chức năng hoặc API thêm người dùng | Bị chặn: Giao diện không có nút; Rules trả `PERMISSION_DENIED` | – (Chờ test) | Thành viên B | – | Kiểm thử chéo: Rules từ chối ghi vào `users` |
 | **TC-08** | FR-USR-05 | Admin | Chuyển trạng thái Manager sang `Locked` | Tài khoản Manager bị đăng xuất hoặc không thể đăng nhập lại | – (Chờ test) | Thành viên B | – | Kiểm tra status thời gian thực chặn đăng nhập |
-| **TC-09** | FR-STU-02 | Manager | Thêm sinh viên mới đầy đủ thông tin hợp lệ | Lưu thành công vào Firestore, xuất hiện ngay trên danh sách | – (Chờ test) | Thành viên A | – | ID sinh viên dùng chính MSSV làm Document ID |
+| **TC-09** | FR-STU-02 | Manager | Thêm sinh viên có MSSV `524H0123`, mã lớp đủ 8 ký tự và dữ liệu hợp lệ | Lưu thành công vào Firestore, xuất hiện trên danh sách | – (Chờ test) | Thành viên A | – | Document ID dùng MSSV theo cấu trúc `KYYTSSSS` |
 | **TC-10** | FR-STU-02 | Employee | Mở màn hình danh sách sinh viên | Nút FAB "Thêm sinh viên" bị ẩn; thao tác sửa/xóa bị khóa | – (Chờ test) | Thành viên A | – | Kiểm thử chéo: RBAC ẩn các nút chức năng ghi |
 | **TC-11** | FR-STU-05 | Tất cả | Gõ từ khóa tìm kiếm "Nguyễn" vào ô tìm kiếm | Lọc tức thì tất cả sinh viên có họ/tên chứa "Nguyễn" | – (Chờ test) | Thành viên A | – | Lọc realtime trên client theo danh sách snapshot |
 | **TC-12** | FR-STU-05 | Tất cả | Tìm kiếm tên có dấu tiếng Việt "Thị" | Lọc chính xác các sinh viên có chữ "Thị", không lỗi font | – (Chờ test) | Thành viên A | – | Hỗ trợ Unicode Tiếng Việt chuẩn xác |
 | **TC-13** | FR-STU-06 | Tất cả | Chọn sắp xếp theo tên từ A–Z | Danh sách sắp xếp đúng bảng chữ cái tiếng Việt | – (Chờ test) | Thành viên A | – | Sử dụng Collator tiếng Việt chuẩn |
 | **TC-14** | FR-CER-02 | Manager | Mở chi tiết SV → Bấm Thêm chứng chỉ → Nhập thông tin | Lưu thành công vào subcollection `students/{id}/certificates` | – (Chờ test) | Thành viên A | – | Quan hệ 1-N đúng thiết kế kiến trúc |
 | **TC-15** | FR-CER-04 | Employee | Truy cập chi tiết sinh viên xem danh sách chứng chỉ | Chỉ xem được danh sách chứng chỉ, không có nút Xóa/Sửa | – (Chờ test) | Thành viên A | – | Kiểm thử chéo: Employee không có quyền sửa chứng chỉ |
-| **TC-16** | FR-IO-01 | Manager | Import file mẫu `sample-data/students.csv` (20 SV) | Toàn bộ 20 sinh viên được thêm vào Firestore nguyên vẹn | – (Chờ test) | Thành viên A | – | Sử dụng WriteBatch atomic, hiển thị tiến độ |
+| **TC-16** | FR-IO-01 | Manager | Import `sample-data/students.csv` | Các dòng hợp lệ được thêm đúng theo báo cáo kết quả thực tế | – (Chờ test) | Thành viên A | – | Chia tối đa 400 thao tác ghi mỗi batch |
 | **TC-17** | FR-IO-01 | Manager | Import file `sample-data/students-invalid.csv` | Bỏ qua dòng lỗi (thiếu MSSV), import dòng đúng, có báo cáo | – (Chờ test) | Thành viên A | – | Thông báo chi tiết số dòng thành công và số dòng lỗi |
 | **TC-18** | FR-IO-01 | Manager | Chọn file không có đuôi `.csv` (ví dụ `.txt`, `.jpg`) | Báo lỗi định dạng không hỗ trợ, không thực hiện import | – (Chờ test) | Thành viên A | – | Kiểm tra MIME type và extension trước khi đọc |
 | **TC-19** | FR-IO-02 | Admin | Bấm nút Export danh sách sinh viên ra file CSV | Xuất file CSV qua Storage Access Framework, đủ cột và dòng | – (Chờ test) | Thành viên B | – | Tệp CSV mã hóa UTF-8 kèm BOM mở Excel không lỗi font |
@@ -254,19 +269,19 @@ Mở PowerShell tại thư mục gốc của dự án:
 | **TC-21** | FR-STU-01 | Manager | Thao tác trên TB1 (Thêm/Sửa SV) → Quan sát TB2 | TB2 tự động cập nhật danh sách hiển thị trong < 2 giây | – (Chờ test) | Cả hai | – | Firestore `addSnapshotListener` đồng bộ tức thì |
 | **TC-22** | FR-ACC-01 | Admin | Đăng nhập thành công vào hệ thống | Tạo bản ghi mới trong subcollection `loginHistory` của Admin | – (Chờ test) | Thành viên B | – | Ghi nhận đúng Server Timestamp và tên model thiết bị |
 | **TC-23** | FR-USR-06 | Admin | Chọn xem lịch sử đăng nhập của một tài khoản Manager | Hiển thị danh sách các mốc thời gian và thiết bị đã đăng nhập | – (Chờ test) | Thành viên B | – | Hiển thị bằng BottomSheet / Dialog RecyclerView |
-| **TC-24** | FR-IO-01 | Manager | Import CSV chứa tên có dấu tiếng Việt phức tạp | Dữ liệu trên Firestore và giao diện hiển thị chuẩn xác 100% | – (Chờ test) | Thành viên A | – | Hỗ trợ UTF-8 chuẩn xác, không bị lỗi mã hóa |
+| **TC-24** | FR-IO-01 | Manager | Import CSV chứa tên có dấu tiếng Việt phức tạp | Dữ liệu trên Firestore và giao diện giữ nguyên nội dung Unicode | – (Chờ test) | Thành viên A | – | Đối chiếu từng giá trị sau khi nhập |
 | **TC-25** | FR-STU-04 | Manager | Xóa một sinh viên đã có 3 chứng chỉ | Cả document sinh viên và 3 chứng chỉ con đều bị xóa sạch | – (Chờ test) | Thành viên A | – | Xóa đệ quy subcollection trước khi xóa cha |
-| **TC-26** | FR-ACC-04 | – | Cài mới ứng dụng hoàn toàn, chạy lần đầu | Tự động tạo Admin `admin@student.app`, đăng nhập thành công | – (Chờ test) | Cả hai | – | AdminSeedService hoàn thành khởi tạo trong 1.5s |
+| **TC-26** | FR-ACC-04 | Admin | Cấp bộ ba demo bằng môi trường tin cậy, sau đó cài mới ứng dụng | Đăng nhập được bằng `admin/admin`; client không tự tạo hoặc nâng quyền Admin | – (Chờ test) | Cả hai | – | Đối chiếu UID xác thực và `users/{uid}` |
 | **TC-27** | FR-IO-03 | Manager | Import `sample-data/certificates.csv` sau khi có SV | Chứng chỉ tự động gán đúng vào từng sinh viên theo MSSV | – (Chờ test) | Thành viên A | – | Tra cứu MSSV hợp lệ trước khi ghi subcollection |
 
 ---
 
 ## 6. Tiêu Chí Nghiệm Thu Nâng Cao (Acceptance Criteria)
 
-### 6.1 Nghiệm thu 1: Cơ chế Seed Admin & Phân quyền Role-Based
-- **Mô tả:** Lần đầu chạy app, `AdminSeedService` kích hoạt `checkAndSeedAdmin()`.
+### 6.1 Nghiệm thu 1: Cấp Admin an toàn và phân quyền
+- **Mô tả:** Admin được tạo bằng Firebase Console hoặc môi trường máy chủ đáng tin cậy trước khi đăng nhập.
 - **Tiêu chí đạt:**
-  1. Firebase Authentication có user `admin@student.app`.
+  1. Hệ thống xác thực có đủ `admin`, `manager`, `employee`.
   2. Document `users/{adminUid}` có trường `role: "admin"`.
   3. Giao diện Admin hiển thị đầy đủ 4 tab/mục: *Trang chủ, Quản lý tài khoản, Quản lý sinh viên, Cá nhân*.
 
@@ -283,11 +298,20 @@ Mở PowerShell tại thư mục gốc của dự án:
   1. Trên Thiết bị A, thêm hoặc sửa một sinh viên.
   2. Trong vòng **dưới 2 giây**, danh sách trên Thiết bị B tự động cập nhật mà không cần vuốt màn hình để Refresh.
 
-### 6.4 Nghiệm thu 4: Import dữ liệu số lượng lớn (Batch Write > 500 dòng)
+### 6.4 Nghiệm thu 4: Nhập dữ liệu theo nhóm
 - **Mô tả:** Thử nghiệm import danh sách dữ liệu sinh viên quy mô lớn.
 - **Tiêu chí đạt:**
-  1. Xử lý chia nhỏ thành từng chunk 400 records/batch để không vượt ngưỡng 500 của Firestore.
-  2. Tiến trình import chạy atomic, mượt mà, có thanh tiến độ (Progress Dialog).
+  1. Chia dữ liệu thành từng nhóm tối đa 400 thao tác ghi để chừa biên an toàn dưới giới hạn của Firestore.
+  2. Mỗi batch là một đơn vị nguyên tử; nhiều batch không tạo thành một giao dịch nguyên tử chung.
+
+## 7. Quy tắc dữ liệu cần kiểm thử bổ sung
+
+- MSSV đúng 8 ký tự theo `KYYTSSSS`; ví dụ hợp lệ `524H0123`.
+- Với phạm vi Khoa CNTT, ký tự khoa là `5`.
+- Hệ đào tạo hiện chấp nhận `0` hoặc `H`.
+- Mã lớp gồm đúng 8 ký tự chữ hoa hoặc chữ số.
+- Schema sinh viên không có GPA; không tạo test sắp xếp hoặc chỉnh sửa GPA.
+- Chỉ đổi “Chờ test” thành kết quả thực tế khi có ngày, thiết bị, người test và bằng chứng.
 
 ### 6.5 Nghiệm thu 5: Xóa sinh viên kèm xóa tầng chứng chỉ (Cascade Deletion)
 - **Mô tả:** Xóa sinh viên đang sở hữu nhiều chứng chỉ trong subcollection.

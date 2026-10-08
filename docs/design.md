@@ -2,6 +2,8 @@
 
 Các biểu đồ UML (use case, lớp, ER, tuần tự) nằm ở `uml.md`. Cấu trúc dữ liệu ở [`firestore-schema.md`](firestore-schema.md).
 
+> **Trạng thái:** đây là thiết kế đích. Repository hiện mới là khung đang phát triển, chưa có đầy đủ các lớp và màn hình được liệt kê.
+
 ## 1. Kiến trúc MVVM
 
 ```
@@ -43,15 +45,14 @@ Các biểu đồ UML (use case, lớp, ER, tuần tự) nằm ở `uml.md`. C�
 | `ui/profile/`      | `ProfileFragment` (đổi avatar, lịch sử đăng nhập của mình)                                 |
 | `adapter/`         | `UserAdapter`, `StudentAdapter`, `CertificateAdapter`, `LoginRecordAdapter`                   |
 | `utils/`           | `CsvHelper`, `ValidationUtils`, `DateUtils`, `PermissionHelper`, `Constants`                |
-| `service/`         | `AdminSeedService` (tạo tài khoản Admin lần đầu)                                              |
 
-Trạng thái hiện tại: mới có khung dự án (`MainActivity` và các thư mục rỗng). Các lớp trên là thiết kế đích.
+Trạng thái hiện tại: mới có khung dự án với `MainActivity` mẫu. Các lớp và package trên là thiết kế đích. Admin đầu tiên được cấp qua Firebase Console hoặc môi trường máy chủ tin cậy, không có `AdminSeedService` trong ứng dụng client.
 
 ## 3. Danh sách màn hình
 
 | Màn hình                                | Vai trò       | Chức năng chính                                  | FR liên quan        |
 | ----------------------------------------- | -------------- | --------------------------------------------------- | -------------------- |
-| Đăng nhập (`LoginActivity`)          | Tất cả       | Email/mật khẩu, kiểm tra`Locked`               | FR-ACC-01            |
+| Đăng nhập (`LoginActivity`)          | Tất cả       | Username/mật khẩu; email tùy chọn làm bí danh; kiểm tra `Locked` | FR-ACC-01 |
 | Màn hình chính (`HomeFragment`)      | Tất cả       | Hiện các mục theo vai trò (xem sơ đồ dưới) | –                   |
 | Hồ sơ cá nhân                         | Tất cả       | Đổi avatar, xem lịch sử đăng nhập của mình | FR-ACC-02, FR-ACC-03 |
 | Danh sách người dùng                  | Admin          | Xem, xóa, khóa/mở khóa                          | FR-USR-01, 04, 05    |
@@ -85,7 +86,8 @@ flowchart TD
 
 - **Ẩn chức năng theo vai trò:** `PermissionHelper` quyết định hiện hoặc ẩn nút/mục menu. Đây chỉ là lớp tiện dụng, bảo mật thật nằm ở `firestore.rules`.
 - **Kiểm tra `Locked`:** thực hiện sau khi Firebase Auth xác thực thành công, đọc `users/{uid}.status`. Nếu `Locked` hoặc không có document thì đăng xuất và báo lỗi.
-- **Admin tạo người dùng:** `createUserWithEmailAndPassword` trên instance mặc định sẽ đăng nhập luôn tài khoản mới và làm Admin bị đăng xuất. Dùng một `FirebaseApp` phụ (secondary) để tạo tài khoản, sau đó ghi document `users/{uid}`.
+- **Cấp Admin đầu tiên:** thực hiện trong Firebase Console hoặc qua Admin SDK/Cloud Functions. Ứng dụng client không được tự bootstrap Admin.
+- **Admin tạo người dùng:** username là bắt buộc, email là tùy chọn. Việc cấp thông tin xác thực phải đi qua môi trường tin cậy; không lưu mật khẩu thô trong Firestore. Nếu chọn Firebase Email/Password, cần một lớp ánh xạ username/email sang tài khoản Auth và phải tuân thủ mật khẩu tối thiểu 6 ký tự.
 - **Tìm kiếm/sắp xếp:** xử lý phía client trên danh sách mà listener đã tải về (xem `firestore-schema.md` mục 5).
 - **Offline:** hiện badge khi mất mạng (NFR-03).
 
@@ -112,7 +114,6 @@ flowchart TD
 | **Fragment** | `{Feature/Action}Fragment` | `StudentListFragment`, `StudentDetailFragment`, `StudentEditFragment`, `ImportExportFragment` |
 | **Adapter (RecyclerView)** | `{Entity}Adapter` | `StudentAdapter`, `CertificateAdapter`, `UserAdapter`, `LoginRecordAdapter` |
 | **Helper / Utility** | `{Chức năng}Helper` hoặc `{Chức năng}Utils` | `CsvHelper`, `ValidationUtils`, `DateUtils`, `PermissionHelper` |
-| **Service** | `{Chức năng}Service` | `AdminSeedService` |
 | **Enum** | Danh từ số ít, giá trị viết HOA | `UserRole { ADMIN, MANAGER, EMPLOYEE }`, `UserStatus { NORMAL, LOCKED }` |
 
 ---
@@ -140,10 +141,12 @@ flowchart TD
 ### 5.5 Quy ước đặt tên Trường CSDL Firestore (camelCase)
 
 Tất cả document field trong Cloud Firestore đều dùng **camelCase**, thống nhất giữa CSDL và Model:
-- **`users`:** `uid`, `email`, `fullName`, `phoneNumber`, `age`, `role`, `status`, `avatarUrl`, `createdAt`
-- **`students`:** `studentCode`, `fullName`, `gender`, `birthDate`, `major`, `academicYear`, `gpa`, `email`, `phone`, `createdAt`, `updatedAt`
-- **`certificates`:** `certCode`, `certName`, `issueDate`, `expiryDate`, `issuedBy`, `grade`, `createdAt`
-- **`loginHistory`:** `loginAt`, `deviceInfo`, `ipAddress`, `status`
+- **`users`:** `uid`, `username`, `email` (tùy chọn), `name`, `age`, `phone`, `status`, `role`, `avatarUrl`, `createdAt`
+- **`students`:** `studentId`, `name`, `dateOfBirth`, `className`, `faculty`, `createdAt`
+- **`certificates`:** `certName`, `issueDate`, `issuedBy`
+- **`loginHistory`:** `timestamp`, `device`
+
+`studentId` là document ID, khớp `^[0-9A-H][0-9]{2}[0H][0-9]{4}$`; `className` khớp `^[0-9A-Z]{8}$`. Ứng dụng chỉ kiểm tra, không tự sinh MSSV.
 
 ---
 
@@ -157,8 +160,8 @@ Tất cả document field trong Cloud Firestore đều dùng **camelCase**, th�
 
 #### 2. Định danh ID trong Layout: `{tiền tố view}_{mục đích}`
 - **Button:** `btn_login`, `btn_save`, `btn_cancel`, `btn_import_csv`
-- **TextInput / EditText:** `edt_username`, `edt_password`, `edt_student_code`, `edt_full_name`, `edt_phone`
-- **TextView:** `tv_title`, `tv_student_name`, `tv_gpa`, `tv_role`, `tv_status`
+- **TextInput / EditText:** `edt_login_identifier`, `edt_email`, `edt_password`, `edt_student_id`, `edt_student_name`, `edt_phone`
+- **TextView:** `tv_title`, `tv_student_name`, `tv_class_name`, `tv_role`, `tv_status`
 - **RecyclerView:** `rv_students`, `rv_certificates`, `rv_users`
 - **ImageView:** `img_avatar`, `img_icon_search`
 - **ProgressBar / Skeleton:** `pb_loading`, `skeleton_container`

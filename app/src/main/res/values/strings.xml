@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Student Mgmt</string>
-    <string name="action_settings">Settings</string>
-    <string name="welcome_message">Welcome to Student Management App</string>
+    <string name="app_name">Quản lý sinh viên</string>
+    <string name="action_settings">Cài đặt</string>
+    <string name="welcome_message">Chào mừng đến với ứng dụng quản lý sinh viên</string>
+    <string name="settings_clicked">Đã chọn Cài đặt</string>
 </resources>

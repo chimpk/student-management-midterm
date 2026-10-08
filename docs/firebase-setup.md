@@ -1,31 +1,29 @@
-# Thiết Lập Firebase Cloud — Hướng Dẫn Từ A đến Z
+# Hướng dẫn thiết lập Firebase
 
-> Tài liệu này là nguồn hướng dẫn vận hành Firebase chính thức của dự án. Người mới phải có thể tạo một Firebase project trống, kết nối ứng dụng, triển khai rules và xác minh toàn bộ luồng mà không cần đọc source code.
+> **Trạng thái:** Tài liệu thiết lập dự kiến cho dự án môn học. Chỉ đánh dấu hoàn tất sau khi đã thao tác và lưu bằng chứng trên đúng Firebase Project.
 
-## 1. Kiến trúc dịch vụ
+## 1. Dịch vụ dự kiến
 
-| Nhu cầu | Dịch vụ | Dữ liệu |
+| Nhu cầu | Dịch vụ | Đường dẫn |
 |---|---|---|
-| Đăng nhập | Firebase Authentication | Email/mật khẩu và Firebase Auth UID |
+| Đăng nhập | Cơ chế xác thực do nhóm chọn | Username, mật khẩu, UID; email tùy chọn |
 | Người dùng | Cloud Firestore | `users/{uid}` |
 | Lịch sử đăng nhập | Cloud Firestore | `users/{uid}/loginHistory/{logId}` |
 | Sinh viên | Cloud Firestore | `students/{studentId}` |
 | Chứng chỉ | Cloud Firestore | `students/{studentId}/certificates/{certId}` |
-| Ảnh đại diện | Cloud Storage for Firebase | `avatars/{uid}.jpg` |
-| Offline | Firestore Android SDK | Cache do SDK quản lý, không phải database local riêng |
+| Ảnh đại diện | Cloud Storage | `avatars/{uid}.jpg` |
 
-Ứng dụng không dùng Room/SQLite và không có tài khoản hoặc database local dự phòng. Thiếu cấu hình Firebase thì ứng dụng phải báo lỗi, không được tự chuyển sang dữ liệu giả.
+Ứng dụng không dùng Room/SQLite làm dữ liệu thay thế. Nếu Firebase chưa cấu hình, ứng dụng phải báo lỗi rõ ràng.
 
 ## 2. Điều kiện chuẩn bị
 
-- Tài khoản Google có quyền tạo Firebase project.
 - Android Studio Iguana 2023.2.1 hoặc mới hơn.
-- JDK 17 và biến môi trường `JAVA_HOME` trỏ đúng JDK.
-- Android SDK 34; thiết bị/emulator Android 8.0 (API 26) trở lên.
-- Node.js/npm nếu muốn deploy bằng Firebase CLI.
-- Một phương thức thanh toán chỉ khi cần Firebase Storage. Firestore và Email/Password Authentication có thể dùng hạn mức miễn phí.
+- JDK 17, Android SDK 34 và thiết bị Android API 26 trở lên.
+- Tài khoản Google có quyền quản lý Firebase Project.
+- Node.js/npm nếu triển khai bằng Firebase CLI.
+- Billing chỉ khi tính năng Storage tại thời điểm thiết lập yêu cầu.
 
-Kiểm tra công cụ trên Windows:
+Kiểm tra:
 
 ```powershell
 java -version
@@ -35,152 +33,90 @@ node --version
 npm --version
 ```
 
-Kết quả Java phải là phiên bản 17. Không dùng Java 8 cho project này.
-
-## 3. Tạo Firebase project
+## 3. Tạo và ghi nhận Firebase Project
 
 1. Truy cập <https://console.firebase.google.com/>.
-2. Chọn **Create a project**.
-3. Đặt tên, ví dụ `student-management-midterm`.
-4. Ghi lại **Project ID**; Project ID không đổi được sau khi tạo.
-5. Google Analytics không bắt buộc cho bài này.
-6. Không dùng chung Firebase project production cá nhân có dữ liệu quan trọng.
+2. Chọn **Tạo dự án**, nhập tên dự án và quyết định có bật Analytics hay không.
+3. Chọn vị trí Firestore phù hợp; vị trí khó thay đổi sau khi tạo.
+4. Ghi Project ID, location và Storage Bucket thực tế vào [Thông tin nhóm](team-info.md).
+5. Không dùng dự án đang chứa dữ liệu quan trọng hoặc dữ liệu cá nhân thật.
 
-### Chọn location
-
-- Location của Firestore gần như không thể đổi sau khi tạo database.
-- Với bài demo, chọn một location rồi ghi lại trong bảng môi trường kiểm thử.
-- Nếu dùng Storage và muốn tận dụng Google Cloud Storage Always Free, kiểm tra location được Firebase công bố hỗ trợ tại thời điểm tạo bucket.
-
-## 4. Đăng ký Android app
-
-Trong Firebase Console, chọn **Project overview → Add app → Android**.
+## 4. Đăng ký ứng dụng Android
 
 | Trường | Giá trị |
 |---|---|
-| Android package name | `com.example.studentmgmt` |
-| App nickname | Tùy chọn, ví dụ `Student Mgmt Android` |
-| Debug signing SHA-1 | Không bắt buộc cho Email/Password |
+| Tên gói Android | `com.example.studentmgmt` |
+| Tên gợi nhớ | Tùy chọn |
+| SHA-1 debug | Tùy cơ chế xác thực được chọn |
 
-Package name phải khớp tuyệt đối với `applicationId` trong `app/build.gradle.kts`.
-
-Tải `google-services.json` và đặt đúng vị trí:
+Tải `google-services.json` và đặt tại:
 
 ```text
 <project-root>/app/google-services.json
 ```
 
-Không:
+Không đổi tên, không đặt ở thư mục gốc và không commit file cấu hình thật lên repository công khai. File `app/google-services.json.example` chỉ là mẫu.
 
-- Đổi tên thành `google-services (1).json`.
-- Đặt ở thư mục gốc repository.
-- Thay bằng `google-services.json.example`.
-- Commit file thật vào repository công khai.
+## 5. Chọn Authentication và cấp tài khoản demo an toàn
 
-File mẫu chỉ minh họa cấu trúc: `app/google-services.json.example`.
-
-## 5. Bật Firebase Authentication
-
-1. Firebase Console → **Build → Authentication → Get started**.
-2. **Sign-in method → Email/Password**.
-3. Bật **Email/Password**, không cần bật Email link.
-4. Nhấn **Save**.
-
-Ứng dụng tự seed tài khoản Admin khi chạy lần đầu:
+1. Giao diện ứng dụng nhận **username/mật khẩu**. Email chỉ là thông tin tùy chọn và có thể dùng làm bí danh đăng nhập khi tồn tại.
+2. Chọn cơ chế xác thực có thể phát hành UID/token tin cậy. Firebase Email/Password là một lựa chọn nhưng không hỗ trợ username trực tiếp và yêu cầu mật khẩu tối thiểu 6 ký tự.
+3. Chuẩn bị ba tài khoản từ **môi trường máy chủ đáng tin cậy**:
 
 ```text
-Email: admin@student.app
-Password: Admin@123456
+Admin: admin / admin
+Manager: manager / manager
+Employee: employee / employee
 ```
 
-Manager và Employee phải được Admin tạo trong ứng dụng. Không tự tạo hai tài khoản này bằng nút Add user trong Firebase Console nếu muốn kiểm thử đúng luồng FR-USR-02.
+4. Sao chép từng UID được cấp.
+5. Tạo document `users/{uid}` tương ứng trong Firestore:
 
-## 6. Tạo Cloud Firestore
+```text
+uid: <trùng document ID>
+username: admin
+email: <tùy chọn>
+name: Quản trị viên
+age: 30
+phone: 0901234567
+status: Normal
+role: admin
+createdAt: <timestamp máy chủ>
+```
 
-1. Firebase Console → **Build → Firestore Database**.
-2. Chọn **Create database**.
-3. Chọn **Production mode**.
-4. Chọn location đã thống nhất.
-5. Hoàn tất tạo database mặc định `(default)`.
+**Không tạo hoặc seed quyền Admin từ ứng dụng Android.** Client không phải môi trường tin cậy để cấp vai trò cao nhất. Cặp `admin/admin` không thể được tạo trực tiếp bằng Firebase Email/Password do mật khẩu chỉ có 5 ký tự; nếu dùng provider này, nhóm phải đổi mật khẩu kỹ thuật hoặc chọn cơ chế khác và ghi đúng thông tin thực tế.
 
-Không cần tạo collection thủ công. Ứng dụng tạo collection/document khi seed hoặc thao tác CRUD.
+## 6. Tạo Firestore và triển khai rules
 
-## 7. Triển khai Firestore Rules
-
-Phải triển khai rules **trước lần chạy đầu tiên** để luồng seed Admin được phép tạo đúng document và các role bị giới hạn đúng thiết kế.
-
-### Cách A — Firebase Console
-
-1. Firestore Database → **Rules**.
-2. Mở `firestore.rules` trong repository.
-3. Sao chép toàn bộ nội dung vào editor.
-4. Nhấn **Publish**.
-
-### Cách B — Firebase CLI
-
-Cài và đăng nhập:
+1. Vào **Firestore Database → Tạo cơ sở dữ liệu**.
+2. Chọn chế độ production và location đã thống nhất.
+3. Kiểm tra nội dung `firestore.rules` trước khi publish.
+4. Triển khai bằng Console hoặc CLI.
 
 ```powershell
 npm install -g firebase-tools
 firebase login
-firebase projects:list
-```
-
-Tại thư mục gốc project:
-
-```powershell
 firebase use --add
-```
-
-Chọn Project ID vừa tạo và đặt alias `default`. Lệnh này sinh `.firebaserc`. Trước khi deploy luôn kiểm tra:
-
-```powershell
 firebase use
-```
-
-Deploy Firestore rules và index:
-
-```powershell
 firebase deploy --only firestore
 ```
 
-`firebase.json`, `firestore.rules` và `firestore.indexes.json` đã nằm trong repository. CLI deploy sẽ ghi đè rules trên Console bằng bản trong source code.
+Lệnh `firebase use` phải trả đúng Project ID trước mỗi lần deploy. Việc có file rules trong repository chưa chứng minh rules đã được triển khai thành công.
 
-## 8. Bật Cloud Storage cho avatar
+## 7. Thiết lập Storage nếu cần
 
-Cloud Storage for Firebase hiện yêu cầu project dùng gói **Blaze – pay as you go** và liên kết Cloud Billing. Hạn mức miễn phí vẫn có thể áp dụng; với demo nhỏ chi phí thường bằng 0 nếu không vượt quota, nhưng budget alert không phải hard spending cap.
-
-1. Firebase Console → **Build → Storage → Get started**.
-2. Nâng cấp Blaze khi Console yêu cầu.
-3. Liên kết Cloud Billing account.
-4. Thiết lập budget alert ở Google Cloud Billing.
-5. Tạo default bucket và ghi lại tên bucket.
-6. Storage → **Rules** → publish nội dung `storage.rules`.
-
-Deploy bằng CLI:
+1. Kiểm tra yêu cầu billing hiện hành trên Firebase Console.
+2. Tạo bucket, ghi chính xác tên bucket vào `team-info.md`.
+3. Thiết lập cảnh báo ngân sách nếu dùng gói Blaze.
+4. Kiểm tra và publish `storage.rules`.
 
 ```powershell
 firebase deploy --only storage
 ```
 
-Deploy cả Firestore và Storage:
+Nếu chưa bật Storage, phải ghi rõ tính năng ảnh đại diện chưa kiểm thử; không tuyên bố ứng dụng vẫn hoạt động đầy đủ.
 
-```powershell
-firebase deploy --only firestore,storage
-```
-
-Nếu chưa bật billing, ứng dụng vẫn dùng được Authentication và Firestore; riêng đổi avatar sẽ nhận lỗi Storage 402/403.
-
-## 9. Build và chạy lần đầu
-
-Đặt JDK 17 cho phiên PowerShell hiện tại nếu cần:
-
-```powershell
-$env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
-$env:Path="$env:JAVA_HOME\bin;$env:Path"
-```
-
-Sau đó:
+## 8. Build và chạy kiểm tra
 
 ```powershell
 .\gradlew.bat clean
@@ -188,123 +124,54 @@ Sau đó:
 .\gradlew.bat assembleDebug
 ```
 
-Chạy ứng dụng bằng Android Studio hoặc cài APK debug. Trong lần mở đầu:
+Nếu tác vụ test báo `NO-SOURCE`, điều đó có nghĩa chưa có test để chạy, không phải test đã đạt. Chỉ ghi build thành công khi lệnh vừa chạy trả mã thoát 0.
 
-1. `LoginActivity` gọi `AdminSeedService`.
-2. Firebase Authentication tạo `admin@student.app` nếu chưa tồn tại.
-3. Firestore tạo `users/{adminUid}` với `role=admin`, `status=Normal`.
-4. App đăng xuất phiên seed và hiển thị màn hình đăng nhập.
-5. Đăng nhập bằng tài khoản Admin mặc định.
+## 9. Xác minh thủ công
 
-## 10. Xác minh trên Firebase Console
+- Hệ thống xác thực có đủ `admin`, `manager`, `employee` và UID khớp document.
+- Mỗi `users/{uid}` có `username`, `role`, `status = Normal`; email có thể vắng mặt.
+- Rules đã publish trên đúng Project ID.
+- Sau khi chức năng tồn tại, kiểm tra login history, sinh viên, chứng chỉ và avatar đúng đường dẫn.
+- Lưu ảnh chụp màn hình có ngày kiểm thử; che thông tin nhạy cảm.
 
-### Authentication
+## 10. Nạp dữ liệu demo dự kiến
 
-Authentication → Users phải có:
+1. Kiểm tra MSSV đúng cấu trúc `KYYTSSSS`, ví dụ `524H0123`.
+2. Kiểm tra mã lớp gồm đúng 8 ký tự chữ hoa hoặc số.
+3. Nhập sinh viên trước, chứng chỉ sau.
+4. Chia mỗi batch tối đa **400 thao tác ghi**.
+5. Dùng file dữ liệu sai để kiểm tra báo lỗi theo dòng.
 
-```text
-admin@student.app
-```
+Chỉ thực hiện các bước này sau khi chức năng import đã có trong mã nguồn.
 
-### Firestore
-
-Document Admin phải có tối thiểu:
-
-```text
-users/{uid}
-  uid: <trùng document ID>
-  email: admin@student.app
-  name: Quản trị viên
-  age: 30
-  phone: 0901234567
-  status: Normal
-  role: admin
-  createdAt: timestamp
-```
-
-Sau một lần đăng nhập thành công phải có:
-
-```text
-users/{uid}/loginHistory/{logId}
-  timestamp: server timestamp
-  device: <hãng và model thiết bị>
-```
-
-Sau khi thêm sinh viên/chứng chỉ:
-
-```text
-students/{studentId}
-students/{studentId}/certificates/{certId}
-```
-
-Certificate document chỉ chứa `certName`, `issueDate`, `issuedBy`; `certId` và `studentId` được suy ra từ đường dẫn, không lưu thừa.
-
-### Storage
-
-Sau khi đổi avatar phải có:
-
-```text
-avatars/{uid}.jpg
-```
-
-và `users/{uid}.avatarUrl` phải là download URL của file vừa tải lên.
-
-## 11. Nạp dữ liệu demo
-
-1. Đăng nhập Admin hoặc Manager.
-2. Mở Import/Export.
-3. Import `sample-data/students.csv` trước.
-4. Import `sample-data/certificates.csv` sau.
-5. Dùng `students-invalid.csv` để kiểm thử báo lỗi từng dòng.
-
-Không import certificate trước student vì certificate phải tham chiếu một `studentId` đang tồn tại.
-
-## 12. Khôi phục các lỗi setup thường gặp
+## 11. Xử lý lỗi thường gặp
 
 | Triệu chứng | Nguyên nhân thường gặp | Cách xử lý |
 |---|---|---|
-| `Firebase chưa được cấu hình` | Thiếu/sai vị trí JSON | Đặt file thật ở `app/google-services.json`, Sync Gradle và rebuild |
-| `No matching client found for package name` | Package trong JSON không khớp | Đăng ký Android app với `com.example.studentmgmt`, tải lại JSON |
-| `PERMISSION_DENIED` khi seed | Chưa deploy rules hoặc nhầm project | Chạy `firebase use`, deploy `firestore.rules`, xóa cài đặt app rồi thử lại |
-| Auth có Admin nhưng Firestore thiếu document | Lần seed trước tạo Auth thành công nhưng ghi Firestore thất bại | Trong Console, tạo document `users/{uid}` đúng schema ở mục 10 hoặc xóa Auth Admin rồi chạy seed lại trên project demo sạch |
-| Đăng nhập báo hồ sơ không tồn tại | Có Auth user nhưng thiếu `users/{uid}` | Tạo document tương ứng hoặc xóa/tạo lại user qua đúng luồng ứng dụng |
-| Avatar trả 402/403 | Storage chưa có Blaze/bucket/rules | Bật Blaze, tạo bucket và deploy `storage.rules` |
-| Storage `unauthorized` | UID/tên file hoặc rules sai | Kiểm tra file phải là `avatars/{uid}.jpg`, user đang đăng nhập và rules đã publish |
-| CLI deploy nhầm project | Alias đang trỏ project khác | Chạy `firebase use` trước mọi lần deploy |
-| Gradle không chạy | Không có JDK 17/JAVA_HOME | Cấu hình JDK 17, mở terminal mới và chạy `java -version` |
-| Emulator không có Google Play services | Image emulator không hỗ trợ Firebase SDK đầy đủ | Tạo AVD có nhãn Google APIs/Google Play |
+| Thiếu cấu hình Firebase | JSON thiếu hoặc sai vị trí | Đặt file thật tại `app/google-services.json` và build lại |
+| Không khớp tên gói | JSON thuộc app khác | Đăng ký lại `com.example.studentmgmt` |
+| `PERMISSION_DENIED` | Rules chưa deploy, sai project hoặc sai quyền | Kiểm tra `firebase use`, UID và document người dùng |
+| Auth có Admin nhưng thiếu hồ sơ | Chưa tạo `users/{uid}` | Tạo document từ Console/môi trường tin cậy |
+| Storage trả 402/403 | Chưa có bucket/billing/rules | Kiểm tra cấu hình Storage hiện hành |
+| Gradle không chạy | JDK/JAVA_HOME sai | Cấu hình JDK 17 và mở terminal mới |
 
-## 13. Bảo mật và kiểm soát chi phí
+## 12. Checklist hoàn tất
 
-- Không commit `google-services.json`, service-account key hoặc file billing.
-- Không dùng Test mode cho Firestore/Storage khi demo chính thức.
-- Luôn deploy rules từ source code đã review.
-- Storage rules hiện giới hạn file avatar dưới 5 MB và MIME `image/*`.
-- Bật budget alert nếu dùng Blaze.
-- Không để Firebase project demo chứa dữ liệu cá nhân thật.
-- Sau khi nộp bài, đổi mật khẩu Admin hoặc xóa Firebase project nếu không còn dùng.
+- [ ] Điền Firebase Project ID, location và Storage Bucket.
+- [ ] `google-services.json` đúng vị trí và không bị commit.
+- [ ] Cơ chế xác thực username/password đã được chọn và mô tả đúng.
+- [ ] Đủ ba tài khoản `admin`, `manager`, `employee` được cấp ngoài client.
+- [ ] Firestore được tạo ở production mode.
+- [ ] Rules đã deploy trên đúng Project ID và có bằng chứng.
+- [ ] Storage đã cấu hình hoặc ghi rõ chưa sử dụng.
+- [ ] Test thực tế có kết quả; không nhầm `NO-SOURCE` với đạt.
+- [ ] Dữ liệu demo không chứa thông tin cá nhân thật.
 
-## 14. Checklist Firebase hoàn tất
+## 13. Tài liệu chính thức
 
-- [ ] Android app đã đăng ký đúng package `com.example.studentmgmt`.
-- [ ] `app/google-services.json` tồn tại trên máy chạy nhưng không bị commit công khai.
-- [ ] Email/Password Authentication đã bật.
-- [ ] Firestore `(default)` đã tạo ở Production mode.
-- [ ] `firestore.rules` đã deploy đúng project.
-- [ ] Storage bucket đã tạo và `storage.rules` đã deploy, hoặc đã ghi rõ phạm vi chưa bật Storage.
-- [ ] Admin seed thành công trong Auth và Firestore.
-- [ ] Login history ghi được server timestamp.
-- [ ] CRUD student/certificate chạy đúng role.
-- [ ] Avatar upload đúng `avatars/{uid}.jpg`.
-- [ ] `firebase use` trả đúng Project ID.
-- [ ] Budget alert đã bật nếu project dùng Blaze.
-
-## 15. Tài liệu chính thức
-
-- Android setup: <https://firebase.google.com/docs/android/setup>
-- Email/password Auth: <https://firebase.google.com/docs/auth/android/password-auth>
-- Firestore quickstart: <https://firebase.google.com/docs/firestore/quickstart>
+- Thiết lập Android: <https://firebase.google.com/docs/android/setup>
+- Firebase Email/Password (chỉ dùng khi phù hợp): <https://firebase.google.com/docs/auth/android/password-auth>
+- Firestore: <https://firebase.google.com/docs/firestore/quickstart>
 - Firebase CLI: <https://firebase.google.com/docs/cli>
-- Deploy Security Rules: <https://firebase.google.com/docs/rules/manage-deploy>
-- Firestore pricing: <https://firebase.google.com/docs/firestore/pricing>
-- Storage billing requirement: <https://firebase.google.com/docs/storage/faqs-storage-changes-announced-sept-2024>
+- Triển khai Rules: <https://firebase.google.com/docs/rules/manage-deploy>
+- Thay đổi Storage: <https://firebase.google.com/docs/storage/faqs-storage-changes-announced-sept-2024>
