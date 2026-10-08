@@ -1,59 +1,133 @@
 # Realtime Student Information Management App
 
-Ứng dụng Android quản lý thông tin sinh viên thời gian thực, dùng Firebase Firestore. Bài giữa kỳ môn Phát triển ứng dụng di động (503074). Đề bài: [`docs/Mid-term.pdf`](docs/Mid-term.pdf).
+> **Học phần:** Phát triển ứng dụng di động (Mobile App Development) – Mã HP: 503074  
+> **Trường:** Đại học Tôn Đức Thắng (TDTU) – Khoa Công nghệ Thông tin  
+> **Đề bài giữa kỳ:** [`docs/Mid-term.pdf`](docs/Mid-term.pdf)  
+> **Trạng thái dự án:** **Đang trong quá trình phát triển và giao việc theo kế hoạch 6 tuần**.
 
-> **Trạng thái:** đang phát triển. Hiện mới có khung dự án và bộ tài liệu thiết kế. Tính năng sẽ được đánh dấu hoàn thành trong [`project-progress.xlsx`](project-progress.xlsx) khi đã lập trình và kiểm thử xong.
+---
 
-## Tính năng theo vai trò
+## 1. Giới thiệu tổng quan
 
-- **Admin:** tài khoản tích hợp sẵn, toàn quyền. Là người duy nhất tạo được tài khoản mới.
-- **Manager:** mọi chức năng liên quan đến sinh viên và chứng chỉ (xem, thêm, sửa, xóa, tìm kiếm, sắp xếp, import/export CSV).
-- **Employee:** chỉ xem, và đổi ảnh đại diện của chính mình.
+Ứng dụng di động quản lý thông tin sinh viên thời gian thực trên nền tảng Android, kết nối trực tiếp với dịch vụ đám mây **Google Firebase Firestore** và **Firebase Storage**. Ứng dụng triển khai kiến trúc chuẩn công nghiệp **MVVM**, cơ chế đồng bộ tức thời hai chiều (Realtime Sync), phân quyền ba vai trò nghiêm ngặt (**Admin, Manager, Employee**), và hỗ trợ làm việc ngoại tuyến (Offline Persistence).
 
-Chi tiết: [`docs/SRS.md`](docs/SRS.md), [`docs/rbac-matrix.md`](docs/rbac-matrix.md).
+---
 
-## Công nghệ
+## 2. Tính năng & Phân quyền Role-Based (RBAC)
 
-- **Nền tảng:** Android (Java 17), `minSdk` 26, `targetSdk` 34
-- **Kiến trúc:** MVVM (ViewModel, LiveData, ViewBinding, Navigation Component)
-- **Firebase:** Authentication (email/mật khẩu), Firestore, Storage (ảnh đại diện)
-- **Thư viện ảnh:** Glide
+- **Admin (Quản trị viên):** 
+  - Toàn quyền hệ thống. Quản lý danh sách tài khoản người dùng (tạo mới Manager/Employee, chỉnh sửa, khóa/mở khóa tài khoản).
+  - Xem lịch sử đăng nhập chi tiết của mọi tài khoản.
+  - Toàn quyền quản trị sinh viên, chứng chỉ, và xuất dữ liệu CSV.
+- **Manager (Quản lý sinh viên):** 
+  - Toàn quyền đối với sinh viên và chứng chỉ: Xem, thêm mới, chỉnh sửa, xóa sinh viên (kèm cascade delete chứng chỉ).
+  - Tìm kiếm thời gian thực (hỗ trợ tiếng Việt có dấu), sắp xếp đa tiêu chí (A–Z, GPA, Ngày sinh).
+  - Nhập (Import) và Xuất (Export) dữ liệu hàng loạt qua file CSV chuẩn UTF-8 BOM.
+  - Bị chặn truy cập các chức năng quản lý tài khoản.
+- **Employee (Nhân viên):** 
+  - Chỉ xem (Read-only) danh sách sinh viên và chứng chỉ. Các nút Thêm/Sửa/Xóa bị ẩn/chặn.
+  - Được phép cập nhật thông tin cá nhân và thay đổi ảnh đại diện (Upload Avatar).
 
-## Cài đặt và chạy
+*Chi tiết đặc tả:* [`docs/srs.md`](docs/srs.md) | [`docs/rbac-matrix.md`](docs/rbac-matrix.md).
 
-Các bước đầy đủ, kèm khắc phục sự cố: [`docs/test-and-setup.md`](docs/test-and-setup.md). Tóm tắt:
+---
 
-1. Android Studio Iguana (2023.2.1) trở lên, JDK 17.
-2. Tạo Firebase project, bật Authentication (Email/Password), Firestore, Storage.
-3. Tải `google-services.json`, đặt vào `app/` (mẫu: `app/google-services.json.example`).
-4. Publish `firestore.rules` trong Firebase Console.
-5. Chạy ứng dụng trên máy ảo hoặc thiết bị Android 8.0+. Lần chạy đầu app tự tạo tài khoản Admin.
+## 3. Công nghệ & Kiến trúc
 
-## Tài khoản demo
+- **Ngôn ngữ & Nền tảng:** Android Java (JDK 17), `minSdk 26` (Android 8.0+), `targetSdk 34` (Android 14).
+- **Kiến trúc ứng dụng:** MVVM (Model - View - ViewModel) với Android Architecture Components (ViewModel, LiveData, ViewBinding).
+- **Điều hướng:** Android Jetpack Navigation Component (Single-Activity pattern).
+- **Cloud Backend:** 
+  - **Firebase Authentication:** Xác thực danh tính Email/Password.
+  - **Cloud Firestore:** Cơ sở dữ liệu NoSQL thời gian thực, quản lý snapshot listener hai chiều.
+  - **Cloud Storage for Firebase:** Lưu trữ tệp ảnh đại diện của người dùng.
+- **Thư viện bên thứ ba:** Bumptech Glide (nạp và cache ảnh mượt mà).
 
-| Vai trò | Email | Mật khẩu |
-|---|---|---|
-| Admin | `admin@student.app` | `Admin@123456` |
-| Manager | Do Admin tạo | Đặt lúc tạo |
-| Employee | Do Admin tạo | Đặt lúc tạo |
+---
 
-Đây là tài khoản demo cho project Firebase của bài tập. Email chỉ là định danh đăng nhập, không cần là hộp thư thật.
+## 4. Hướng dẫn cài đặt & Chạy ứng dụng
 
-## Tài liệu
+> Chi tiết từng bước kèm hình ảnh và xử lý sự cố: xem tại **[`docs/test-and-setup.md`](docs/test-and-setup.md)** và **[`docs/firebase-setup.md`](docs/firebase-setup.md)**.
 
-| File | Nội dung |
-|---|---|
-| [`docs/SRS.md`](docs/SRS.md) | Yêu cầu và đối chiếu với đề bài |
-| [`docs/firestore-schema.md`](docs/firestore-schema.md) | Cấu trúc dữ liệu Firestore |
-| [`docs/design.md`](docs/design.md), [`docs/uml.md`](docs/uml.md) | Thiết kế và biểu đồ |
-| [`docs/test-and-setup.md`](docs/test-and-setup.md) | Cài đặt và test case |
-| [`docs/folder-structure.md`](docs/folder-structure.md) | Cấu trúc thư mục và danh sách đầy đủ các file trong `docs/` |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Quy ước commit và nhánh |
-| [`sample-data/`](sample-data/) | CSV mẫu để thử import |
+### Bước 1: Yêu cầu môi trường & Cấu hình `JAVA_HOME`
+- Cần **JDK 17**. Đặt biến môi trường trong PowerShell:
+  ```powershell
+  $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+  $env:Path = "$env:JAVA_HOME\bin;$env:Path"
+  java -version
+  ```
 
-## Nhóm thực hiện
+### Bước 2: Tạo Firebase Project & Cấu hình
+1. Truy cập [Firebase Console](https://console.firebase.google.com/), tạo một dự án mới.
+2. Thêm Android App với **Package name chính xác tuyệt đối**: `com.example.studentmgmt`.
+3. Tải file `google-services.json` và lưu vào thư mục:
+   ```text
+   app/google-services.json
+   ```
+   *(Không đặt ở thư mục gốc repo; xem file mẫu tại [`app/google-services.json.example`](app/google-services.json.example))*.
+4. Bật **Authentication** → **Email/Password**.
+5. Bật **Firestore Database** ở **Production mode** (chọn location `asia-southeast1`).
+6. **Lưu ý Cloud Storage:** Dịch vụ Storage hiện yêu cầu gói **Blaze (Pay as you go)** để kích hoạt bucket theo [thông báo chính thức từ Google Firebase tháng 9/2024](https://firebase.google.com/docs/storage/faqs-storage-changes-announced-sept-2024). Hạn mức sử dụng demo hoàn toàn nằm trong gói miễn phí (Always Free Tier).
 
-- [Họ tên – MSSV] (Thành viên A)
-- [Họ tên – MSSV] (Thành viên B)
+### Bước 3: Triển khai Security Rules (Bắt buộc trước khi chạy)
+Deploy đồng thời cả Firestore Rules và Storage Rules lên Firebase:
+```powershell
+npm install -g firebase-tools
+firebase login
+firebase use --add    # Chọn project vừa tạo
+firebase deploy --only firestore,storage
+```
+*(Hoặc sao chép nội dung [`firestore.rules`](firestore.rules) và [`storage.rules`](storage.rules) vào Firebase Console Rules rồi nhấn Publish)*.
 
-Giảng viên phụ trách: [điền theo mẫu của Khoa]
+### Bước 4: Build và Kiểm thử
+- **Chạy Unit Test tự động:**
+  ```powershell
+  .\gradlew.bat testDebugUnitTest
+  ```
+- **Biên dịch Debug APK:**
+  ```powershell
+  .\gradlew.bat assembleDebug
+  ```
+
+### Bước 5: Chạy ứng dụng & Tài khoản mặc định
+Mở ứng dụng lần đầu, cơ chế `AdminSeedService` sẽ tự động khởi tạo tài khoản Quản trị viên:
+- **Email:** `admin@student.app`
+- **Mật khẩu:** `Admin@123456`
+
+---
+
+## 5. Tài khoản demo kiểm thử dự kiến
+
+| Vai trò | Email đăng nhập | Mật khẩu | Phạm vi chức năng |
+|---|---|---|---|
+| **Admin** | `admin@student.app` | `Admin@123456` | Quản trị tài khoản, phân quyền, xem log đăng nhập, toàn quyền dữ liệu. |
+| **Manager** | Tạo trong app bởi Admin | Đặt lúc Admin tạo | Quản lý sinh viên, chứng chỉ, tìm kiếm tiếng Việt, Import/Export CSV. |
+| **Employee** | Tạo trong app bởi Admin | Đặt lúc Admin tạo | Xem thông tin sinh viên, đổi ảnh đại diện cá nhân. |
+
+---
+
+## 6. Danh mục tài liệu kỹ thuật dự án
+
+- **Kế hoạch giao việc & Phân công:** [`docs/team-work-distribution.md`](docs/team-work-distribution.md)
+- **Cài đặt & Kế hoạch 27 Test Cases:** [`docs/test-and-setup.md`](docs/test-and-setup.md)
+- **Cẩm nang Firebase từ A–Z:** [`docs/firebase-setup.md`](docs/firebase-setup.md)
+- **Đặc tả yêu cầu phần mềm:** [`docs/srs.md`](docs/srs.md)
+- **Thiết kế cơ sở dữ liệu:** [`docs/firestore-schema.md`](docs/firestore-schema.md)
+- **Kiến trúc hệ thống & UI:** [`docs/design.md`](docs/design.md)
+- **Hệ thống sơ đồ UML:** [`docs/uml.md`](docs/uml.md)
+- **Đề cương báo cáo học thuật:** [`docs/report-outline.md`](docs/report-outline.md)
+- **Cấu trúc mã nguồn chi tiết:** [`docs/folder-structure.md`](docs/folder-structure.md)
+- **Kịch bản quay Video Demo:** [`docs/demo-script.md`](docs/demo-script.md)
+- **Checklist nghiệm thu bàn giao:** [`docs/handover-checklist.md`](docs/handover-checklist.md)
+
+---
+
+## 7. Nhóm sinh viên thực hiện
+
+| Vai trò dự án | Thành viên | Họ và tên | Mã số sinh viên (MSSV) | Trách nhiệm chính |
+|---|---|---|---|---|
+| **Trưởng nhóm** | Thành viên A | Tan (Trần Ngọc Tân) | 52400158 | Auth, User Management, Security Rules, UI Auth/User, Tổng hợp Báo cáo |
+| **Thành viên** | Thành viên B | `[HỌ VÀ TÊN THÀNH VIÊN B]` | `[MSSV THÀNH VIÊN B]` | Student & Certificate CRUD, Realtime Sync, CSV Import/Export, Testing & Video |
+
+- **Giảng viên hướng dẫn:** `[HỌ VÀ TÊN GIẢNG VIÊN PHỤ TRÁCH]`  
+- **Thông tin chi tiết môi trường nộp bài:** Xem tại [`docs/team-info.md`](docs/team-info.md).
