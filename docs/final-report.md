@@ -17,7 +17,7 @@
 |---|---|
 | Giảng viên | `[BẮT BUỘC ĐIỀN]` |
 | Lớp học phần / nhóm | `[BẮT BUỘC ĐIỀN]` |
-| Thành viên A | Trần Ngọc Tân — MSSV: 52400158 |
+| Thành viên A | Trần Ngọc Tấn — MSSV: 52400158 |
 | Thành viên B | `[BẮT BUỘC ĐIỀN HỌ TÊN VÀ MSSV]` |
 | Gói ứng dụng | `com.example.studentmgmt` |
 
@@ -99,7 +99,7 @@ Employee: employee / employee
 
 Các tài khoản phải được cấp trong **môi trường máy chủ đáng tin cậy**. Ứng dụng Android không được tự seed hoặc tự nâng quyền Admin từ client. Email có thể để trống; nếu có, email được dùng làm bí danh đăng nhập.
 
-Mật khẩu `admin` chỉ dài 5 ký tự. Nếu nhóm chọn Firebase Authentication Email/Password thì không thể cấp trực tiếp cặp này vì provider yêu cầu mật khẩu tối thiểu 6 ký tự; khi đó phải đổi mật khẩu kỹ thuật hoặc chọn cơ chế xác thực khác và cập nhật báo cáo theo triển khai thực tế.
+Mật khẩu demo có dạng `<username>@123456` nên đáp ứng giới hạn tối thiểu 6 ký tự của Firebase Authentication Email/Password.
 
 Security Rules dự kiến kiểm tra xác thực, vai trò, trạng thái, kiểu dữ liệu, trường được phép thay đổi và độ dài chuỗi. Có file rules không đồng nghĩa rules đã được triển khai hoặc kiểm thử.
 

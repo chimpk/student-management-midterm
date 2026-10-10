@@ -23,7 +23,7 @@
 
 | Mã nội bộ | Họ và tên sinh viên | Mã số sinh viên (MSSV) | Email sinh viên | Vai trò dự án & Trách nhiệm |
 |:---:|---|---|---|---|
-| **A** | Tan (Trần Ngọc Tân) | 52400158 | 52400158@student.tdtu.edu.vn | **Trưởng nhóm:** Phụ trách Module Auth, User Management, Security Rules, UI Auth/User, Tổng hợp Báo cáo, Thuyết minh video |
+| **A** | Trần Ngọc Tấn | 52400158 | 52400158@student.tdtu.edu.vn | **Trưởng nhóm:** Phụ trách Module Auth, User Management, Security Rules, UI Auth/User, Tổng hợp Báo cáo, Thuyết minh video |
 | **B** | `[HỌ VÀ TÊN THÀNH VIÊN B]` | `[MSSV THÀNH VIÊN B]` | `[EMAIL THÀNH VIÊN B]` | **Thành viên:** Phụ trách Module Student & Certificate CRUD, Realtime Sync, CSV Import/Export, Bộ dữ liệu mẫu, Quay video |
 
 ---
@@ -46,11 +46,11 @@
 
 | Vai trò | Tên đăng nhập | Mật khẩu demo | Email tùy chọn | Ghi chú |
 |---|---|---|---|---|
-| **Admin** | `admin` | `admin` | Không bắt buộc | Dự kiến; cấp ngoài client và không tự nâng quyền. |
-| **Manager** | `manager` | `manager` | Không bắt buộc | Dự kiến; chỉ đánh dấu đã tạo khi có bằng chứng. |
-| **Employee** | `employee` | `employee` | Không bắt buộc | Dự kiến; chỉ đánh dấu đã tạo khi có bằng chứng. |
+| **Admin** | `admin` | `admin@123456` | Không bắt buộc | Dự kiến; cấp ngoài client và không tự nâng quyền. |
+| **Manager** | `manager` | `manager@123456` | Không bắt buộc | Dự kiến; chỉ đánh dấu đã tạo khi có bằng chứng. |
+| **Employee** | `employee` | `employee@123456` | Không bắt buộc | Dự kiến; chỉ đánh dấu đã tạo khi có bằng chứng. |
 
-Khi tài khoản có email, người dùng có thể nhập email thay username. Mật khẩu `admin` không đáp ứng giới hạn tối thiểu 6 ký tự của Firebase Email/Password; nếu dùng provider đó, phải ghi lại mật khẩu kỹ thuật thực tế hoặc chọn cơ chế xác thực khác.
+Khi tài khoản có email, người dùng có thể nhập email thay username. Mật khẩu demo đáp ứng giới hạn tối thiểu 6 ký tự của Firebase Email/Password.
 
 ---
 

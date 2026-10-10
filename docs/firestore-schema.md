@@ -147,7 +147,7 @@ Rules hiện tại đã bao phủ `users`, `loginHistory`, `students`, `certific
 - **Realtime listener:** đăng ký `addSnapshotListener()` trong Repository, gọi `ListenerRegistration.remove()` khi ViewModel bị hủy (`onCleared()`).
 - **Ghi theo lô:** import CSV ghi tối đa **400 document mỗi batch** (`WriteBatch`) để chừa dư địa cho các thao tác phụ.
 - **Offline:** bật persistence qua `setPersistenceEnabled(true)` (hoặc cài đặt tương đương của SDK đang dùng).
-- **Cấp tài khoản demo:** chuẩn bị ba tài khoản `admin/admin`, `manager/manager`, `employee/employee` trong môi trường tin cậy, rồi tạo `users/{uid}` với username và role tương ứng. Email có thể bỏ trống; nếu có thì được dùng như bí danh đăng nhập. Không đưa mật khẩu môi trường thật vào mã nguồn.
-- **Giới hạn Firebase Auth:** provider Email/Password yêu cầu mật khẩu tối thiểu 6 ký tự, vì vậy không thể cấp trực tiếp `admin/admin`. Khi chọn provider này, nhóm phải đổi mật khẩu kỹ thuật hoặc dùng cơ chế xác thực phù hợp khác và ghi đúng thông tin thực tế trong hồ sơ bàn giao.
+- **Cấp tài khoản demo:** chuẩn bị ba tài khoản `admin/admin@123456`, `manager/manager@123456`, `employee/employee@123456` trong môi trường tin cậy, rồi tạo `users/{uid}` với username và role tương ứng. Email có thể bỏ trống; nếu có thì được dùng như bí danh đăng nhập. Không đưa mật khẩu môi trường thật vào mã nguồn.
+- **Giới hạn Firebase Auth:** provider Email/Password yêu cầu mật khẩu tối thiểu 6 ký tự; mật khẩu demo dạng `<username>@123456` đã đáp ứng yêu cầu này.
 - **Xóa người dùng:** chỉ xóa document `users/{uid}`. Tài khoản Firebase Auth vẫn tồn tại (xóa Auth cần Admin SDK hoặc Cloud Functions), nhưng app từ chối đăng nhập khi không tìm thấy document (FR-ACC-01).
 - **Xóa sinh viên:** phải xóa cả subcollection `certificates` (Firestore không tự xóa subcollection).

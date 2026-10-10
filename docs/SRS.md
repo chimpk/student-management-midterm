@@ -37,7 +37,7 @@
 | FR-ACC-01 | Đăng nhập bằng username/mật khẩu; email là bí danh tùy chọn | Tất cả | Chấp nhận username. Chỉ chấp nhận email khi tài khoản có email. Tài khoản `Locked` → từ chối. Sai thông tin → hiện lỗi. Không có document `users/{uid}` → từ chối. |
 | FR-ACC-02 | Đổi ảnh đại diện | Tất cả | Chọn ảnh từ thư viện, lưu lên Firebase Storage, cập nhật `avatarUrl` trong Firestore. |
 | FR-ACC-03 | Xem lịch sử đăng nhập của chính mình | Tất cả | Danh sách thời gian đăng nhập, mới nhất trước. *(Mở rộng thêm so với đề.)* |
-| FR-ACC-04 | Cấp ba tài khoản demo ban đầu | Người quản trị dự án | Tạo trong môi trường tin cậy; ứng dụng client không có luồng tự nâng quyền. Tài khoản dự kiến: `admin/admin`, `manager/manager`, `employee/employee`. |
+| FR-ACC-04 | Cấp ba tài khoản demo ban đầu | Người quản trị dự án | Tạo trong môi trường tin cậy; ứng dụng client không có luồng tự nâng quyền. Tài khoản dự kiến: `admin/admin@123456`, `manager/manager@123456`, `employee/employee@123456`. |
 
 ### 3.2 Quản lý người dùng
 
@@ -125,7 +125,7 @@ Các dạng mã lớp CNTT như `YY05(02|03|04)NN` hoặc `YYH5(02|03|04)NN` m�
 
 | Đề bài (`Mid-term.pdf`) | Cách nhóm thực hiện |
 |---|---|
-| Dùng Firebase Authentication "không bắt buộc nhưng là lựa chọn tốt". | Username/mật khẩu là giao diện đăng nhập chính. Email là thông tin tùy chọn và chỉ là bí danh đăng nhập khi có. Nếu dùng Firebase Email/Password, phải đổi mật khẩu `admin` vì provider này yêu cầu tối thiểu 6 ký tự, hoặc triển khai cơ chế xác thực khác trong môi trường tin cậy. |
+| Dùng Firebase Authentication "không bắt buộc nhưng là lựa chọn tốt". | Username/mật khẩu là giao diện đăng nhập chính. Email là thông tin tùy chọn và chỉ là bí danh đăng nhập khi có. Mật khẩu demo dạng `<username>@123456` đáp ứng giới hạn tối thiểu 6 ký tự nếu dùng Firebase Email/Password. |
 | Thêm người dùng gồm: Name, Age, Phone Number, Status (Normal/Locked). | Bốn trường này là bắt buộc. Nhóm thêm Username, Mật khẩu và Vai trò; Email không bắt buộc. |
 | Tài khoản admin tích hợp sẵn, không cần tạo trong giao diện. Các tài khoản khác do admin tạo. | FR-ACC-04 và FR-USR-02. Bộ ba demo được chuẩn bị từ môi trường tin cậy; client không có đường tự nâng quyền. |
 | Export ra Excel/CSV. | Chọn CSV. |

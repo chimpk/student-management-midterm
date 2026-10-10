@@ -93,9 +93,9 @@ firebase deploy --only firestore,storage
 
 Ứng dụng **không tự nâng quyền Admin từ client**. Ba tài khoản dưới đây là thông tin demo dự kiến; chỉ đánh dấu “đã tạo” sau khi cơ chế xác thực thật được triển khai và có bằng chứng.
 
-- **Admin:** `admin` / `admin`
-- **Manager:** `manager` / `manager`
-- **Employee:** `employee` / `employee`
+- **Admin:** `admin` / `admin@123456`
+- **Manager:** `manager` / `manager@123456`
+- **Employee:** `employee` / `employee@123456`
 
 Email là thông tin bổ sung, có thể để trống. Khi một tài khoản có email, màn hình đăng nhập có thể chấp nhận email đó như bí danh thay cho username. Không commit thông tin đăng nhập của môi trường thật vào repository.
 
@@ -105,11 +105,11 @@ Email là thông tin bổ sung, có thể để trống. Khi một tài khoản 
 
 | Vai trò | Tên đăng nhập | Mật khẩu | Phạm vi chức năng |
 |---|---|---|---|
-| **Admin** | `admin` | `admin` | Quản trị tài khoản, phân quyền, xem lịch sử đăng nhập và quản lý dữ liệu. |
-| **Manager** | `manager` | `manager` | Quản lý sinh viên, chứng chỉ và nhập/xuất CSV. |
-| **Employee** | `employee` | `employee` | Xem thông tin sinh viên và đổi ảnh đại diện cá nhân. |
+| **Admin** | `admin` | `admin@123456` | Quản trị tài khoản, phân quyền, xem lịch sử đăng nhập và quản lý dữ liệu. |
+| **Manager** | `manager` | `manager@123456` | Quản lý sinh viên, chứng chỉ và nhập/xuất CSV. |
+| **Employee** | `employee` | `employee@123456` | Xem thông tin sinh viên và đổi ảnh đại diện cá nhân. |
 
-> Ba mật khẩu trên phục vụ demo theo yêu cầu môn học. Riêng Firebase Authentication Email/Password yêu cầu mật khẩu tối thiểu 6 ký tự, nên cặp `admin/admin` chưa thể cấp trực tiếp bằng provider này nếu không đổi mật khẩu hoặc dùng cơ chế xác thực khác.
+> Ba mật khẩu trên chỉ phục vụ demo theo yêu cầu môn học và đều đáp ứng giới hạn tối thiểu 6 ký tự của Firebase Authentication Email/Password.
 
 ---
 
@@ -132,7 +132,7 @@ Email là thông tin bổ sung, có thể để trống. Khi một tài khoản 
 
 | Vai trò dự án | Thành viên | Họ và tên | Mã số sinh viên (MSSV) | Trách nhiệm chính |
 |---|---|---|---|---|
-| **Trưởng nhóm** | Thành viên A | Tan (Trần Ngọc Tân) | 52400158 | Auth, User Management, Security Rules, UI Auth/User, Tổng hợp Báo cáo |
+| **Trưởng nhóm** | Thành viên A | Trần Ngọc Tấn | 52400158 | Auth, User Management, Security Rules, UI Auth/User, Tổng hợp Báo cáo |
 | **Thành viên** | Thành viên B | `[HỌ VÀ TÊN THÀNH VIÊN B]` | `[MSSV THÀNH VIÊN B]` | Student & Certificate CRUD, Realtime Sync, CSV Import/Export, Testing & Video |
 
 - **Giảng viên hướng dẫn:** `[HỌ VÀ TÊN GIẢNG VIÊN PHỤ TRÁCH]`  

@@ -84,7 +84,7 @@ role: admin
 createdAt: <timestamp máy chủ>
 ```
 
-**Không tạo hoặc seed quyền Admin từ ứng dụng Android.** Client không phải môi trường tin cậy để cấp vai trò cao nhất. Cặp `admin/admin` không thể được tạo trực tiếp bằng Firebase Email/Password do mật khẩu chỉ có 5 ký tự; nếu dùng provider này, nhóm phải đổi mật khẩu kỹ thuật hoặc chọn cơ chế khác và ghi đúng thông tin thực tế.
+**Không tạo hoặc seed quyền Admin từ ứng dụng Android.** Client không phải môi trường tin cậy để cấp vai trò cao nhất. Ba tài khoản demo (`admin/admin@123456`, `manager/manager@123456`, `employee/employee@123456`) phải được cấp từ Firebase Console hoặc môi trường tin cậy khác.
 
 ## 6. Tạo Firestore và triển khai rules
 

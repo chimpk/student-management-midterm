@@ -27,7 +27,7 @@ Employee: employee / employee
 ```
 
 - Email không bắt buộc. Nếu tài khoản có email, có thể dùng email thay username khi đăng nhập.
-- Nếu triển khai bằng Firebase Email/Password, phải xử lý giới hạn mật khẩu tối thiểu 6 ký tự trước khi quay demo.
+- Mật khẩu demo (`admin@123456`, `manager@123456`, `employee@123456`) đã đáp ứng giới hạn tối thiểu 6 ký tự của Firebase Email/Password.
 
 ## 3. Kịch bản theo thời lượng
 

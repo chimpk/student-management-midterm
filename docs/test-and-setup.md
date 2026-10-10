@@ -88,7 +88,7 @@ java -version
 
 ### 2.4 Chọn cơ chế xác thực
 
-Giao diện đăng nhập dùng **username/mật khẩu**. Email là thông tin tùy chọn và chỉ được dùng làm bí danh đăng nhập khi tài khoản có email. Nếu nhóm chọn Firebase Authentication Email/Password, cần lưu ý provider này không hỗ trợ username trực tiếp và yêu cầu mật khẩu tối thiểu 6 ký tự; vì vậy cặp `admin/admin` không thể được cấp nguyên trạng. Chỉ bật provider sau khi nhóm đã thống nhất lớp ánh xạ hoặc cơ chế xác thực thay thế và ghi lại đúng cách triển khai thực tế.
+Giao diện đăng nhập dùng **username/mật khẩu**. Email là thông tin tùy chọn và chỉ được dùng làm bí danh đăng nhập khi tài khoản có email. Nếu nhóm chọn Firebase Authentication Email/Password, cần lưu ý provider này không hỗ trợ username trực tiếp và yêu cầu mật khẩu tối thiểu 6 ký tự (mật khẩu demo dạng `<username>@123456` đã đáp ứng). Chỉ bật provider sau khi nhóm đã thống nhất lớp ánh xạ hoặc cơ chế xác thực thay thế và ghi lại đúng cách triển khai thực tế.
 
 ---
 
@@ -197,12 +197,12 @@ Kết quả này chỉ là unit test cho `ValidationUtils`. Nó **không đồng
 
 Không tự seed hoặc tự nâng quyền Admin từ ứng dụng Android. Chuẩn bị bằng môi trường máy chủ đáng tin cậy:
 
-1. Tạo ba thông tin demo: `admin/admin`, `manager/manager`, `employee/employee`.
+1. Tạo ba thông tin demo: `admin/admin@123456`, `manager/manager@123456`, `employee/employee@123456`.
 2. Cấp UID bằng cơ chế xác thực đã chọn.
 3. Tạo `users/{uid}` với `username`, `role`, `status: "Normal"` và các trường bắt buộc; `email` có thể bỏ trống.
 4. Đối chiếu UID document với danh tính xác thực trước khi đăng nhập.
 
-Cách này tránh cho client có đường tự cấp quyền Admin. Nếu dùng Firebase Email/Password, phải đổi mật khẩu kỹ thuật `admin` sang giá trị ít nhất 6 ký tự hoặc dùng cơ chế khác; không ghi sai rằng `admin/admin` đã được cấp trực tiếp trên Firebase.
+Cách này tránh cho client có đường tự cấp quyền Admin. Chỉ ghi nhận tài khoản demo là đã cấp khi có bằng chứng tạo thành công trên Firebase.
 
 ---
 
@@ -234,9 +234,9 @@ Cách này tránh cho client có đường tự cấp quyền Admin. Nếu dùng
 
 | Vai trò | Tên đăng nhập | Mật khẩu | Email tùy chọn | Mục đích kiểm thử |
 |---|---|---|---|---|
-| **Admin** | `admin` | `admin` | Không bắt buộc | Dùng kiểm thử quyền Admin. |
-| **Manager** | `manager` | `manager` | Không bắt buộc | Dùng kiểm thử quyền Manager. |
-| **Employee** | `employee` | `employee` | Không bắt buộc | Dùng kiểm thử quyền chỉ đọc. |
+| **Admin** | `admin` | `admin@123456` | Không bắt buộc | Dùng kiểm thử quyền Admin. |
+| **Manager** | `manager` | `manager@123456` | Không bắt buộc | Dùng kiểm thử quyền Manager. |
+| **Employee** | `employee` | `employee@123456` | Không bắt buộc | Dùng kiểm thử quyền chỉ đọc. |
 
 ---
 
@@ -271,7 +271,7 @@ Cách này tránh cho client có đường tự cấp quyền Admin. Nếu dùng
 | **TC-23** | FR-USR-06 | Admin | Chọn xem lịch sử đăng nhập của một tài khoản Manager | Hiển thị danh sách các mốc thời gian và thiết bị đã đăng nhập | – (Chờ test) | Thành viên B | – | Hiển thị bằng BottomSheet / Dialog RecyclerView |
 | **TC-24** | FR-IO-01 | Manager | Import CSV chứa tên có dấu tiếng Việt phức tạp | Dữ liệu trên Firestore và giao diện giữ nguyên nội dung Unicode | – (Chờ test) | Thành viên A | – | Đối chiếu từng giá trị sau khi nhập |
 | **TC-25** | FR-STU-04 | Manager | Xóa một sinh viên đã có 3 chứng chỉ | Cả document sinh viên và 3 chứng chỉ con đều bị xóa sạch | – (Chờ test) | Thành viên A | – | Xóa đệ quy subcollection trước khi xóa cha |
-| **TC-26** | FR-ACC-04 | Admin | Cấp bộ ba demo bằng môi trường tin cậy, sau đó cài mới ứng dụng | Đăng nhập được bằng `admin/admin`; client không tự tạo hoặc nâng quyền Admin | – (Chờ test) | Cả hai | – | Đối chiếu UID xác thực và `users/{uid}` |
+| **TC-26** | FR-ACC-04 | Admin | Cấp bộ ba demo bằng môi trường tin cậy, sau đó cài mới ứng dụng | Đăng nhập được bằng `admin/admin@123456`; client không tự tạo hoặc nâng quyền Admin | – (Chờ test) | Cả hai | – | Đối chiếu UID xác thực và `users/{uid}` |
 | **TC-27** | FR-IO-03 | Manager | Import `sample-data/certificates.csv` sau khi có SV | Chứng chỉ tự động gán đúng vào từng sinh viên theo MSSV | – (Chờ test) | Thành viên A | – | Tra cứu MSSV hợp lệ trước khi ghi subcollection |
 
 ---
