@@ -117,6 +117,7 @@ Email là thông tin bổ sung, có thể để trống. Khi một tài khoản 
 
 - **Báo cáo học thuật:** [`docs/final-report.md`](docs/final-report.md)
 - **Kịch bản quay Video Demo:** [`docs/demo-script.md`](docs/demo-script.md)
+- **Kế hoạch 6 sprint (3 tuần):** [`docs/sprint-plan.md`](docs/sprint-plan.md)
 - **Thông tin nhóm & Môi trường bàn giao:** [`docs/team-info.md`](docs/team-info.md)
 - **Cài đặt & Kế hoạch 27 Test Cases:** [`docs/test-and-setup.md`](docs/test-and-setup.md)
 - **Cẩm nang cấu hình Firebase:** [`docs/firebase-setup.md`](docs/firebase-setup.md)
