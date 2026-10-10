@@ -2,7 +2,7 @@
 
 > **Thời gian:** 3 tuần, từ **Chủ nhật 11/10/2026** đến **Thứ Bảy 31/10/2026**.
 > **Nhịp sprint:** mỗi tuần chia 2 sprint (CN–T4 và T5–T7), tổng cộng **6 sprint**.
-> **Thành viên:** **A** – Trần Ngọc Tấn (trưởng nhóm), **B** – `[HỌ VÀ TÊN THÀNH VIÊN B]`.
+> **Thành viên:** **A** – Trần Ngọc Tấn (trưởng nhóm), **B** – Nguyễn Vĩnh Khâm.
 > Mã task giữ nguyên theo `project-progress.xlsx`; các task mới được đánh số T00, T26–T28.
 
 ---

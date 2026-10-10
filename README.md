@@ -134,7 +134,7 @@ Email là thông tin bổ sung, có thể để trống. Khi một tài khoản 
 | Vai trò dự án | Thành viên | Họ và tên | Mã số sinh viên (MSSV) | Trách nhiệm chính |
 |---|---|---|---|---|
 | **Trưởng nhóm** | Thành viên A | Trần Ngọc Tấn | 52400158 | Auth, User Management, Security Rules, UI Auth/User, Tổng hợp Báo cáo |
-| **Thành viên** | Thành viên B | `[HỌ VÀ TÊN THÀNH VIÊN B]` | `[MSSV THÀNH VIÊN B]` | Student & Certificate CRUD, Realtime Sync, CSV Import/Export, Testing & Video |
+| **Thành viên** | Thành viên B | Nguyễn Vĩnh Khâm | 52400128 | Student & Certificate CRUD, Realtime Sync, CSV Import/Export, Testing & Video |
 
 - **Giảng viên hướng dẫn:** `[HỌ VÀ TÊN GIẢNG VIÊN PHỤ TRÁCH]`  
 - **Thông tin chi tiết môi trường nộp bài:** Xem tại [`docs/team-info.md`](docs/team-info.md).

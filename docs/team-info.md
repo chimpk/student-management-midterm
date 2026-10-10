@@ -24,7 +24,7 @@
 | Mã nội bộ | Họ và tên sinh viên | Mã số sinh viên (MSSV) | Email sinh viên | Vai trò dự án & Trách nhiệm |
 |:---:|---|---|---|---|
 | **A** | Trần Ngọc Tấn | 52400158 | 52400158@student.tdtu.edu.vn | **Trưởng nhóm:** Phụ trách Module Auth, User Management, Security Rules, UI Auth/User, Tổng hợp Báo cáo, Thuyết minh video |
-| **B** | `[HỌ VÀ TÊN THÀNH VIÊN B]` | `[MSSV THÀNH VIÊN B]` | `[EMAIL THÀNH VIÊN B]` | **Thành viên:** Phụ trách Module Student & Certificate CRUD, Realtime Sync, CSV Import/Export, Bộ dữ liệu mẫu, Quay video |
+| **B** | Nguyễn Vĩnh Khâm | 52400128 | 52400128@student.tdtu.edu.vn | **Thành viên:** Phụ trách Module Student & Certificate CRUD, Realtime Sync, CSV Import/Export, Bộ dữ liệu mẫu, Quay video |
 
 ---
 

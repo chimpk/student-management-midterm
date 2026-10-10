@@ -18,7 +18,7 @@
 | Giảng viên | `[BẮT BUỘC ĐIỀN]` |
 | Lớp học phần / nhóm | `[BẮT BUỘC ĐIỀN]` |
 | Thành viên A | Trần Ngọc Tấn — MSSV: 52400158 |
-| Thành viên B | `[BẮT BUỘC ĐIỀN HỌ TÊN VÀ MSSV]` |
+| Thành viên B | Nguyễn Vĩnh Khâm — MSSV: 52400128 |
 | Gói ứng dụng | `com.example.studentmgmt` |
 
 Thông tin bàn giao chi tiết được theo dõi tại [Thông tin nhóm và môi trường](team-info.md).
