@@ -1,8 +1,9 @@
-# Thiết Kế Hệ Thống
+# Thiết Kế Hệ Thống & Kiến Trúc Kỹ Thuật
 
-Các biểu đồ UML (use case, lớp, ER, tuần tự) nằm ở `uml.md`. Cấu trúc dữ liệu ở [`firestore-schema.md`](firestore-schema.md).
+Các biểu đồ UML (use case, lớp, ER, tuần tự) nằm ở [`uml.md`](uml.md). Cấu trúc dữ liệu Firestore chuẩn nằm ở [`firestore-schema.md`](firestore-schema.md).
+Đặc tả chi tiết toàn bộ hệ thống giao diện, design tokens, chuyển động và 36 màn hình đã được chuyển giao và chuẩn hóa hoàn toàn tại thư mục [`docs/design/`](design/README.md).
 
-> **Trạng thái:** đây là thiết kế đích. Repository hiện mới là khung đang phát triển, chưa có đầy đủ các lớp và màn hình được liệt kê.
+> **Trạng thái:** Kiến trúc MVVM, phân chia package-by-feature, quy chuẩn đặt tên và các giao ước bảo mật trong tài liệu này là chuẩn kỹ thuật chính thức của dự án.
 
 ## 1. Kiến trúc MVVM
 
@@ -49,42 +50,35 @@ Dự án áp dụng mô hình tổ chức **Package-by-Feature** kết hợp v�
 > [!NOTE]
 > **Điểm tiến hóa kiến trúc so với dự thảo ban đầu:**
 > 1. **Package-by-Feature:** Gom các ViewModel, Adapter và Policy đi kèm trực tiếp với màn hình tương ứng (`ui/student`, `ui/user`, `ui/history`) thay vì trải phẳng ra các package `adapter/` hay `viewmodel/` rời rạc. Điều này giúp dễ bảo trì và tăng tính đóng gói.
-> 2. **Material Dialogs thay cho Edit Fragments:** Form Thêm/Sửa được hiện đại hóa bằng Popup Dialogs (`dialog_student_add_edit.xml`, `dialog_user_edit.xml`) giúp người dùng không bị mất vị trí cuộn danh sách và không gây rườm rà backstack của Navigation Component.
+> 2. **Material Dialogs & Screen Specs:** Form Thêm/Sửa được chuẩn hóa với Material Dialogs và chi tiết hóa toàn diện tại bộ 36 màn hình trong [docs/design/screens/](design/screens/).
 > 3. **AppUser:** Đổi tên từ `User` thành `AppUser` để tránh nhầm lẫn trực tiếp với lớp `FirebaseUser` có sẵn trong SDK Firebase Authentication.
 
 ---
 
-## 3. Danh sách màn hình & Thành phần UI
+## 3. Hệ thống Giao diện & Điều hướng (Design System)
 
-| Màn hình / Thành phần | Vai trò | Chức năng chính | FR liên quan | Tệp triển khai |
-|---|---|---|---|---|
-| **Đăng nhập** | Tất cả | Username/mật khẩu, kiểm tra tài khoản `Locked`, nhớ phiên | FR-ACC-01 | `LoginActivity.java`, `activity_login.xml` |
-| **Màn hình chính & Menu** | Tất cả | Thanh điều hướng Navigation ẩn/hiện mục theo vai trò | – | `MainActivity.java`, `activity_main.xml`, `main_menu.xml` |
-| **Hồ sơ cá nhân** | Tất cả | Đổi ảnh đại diện, xem thông tin tài khoản | FR-ACC-02 | `ProfileFragment.java`, `fragment_profile.xml` |
-| **Danh sách người dùng** | Admin | Xem, xóa, khóa/mở khóa tài khoản người dùng | FR-USR-01..05 | `UserListFragment.java`, `fragment_user_list.xml` |
-| **Hộp thoại Thêm/Sửa User** | Admin | Nhập thông tin người dùng với validation chặt chẽ | FR-USR-02, 03 | `dialog_user_edit.xml` |
-| **Lịch sử đăng nhập** | Tất cả | Xem nhật ký các lần đăng nhập (Admin xem hết, User xem self) | FR-ACC-03, FR-USR-06 | `LoginHistoryFragment.java`, `fragment_login_history.xml` |
-| **Danh sách sinh viên** | Tất cả | Xem realtime, tìm kiếm tên tiếng Việt, lọc khoa | FR-STU-01, 05, 06 | `StudentListFragment.java`, `fragment_student_list.xml` |
-| **Chi tiết sinh viên & Chứng chỉ** | Tất cả | Xem thông tin chi tiết và danh sách chứng chỉ con | FR-STU-07, FR-CER-01 | `StudentDetailFragment.java`, `fragment_student_detail.xml` |
-| **Hộp thoại Thêm/Sửa Sinh viên** | Admin, Manager | Form thêm/sửa sinh viên chuẩn MSSV 8 ký tự | FR-STU-02, 03, 04 | `dialog_student_add_edit.xml` |
-| **Hộp thoại Thêm/Sửa Chứng chỉ** | Admin, Manager | Form thêm chứng chỉ gắn vào sinh viên | FR-CER-02, 03, 04 | `dialog_certificate_add.xml` |
-| **Xuất / Nhập CSV** | Admin, Manager | Xuất danh sách ra tệp CSV (UTF-8 BOM), chia batch nhập liệu | FR-IO-01, 02 | `StudentCsvHelper.java` |
+Toàn bộ đặc tả giao diện dạng sơ bộ trước đây đã được thay thế hoàn toàn bằng **Bộ tài liệu Design System chuẩn hóa** tại thư mục [`docs/design/`](design/README.md), bao gồm:
+
+- **Hệ thống Design Tokens:** [Màu sắc Light/Night](design/tokens/colors.xml), [Kích thước & Padding](design/tokens/dimens.xml), [Typography](design/tokens/typography.md).
+- **Hệ thống Hiệu ứng chuyển động (Motion):** [Motion Tokens](design/motion-tokens.md), [Motion Policy](design/motion-policy.md), và [11 hiệu ứng FX-01 → FX-11](design/motion-effects.md).
+- **Đặc tả 36 màn hình (S01 → S36):** Xem chi tiết tại thư mục [docs/design/screens/](design/screens/) kèm hình ảnh trực quan tại [docs/design/reference/](design/reference/).
+- **Bộ chuỗi hiển thị chuẩn:** [strings-vi.xml](design/strings-vi.xml).
+- **Ma trận trạng thái giao diện & Phân tích khoảng cách:** [state-matrix.md](design/states/state-matrix.md) và [gap-analysis.md](design/gap-analysis.md).
 
 ```mermaid
 flowchart TD
-    Login["Đăng nhập (LoginActivity)"] --> Main["Màn hình chính (MainActivity)"]
-    Main --> Profile["Hồ sơ cá nhân (ProfileFragment)"]
-    Main --> StudList["Danh sách sinh viên (StudentListFragment)"]
-    Main -->|Admin| UserList["Quản lý người dùng (UserListFragment)"]
-    Main --> LogHistory["Lịch sử đăng nhập (LoginHistoryFragment)"]
+    Login["Đăng nhập (S01-S03, S27)"] --> Main["Màn hình chính Dashboard (S04, S09, S28)"]
+    Main --> StudList["Danh sách sinh viên (S07, S12-S14, S24-S26, S29)"]
+    Main --> Profile["Hồ sơ cá nhân & Cài đặt (S17, S22, S35, Sxx)"]
+    Main -->|Admin| UserList["Quản lý người dùng (S10, S21, S33)"]
+    Main --> LogHistory["Lịch sử đăng nhập (S11, S34)"]
+    Main -->|Admin, Manager| ImportExport["Nhập / Xuất dữ liệu CSV (S18, S23, S36)"]
 
-    UserList -.->|Popup Dialog| UserEdit["Thêm/Sửa người dùng (dialog_user_edit)"]
-    StudList --> StudDetail["Chi tiết sinh viên (StudentDetailFragment)"]
-    StudList -.->|Popup Dialog (Admin, Manager)| StudEdit["Thêm/Sửa sinh viên (dialog_student_add_edit)"]
-    StudDetail -.->|Popup Dialog (Admin, Manager)| CertEdit["Thêm chứng chỉ (dialog_certificate_add)"]
+    StudList --> StudDetail["Chi tiết sinh viên & Chứng chỉ (S08, S15-S16, S30)"]
+    StudList -.->|Admin, Manager| StudForm["Thêm / Sửa sinh viên (S05-S06, S19-S20, S31-S32)"]
 ```
 
-*Hình: Sơ đồ điều hướng phân quyền thực tế của ứng dụng.*
+*Hình: Sơ đồ điều hướng phân quyền chuẩn của ứng dụng theo Design System.*
 
 ## 4. Quy ước thiết kế & Bảo mật
 

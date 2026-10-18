@@ -17,8 +17,8 @@ Tài liệu này quy định việc quản lý và thay thế nhận diện thư
 | **Phụ đề (`app_subtitle`)** | `Quản lý dữ liệu sinh viên` | Tiêu đề mô tả chức năng tại Login |
 | **Biểu tượng (Logo)** | Mũ tốt nghiệp (Graduation Cap) | Tạm thời dùng `branding/logo-placeholder.svg` |
 | **Màu chủ đạo (`color_primary`)** | `#3F51B5` (Light) / `#B6BFFF` (Dark) | Tông xanh tím học thuật (Indigo Academic) |
-| **Tên trường giả lập** | `Đại học UniData` | Khai báo trong `fixtures.json` |
-| **Domain email mẫu** | `@unidata.edu.vn` | Khai báo trong `fixtures.json` |
+| **Tên trường** | `Trường Đại học Tôn Đức Thắng (TDTU)` | Khai báo trong `fixtures.json` |
+| **Domain email** | `@student.tdtu.edu.vn` | Khai báo trong `fixtures.json` |
 
 ---
 
