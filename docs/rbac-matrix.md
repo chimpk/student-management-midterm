@@ -33,7 +33,7 @@ Admin đầu tiên phải được cấp bằng Firebase Console hoặc Admin SD
 | Đường dẫn | Đọc | Tạo | Cập nhật | Xóa |
 |---|---|---|---|---|
 | `users/{uid}` | Chính chủ hoặc Admin | Admin | Admin; chính chủ chỉ được đổi `avatarUrl` | Admin |
-| `users/{uid}/loginHistory/{logId}` | Chính chủ hoặc Admin | Chính chủ | Admin | Admin |
+| `users/{uid}/loginHistory/{logId}` | Chính chủ hoặc Admin | Chính chủ | Không (append-only) | Không (append-only) |
 | `students/{studentId}` | Mọi người đã đăng nhập | Admin, Manager | Admin, Manager | Admin, Manager |
 | `students/{studentId}/certificates/{certId}` | Mọi người đã đăng nhập | Admin, Manager | Admin, Manager | Admin, Manager |
 

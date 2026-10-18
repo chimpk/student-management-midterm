@@ -29,67 +29,71 @@ Các biểu đồ UML (use case, lớp, ER, tuần tự) nằm ở `uml.md`. C�
 
 Ứng dụng dùng **hai Activity**: `LoginActivity` (đăng nhập) và `MainActivity` (chứa Navigation Component, các màn hình còn lại là Fragment). Mọi thao tác Firebase nằm trong Repository.
 
-## 2. Phân chia package (`com.example.studentmgmt`)
+## 2. Phân chia package thực tế (`com.example.studentmgmt`)
 
-| Package              | Nội dung                                                                                             |
-| -------------------- | ----------------------------------------------------------------------------------------------------- |
-| `model/`           | `User`, `Student`, `Certificate`, `LoginRecord`                                               |
-| `data/firebase/`   | `FirebaseClient` (cấu hình Firebase, instance dùng chung)                                        |
-| `data/repository/` | `AuthRepository`, `UserRepository`, `StudentRepository`, `CertificateRepository`              |
-| `viewmodel/`       | `AuthViewModel`, `UserViewModel`, `StudentViewModel`, `CertificateViewModel`                  |
-| `ui/auth/`         | `LoginActivity`                                                                                     |
-| `ui/common/`       | `HomeFragment` (màn hình chính, mục điều hướng theo vai trò)                               |
-| `ui/user/`         | `UserListFragment`, `UserEditFragment`, `LoginHistoryFragment`                                  |
-| `ui/student/`      | `StudentListFragment`, `StudentDetailFragment`, `StudentEditFragment`, `ImportExportFragment` |
-| `ui/certificate/`  | `CertificateEditFragment`                                                                           |
-| `ui/profile/`      | `ProfileFragment` (đổi avatar, lịch sử đăng nhập của mình)                                 |
-| `adapter/`         | `UserAdapter`, `StudentAdapter`, `CertificateAdapter`, `LoginRecordAdapter`                   |
-| `utils/`           | `CsvHelper`, `ValidationUtils`, `DateUtils`, `PermissionHelper`, `Constants`                |
+Dự án áp dụng mô hình tổ chức **Package-by-Feature** kết hợp với **Clean Architecture & Dependency Inversion** (khuyên dùng bởi Google Android Architecture Guide) thay cho việc phân chia Layer phẳng:
 
-Trạng thái hiện tại: mới có khung dự án với `MainActivity` mẫu. Các lớp và package trên là thiết kế đích. Admin đầu tiên được cấp qua Firebase Console hoặc môi trường máy chủ tin cậy, không có `AdminSeedService` trong ứng dụng client.
+| Package | Tệp tin / Lớp thành phần | Vai trò kiến trúc |
+|---|---|---|
+| `model/` | `AppUser`, `Student`, `Certificate`, `LoginRecord`, `UiState<T>` | Định nghĩa thực thể dữ liệu nghiệp vụ và trạng thái giao diện chuẩn (`LOADING`, `CONTENT`, `EMPTY`, `ERROR`). Đổi tên `User` thành `AppUser` để tránh xung đột với `FirebaseUser`. |
+| `data/` | **Interfaces:** `AuthRepository`, `UserRepository`, `StudentRepository`, `CertificateRepository`, `ProfileRepository`, `LoginHistoryRepository`<br>**Providers:** `*Provider.java` (Dependency Inversion)<br>**Firebase Impl:** `FirebaseAuthRepository`, `FirestoreUserRepository`, `FirebaseProfileRepository`, `FirebaseLoginHistoryRepository`<br>**Mock Impl:** `MockStudentRepository`, `MockCertificateRepository`<br>**Validators:** `UserDocumentValidator`, `DefaultUsernameAuthResolver` | Tầng trừu tượng dữ liệu và truy cập Firebase Cloud / bộ nhớ đệm in-memory. Cung cấp cơ chế Provider để dễ dàng mock dữ liệu khi chạy Unit Tests độc lập. |
+| `ui/auth/` | `LoginActivity`, `LoginViewModel` | Màn hình đăng nhập bằng username/mật khẩu, xử lý trạng thái đăng nhập, xác thực tenant domain và quản lý phiên. |
+| `ui/student/` | `StudentListFragment`, `StudentDetailFragment`, `StudentListViewModel`, `StudentDetailViewModel`, `StudentAdapter`, `CertificateAdapter` | Danh sách sinh viên realtime, tìm kiếm tiếng Việt có dấu, lọc theo Khoa, xem chi tiết và danh sách chứng chỉ con. Form thêm/sửa tích hợp qua Material Dialog (`dialog_student_add_edit.xml`, `dialog_certificate_add.xml`). |
+| `ui/user/` | `UserListFragment`, `UserManagementViewModel`, `UserAdapter`, `UserManagementPolicy` | Danh sách người dùng dành cho Admin, đổi vai trò, khóa/mở khóa tài khoản, form thêm/sửa qua `dialog_user_edit.xml`. |
+| `ui/profile/` | `ProfileFragment`, `ProfileViewModel`, `AvatarUploadPolicy` | Xem hồ sơ cá nhân, đổi ảnh đại diện (giới hạn < 5MB, JPG/PNG), hỗ trợ Local Storage Fallback khi chưa kích hoạt Cloud Storage bucket. |
+| `ui/history/` | `LoginHistoryFragment`, `LoginHistoryViewModel`, `LoginHistoryAdapter`, `LoginHistoryPolicy` | Ghi nhận thời gian thực và xem lịch sử đăng nhập (Admin xem toàn bộ, người dùng thường xem của chính mình). |
+| `ui/navigation/` | `RoleNavigationPolicy`, `SessionSecurityPolicy` | Chính sách phân quyền menu hiển thị theo 3 vai trò và cơ chế lắng nghe realtime để cưỡng chế đăng xuất ngay khi tài khoản bị khóa (`Locked`). |
+| `ui/placeholder/` | `StudentPlaceholderFragment`, `UserManagementPlaceholderFragment`, `ProfilePlaceholderFragment` | Các Fragment giữ chỗ điều hướng giúp đảm bảo ranh giới làm việc độc lập và ứng dụng luôn build thành công giữa 2 thành viên. |
+| `utils/` | `ValidationUtils`, `StudentCsvHelper` | Kiểm tra định dạng MSSV (`KYYTSSSS`), mã lớp, phone, username; Xử lý xuất/nhập tệp CSV chuẩn UTF-8 có BOM. |
 
-## 3. Danh sách màn hình
+> [!NOTE]
+> **Điểm tiến hóa kiến trúc so với dự thảo ban đầu:**
+> 1. **Package-by-Feature:** Gom các ViewModel, Adapter và Policy đi kèm trực tiếp với màn hình tương ứng (`ui/student`, `ui/user`, `ui/history`) thay vì trải phẳng ra các package `adapter/` hay `viewmodel/` rời rạc. Điều này giúp dễ bảo trì và tăng tính đóng gói.
+> 2. **Material Dialogs thay cho Edit Fragments:** Form Thêm/Sửa được hiện đại hóa bằng Popup Dialogs (`dialog_student_add_edit.xml`, `dialog_user_edit.xml`) giúp người dùng không bị mất vị trí cuộn danh sách và không gây rườm rà backstack của Navigation Component.
+> 3. **AppUser:** Đổi tên từ `User` thành `AppUser` để tránh nhầm lẫn trực tiếp với lớp `FirebaseUser` có sẵn trong SDK Firebase Authentication.
 
-| Màn hình                                | Vai trò       | Chức năng chính                                  | FR liên quan        |
-| ----------------------------------------- | -------------- | --------------------------------------------------- | -------------------- |
-| Đăng nhập (`LoginActivity`)          | Tất cả       | Username/mật khẩu; email tùy chọn làm bí danh; kiểm tra `Locked` | FR-ACC-01 |
-| Màn hình chính (`HomeFragment`)      | Tất cả       | Hiện các mục theo vai trò (xem sơ đồ dưới) | –                   |
-| Hồ sơ cá nhân                         | Tất cả       | Đổi avatar, xem lịch sử đăng nhập của mình | FR-ACC-02, FR-ACC-03 |
-| Danh sách người dùng                  | Admin          | Xem, xóa, khóa/mở khóa                          | FR-USR-01, 04, 05    |
-| Thêm/Sửa người dùng                  | Admin          | Form nhập liệu                                    | FR-USR-02, 03        |
-| Lịch sử đăng nhập của người dùng | Admin          | Xem theo từng người dùng                        | FR-USR-06            |
-| Danh sách sinh viên                     | Tất cả       | Xem, tìm kiếm, sắp xếp                          | FR-STU-01, 05, 06    |
-| Chi tiết sinh viên                      | Tất cả       | Thông tin đầy đủ + danh sách chứng chỉ      | FR-STU-07, FR-CER-01 |
-| Thêm/Sửa sinh viên                     | Admin, Manager | Form nhập liệu                                    | FR-STU-02, 03, 04    |
-| Thêm/Sửa chứng chỉ                    | Admin, Manager | Form nhập liệu                                    | FR-CER-02, 03, 04    |
-| Import/Export                             | Admin, Manager | Chọn file, xem kết quả                           | FR-IO-01..04         |
+---
+
+## 3. Danh sách màn hình & Thành phần UI
+
+| Màn hình / Thành phần | Vai trò | Chức năng chính | FR liên quan | Tệp triển khai |
+|---|---|---|---|---|
+| **Đăng nhập** | Tất cả | Username/mật khẩu, kiểm tra tài khoản `Locked`, nhớ phiên | FR-ACC-01 | `LoginActivity.java`, `activity_login.xml` |
+| **Màn hình chính & Menu** | Tất cả | Thanh điều hướng Navigation ẩn/hiện mục theo vai trò | – | `MainActivity.java`, `activity_main.xml`, `main_menu.xml` |
+| **Hồ sơ cá nhân** | Tất cả | Đổi ảnh đại diện, xem thông tin tài khoản | FR-ACC-02 | `ProfileFragment.java`, `fragment_profile.xml` |
+| **Danh sách người dùng** | Admin | Xem, xóa, khóa/mở khóa tài khoản người dùng | FR-USR-01..05 | `UserListFragment.java`, `fragment_user_list.xml` |
+| **Hộp thoại Thêm/Sửa User** | Admin | Nhập thông tin người dùng với validation chặt chẽ | FR-USR-02, 03 | `dialog_user_edit.xml` |
+| **Lịch sử đăng nhập** | Tất cả | Xem nhật ký các lần đăng nhập (Admin xem hết, User xem self) | FR-ACC-03, FR-USR-06 | `LoginHistoryFragment.java`, `fragment_login_history.xml` |
+| **Danh sách sinh viên** | Tất cả | Xem realtime, tìm kiếm tên tiếng Việt, lọc khoa | FR-STU-01, 05, 06 | `StudentListFragment.java`, `fragment_student_list.xml` |
+| **Chi tiết sinh viên & Chứng chỉ** | Tất cả | Xem thông tin chi tiết và danh sách chứng chỉ con | FR-STU-07, FR-CER-01 | `StudentDetailFragment.java`, `fragment_student_detail.xml` |
+| **Hộp thoại Thêm/Sửa Sinh viên** | Admin, Manager | Form thêm/sửa sinh viên chuẩn MSSV 8 ký tự | FR-STU-02, 03, 04 | `dialog_student_add_edit.xml` |
+| **Hộp thoại Thêm/Sửa Chứng chỉ** | Admin, Manager | Form thêm chứng chỉ gắn vào sinh viên | FR-CER-02, 03, 04 | `dialog_certificate_add.xml` |
+| **Xuất / Nhập CSV** | Admin, Manager | Xuất danh sách ra tệp CSV (UTF-8 BOM), chia batch nhập liệu | FR-IO-01, 02 | `StudentCsvHelper.java` |
 
 ```mermaid
 flowchart TD
-    Login["Đăng nhập"] --> Home["Màn hình chính"]
-    Home --> Profile["Hồ sơ cá nhân"]
-    Home --> StudList["Danh sách sinh viên"]
-    Home -->|Admin| UserList["Danh sách người dùng"]
-    Home -->|Admin, Manager| IO["Import/Export"]
+    Login["Đăng nhập (LoginActivity)"] --> Main["Màn hình chính (MainActivity)"]
+    Main --> Profile["Hồ sơ cá nhân (ProfileFragment)"]
+    Main --> StudList["Danh sách sinh viên (StudentListFragment)"]
+    Main -->|Admin| UserList["Quản lý người dùng (UserListFragment)"]
+    Main --> LogHistory["Lịch sử đăng nhập (LoginHistoryFragment)"]
 
-    UserList --> UserEdit["Thêm/Sửa người dùng"]
-    UserList --> UserLog["Lịch sử đăng nhập"]
-
-    StudList --> StudDetail["Chi tiết sinh viên"]
-    StudList -->|Admin, Manager| StudEdit["Thêm/Sửa sinh viên"]
-    StudDetail -->|Admin, Manager| CertEdit["Thêm/Sửa chứng chỉ"]
+    UserList -.->|Popup Dialog| UserEdit["Thêm/Sửa người dùng (dialog_user_edit)"]
+    StudList --> StudDetail["Chi tiết sinh viên (StudentDetailFragment)"]
+    StudList -.->|Popup Dialog (Admin, Manager)| StudEdit["Thêm/Sửa sinh viên (dialog_student_add_edit)"]
+    StudDetail -.->|Popup Dialog (Admin, Manager)| CertEdit["Thêm chứng chỉ (dialog_certificate_add)"]
 ```
 
-*Hình: Sơ đồ điều hướng theo vai trò. Employee chỉ thấy các mục không có nhãn vai trò.*
+*Hình: Sơ đồ điều hướng phân quyền thực tế của ứng dụng.*
 
-## 4. Quy ước thiết kế
+## 4. Quy ước thiết kế & Bảo mật
 
-- **Ẩn chức năng theo vai trò:** `PermissionHelper` quyết định hiện hoặc ẩn nút/mục menu. Đây chỉ là lớp tiện dụng, bảo mật thật nằm ở `firestore.rules`.
-- **Kiểm tra `Locked`:** thực hiện sau khi Firebase Auth xác thực thành công, đọc `users/{uid}.status`. Nếu `Locked` hoặc không có document thì đăng xuất và báo lỗi.
-- **Cấp Admin đầu tiên:** thực hiện trong Firebase Console hoặc qua Admin SDK/Cloud Functions. Ứng dụng client không được tự bootstrap Admin.
-- **Admin tạo người dùng:** username là bắt buộc, email là tùy chọn. Việc cấp thông tin xác thực phải đi qua môi trường tin cậy; không lưu mật khẩu thô trong Firestore. Nếu chọn Firebase Email/Password, cần một lớp ánh xạ username/email sang tài khoản Auth và phải tuân thủ mật khẩu tối thiểu 6 ký tự.
-- **Tìm kiếm/sắp xếp:** xử lý phía client trên danh sách mà listener đã tải về (xem `firestore-schema.md` mục 5).
-- **Offline:** hiện badge khi mất mạng (NFR-03).
+- **Ẩn chức năng theo vai trò:** `RoleNavigationPolicy` quyết định hiện hoặc ẩn menu; giao diện ẩn nút thêm/sửa/xóa đối với vai trò `Employee`. Tầng dữ liệu đám mây được bảo vệ bởi `firestore.rules`.
+- **Kiểm tra `Locked`:** Sau khi đăng nhập Auth, `SessionSecurityPolicy` kiểm tra ngay `users/{uid}.status`. Nếu là `Locked`, hệ thống cưỡng chế đăng xuất ngay và quay lại màn hình Login.
+- **Cấp Admin đầu tiên:** Được tạo từ Firebase Console hoặc môi trường máy chủ tin cậy; ứng dụng client không tự cấp quyền Admin.
+- **Admin tạo người dùng:** Username là bắt buộc, email là tùy chọn; `UserDocumentValidator` kiểm tra nghiêm ngặt giới hạn tuổi 18–60 (trên kiểu 64-bit tránh tràn số), số điện thoại 10 số.
+- **Tìm kiếm/sắp xếp:** Xử lý tức thì trên client trên danh sách lắng nghe snapshot theo thời gian thực (hỗ trợ Unicode tiếng Việt chuẩn).
+- **Trạng thái ngoại tuyến:** Tự động lưu cache Firestore; hiển thị thông báo và nút "Thử lại" khi mất kết nối mạng.
 
 ---
 
@@ -107,14 +111,15 @@ flowchart TD
 
 | Thành phần | Quy tắc đặt tên | Ví dụ thực tế |
 |---|---|---|
-| **Model / Entity** | Danh từ đơn số chỉ đối tượng dữ liệu | `User`, `Student`, `Certificate`, `LoginRecord` |
+| **Model / Entity** | Danh từ đơn số chỉ đối tượng dữ liệu | `AppUser`, `Student`, `Certificate`, `LoginRecord`, `UiState` |
 | **Repository** | `{Entity}Repository` | `AuthRepository`, `UserRepository`, `StudentRepository`, `CertificateRepository` |
-| **ViewModel** | `{Feature/Entity}ViewModel` | `AuthViewModel`, `UserViewModel`, `StudentViewModel`, `CertificateViewModel` |
+| **ViewModel** | `{Feature/Entity}ViewModel` | `LoginViewModel`, `UserManagementViewModel`, `StudentListViewModel`, `ProfileViewModel` |
 | **Activity** | `{Feature}Activity` | `LoginActivity`, `MainActivity` |
-| **Fragment** | `{Feature/Action}Fragment` | `StudentListFragment`, `StudentDetailFragment`, `StudentEditFragment`, `ImportExportFragment` |
-| **Adapter (RecyclerView)** | `{Entity}Adapter` | `StudentAdapter`, `CertificateAdapter`, `UserAdapter`, `LoginRecordAdapter` |
-| **Helper / Utility** | `{Chức năng}Helper` hoặc `{Chức năng}Utils` | `CsvHelper`, `ValidationUtils`, `DateUtils`, `PermissionHelper` |
-| **Enum** | Danh từ số ít, giá trị viết HOA | `UserRole { ADMIN, MANAGER, EMPLOYEE }`, `UserStatus { NORMAL, LOCKED }` |
+| **Fragment** | `{Feature/Action}Fragment` | `StudentListFragment`, `StudentDetailFragment`, `UserListFragment`, `ProfileFragment` |
+| **Adapter (RecyclerView)** | `{Entity}Adapter` | `StudentAdapter`, `CertificateAdapter`, `UserAdapter`, `LoginHistoryAdapter` |
+| **Helper / Utility** | `{Chức năng}Helper` hoặc `{Chức năng}Utils` | `StudentCsvHelper`, `ValidationUtils`, `DefaultUsernameAuthResolver` |
+| **Policy / Guard** | `{Domain}Policy` | `RoleNavigationPolicy`, `SessionSecurityPolicy`, `AvatarUploadPolicy` |
+| **Enum / Value Type** | Danh từ số ít, giá trị viết HOA hoặc chuỗi hằng số | Vai trò (`admin`, `manager`, `employee`), Trạng thái (`Normal`, `Locked`) |
 
 ---
 

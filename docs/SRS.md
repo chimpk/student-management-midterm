@@ -94,7 +94,7 @@
 | Trạng thái (người dùng) | Chỉ nhận `Normal` hoặc `Locked` (giao diện hiển thị "Bình thường" / "Khóa") |
 | Username | Bắt buộc, duy nhất, 3–32 ký tự; bắt đầu bằng chữ thường; chỉ gồm `a-z`, `0-9`, `.`, `_`, `-` |
 | Email | Không bắt buộc; nếu có phải đúng định dạng, duy nhất và có thể dùng làm bí danh đăng nhập |
-| Mật khẩu demo | Theo đề bài: `admin`, `manager`, `employee`; chỉ dùng trong phạm vi demo môn học |
+| Mật khẩu demo | Mật khẩu tài khoản demo đáp ứng tối thiểu 6 ký tự của Firebase: `admin@123456`, `manager@123456`, `employee@123456` (quy ước `<username>@123456`) |
 | Mã sinh viên | Đúng 8 ký tự theo cấu trúc TDTU `KYYTSSSS`; biểu thức `^[0-9A-H][0-9]{2}[0H][0-9]{4}$`; bắt buộc, duy nhất và không đổi sau khi tạo |
 | Mã lớp | Đúng 8 ký tự chữ hoa hoặc chữ số; biểu thức `^[0-9A-Z]{8}$` |
 | Ngày sinh | Định dạng `YYYY-MM-DD`, không ở tương lai |

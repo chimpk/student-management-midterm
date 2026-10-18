@@ -54,7 +54,7 @@ graph TD
 
 ```mermaid
 classDiagram
-    class User {
+    class AppUser {
         +String uid
         +String username
         +String email
@@ -79,6 +79,7 @@ classDiagram
         +Timestamp createdAt
     }
     class Certificate {
+        +String id
         +String certName
         +String issueDate
         +String issuedBy

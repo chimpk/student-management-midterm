@@ -168,18 +168,43 @@ Mở PowerShell tại thư mục gốc của dự án:
    .\gradlew.bat testDebugUnitTest
    ```
 
-#### Bằng chứng unit test hiện có
+#### Bằng chứng kiểm thử tự động (Automated Unit Tests)
 
-`ValidationUtilsTest` hiện có **6 phương thức test** và đã chạy đạt bằng tác vụ `testDebugUnitTest`:
+Toàn bộ dự án hiện có **170 unit tests** phân bổ trên **21 test suites**, đạt tỷ lệ **100% PASS (0 failures, 0 errors, 0 skipped)** khi chạy lệnh `.\gradlew.bat testDebugUnitTest`:
 
-1. Ba username demo hợp lệ.
-2. Username rỗng, sai độ dài, có chữ hoa, khoảng trắng hoặc ký tự email bị từ chối.
-3. MSSV hợp lệ theo cấu trúc `KYYTSSSS`.
-4. MSSV sai độ dài, ký tự, hệ đào tạo hoặc khoảng trắng bị từ chối.
-5. Mã lớp chỉ hợp lệ khi có đúng 8 ký tự chữ hoa hoặc chữ số.
-6. Các mã lớp CNTT đã biết được nhận diện mà không khẳng định danh sách là đầy đủ.
+##### Bảng tổng hợp Test Suites toàn dự án:
 
-Kết quả này chỉ là unit test cho `ValidationUtils`. Nó **không đồng nghĩa** 27 kịch bản kiểm thử hệ thống bên dưới đã đạt; cả 27 kịch bản vẫn phải thực hiện thủ công và lưu bằng chứng riêng.
+| STT | Test Suite | Phạm vi / Thành viên | Số test | Kết quả | Trọng tâm kiểm thử |
+|:---:|---|:---:|:---:|:---:|---|
+| 1 | `ValidationUtilsTest` | Chung / Mem 1 | 8 | PASS | Regex username, MSSV (`KYYTSSSS`), mã lớp, email, SĐT |
+| 2 | `AuthRepositoryTest` | Mem 1 (Sprint 1) | 6 | PASS | Đăng nhập username/email, mapping UID, callback |
+| 3 | `LoginViewModelTest` | Mem 1 (Sprint 1) | 8 | PASS | Form validation, trạng thái loading/error, chuyển tab |
+| 4 | `DefaultUsernameAuthResolverTest` | Mem 1 (Sprint 1) | 3 | PASS | Giải quyết alias đăng nhập giữa username và email |
+| 5 | `RoleNavigationPolicyTest` | Mem 1 (Sprint 2) | 7 | PASS | Phân quyền menu điều hướng (Admin / Manager / Employee) |
+| 6 | `UserDocumentValidatorTest` | Mem 1 (Sprint 2) | 16 | PASS | Validation schema Firestore document cho người dùng |
+| 7 | `UserManagementViewModelTest` | Mem 1 (Sprint 2) | 8 | PASS | Luồng tạo, sửa, đổi trạng thái và load users của Admin |
+| 8 | `UserManagementPolicyTest` | Mem 1 (Sprint 2) | 17 | PASS | Chính sách phân quyền quản lý người dùng và locked user |
+| 9 | `ProfileViewModelTest` | Mem 1 (Sprint 3) | 10 | PASS | Xem & cập nhật thông tin cá nhân, avatar URL |
+| 10 | `AvatarUploadPolicyTest` | Mem 1 (Sprint 3) | 14 | PASS | Chính sách giới hạn kích thước, định dạng ảnh đại diện |
+| 11 | `LoginHistoryViewModelTest` | Mem 1 (Sprint 4) | 6 | PASS | Xem lịch sử đăng nhập theo UID, lọc sắp xếp thời gian |
+| 12 | `LoginHistoryPolicyTest` | Mem 1 (Sprint 4) | 8 | PASS | Quy tắc ghi log thời gian thực, thiết bị đăng nhập |
+| 13 | `SecurityRulesAuditTest` | Mem 1 (Sprint 4) | 9 | PASS | Kiểm thử bảo mật tĩnh cho Firestore & Storage Rules |
+| 14 | `SessionSecurityPolicyTest` | Mem 1 (Sprint 4) | 10 | PASS | Kiểm tra session, logout tức thì khi tài khoản bị khóa |
+| 15 | `UiStateAndOfflinePolicyTest` | Mem 1 (Sprint 4) | 12 | PASS | Trạng thái rỗng, loading, lỗi mạng, offline cache |
+| 16 | `FoundationTest` | Chung | 4 | PASS | Cấu trúc ứng dụng nền tảng và DI framework |
+| 17 | `StudentModelAndCsvTest` | Mem 2 (Sprint 1 & 4) | 4 | PASS | Model Student/Certificate getters-setters, CSV export/import helper |
+| 18 | `StudentRepositoryTest` | Mem 2 (Sprint 1) | 7 | PASS | CRUD sinh viên trên Repository (Get, Add, Check trùng MSSV, Update, Delete) |
+| 19 | `CertificateRepositoryTest` | Mem 2 (Sprint 2) | 4 | PASS | CRUD chứng chỉ trong subcollection (Auto ID, Add, Update, Delete) |
+| 20 | `StudentListViewModelTest` | Mem 2 (Sprint 1, 3) | 5 | PASS | LiveData danh sách SV, tìm kiếm MSSV/Họ tên tiếng Việt, lọc Khoa, Add/Delete |
+| 21 | `StudentDetailViewModelTest` | Mem 2 (Sprint 2) | 4 | PASS | Chi tiết SV, nạp chứng chỉ, trạng thái rỗng 0 chứng chỉ, Add/Delete chứng chỉ |
+
+**Tổng cộng:**
+- **Thành viên 1:** 16 suites / 146 tests (PASS 100%)
+- **Thành viên 2:** 5 suites / 24 tests (PASS 100%)
+- **Toàn dự án:** 21 suites / 170 unit tests (PASS 100%)
+
+> [!NOTE]
+> Các unit test trên đảm bảo tính toàn vẹn của logic nghiệp vụ, ViewModel state, xử lý dữ liệu CSV và luồng CRUD cục bộ mà không cần kết nối mạng. Song song với đó, **27 kịch bản kiểm thử hệ thống (Manual System Tests)** ở Mục 5 vẫn phải được thực hiện trên thiết bị thật/máy ảo để xác nhận tương tác mạng và Firebase Cloud.
 
 2. **Biên dịch bộ cài đặt Debug APK:**
    ```powershell

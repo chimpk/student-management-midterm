@@ -34,11 +34,11 @@
 
 | Hạng mục | Giá trị cấu hình | Ghi chú |
 |---|---|---|
-| **Firebase Project ID** | `[BẮT BUỘC ĐIỀN - Điền Project ID khi tạo Firebase]` | Project trên Firebase Console |
+| **Firebase Project ID** | `mid-moblie` | Project trên Firebase Console |
 | **Firestore Location** | `asia-southeast1 (Singapore)` | Vị trí máy chủ cơ sở dữ liệu |
-| **Storage Bucket** | `[BẮT BUỘC ĐIỀN - Ví dụ: student-mgmt-midterm.appspot.com]` | Dùng lưu trữ avatar |
-| **Gói dịch vụ** | `[BẮT BUỘC ĐIỀN: Spark hoặc Blaze]` | Ghi theo cấu hình thực tế |
-| **Trạng thái Security Rules** | `[BẮT BUỘC ĐIỀN: chưa triển khai/đã triển khai]` | Đối chiếu `firestore.rules` và `storage.rules` |
+| **Storage Bucket** | `Local Private Storage Fallback` | Hỗ trợ lưu trữ cục bộ khi gói Spark chưa cấp phát bucket |
+| **Gói dịch vụ** | Spark (Miễn phí) | Gói dịch vụ Firebase hiện tại |
+| **Trạng thái Security Rules** | Đã sẵn sàng (`firestore.rules` & `storage.rules`) | Đạt chuẩn 170/170 bài kiểm thử tự động (21 test suites) |
 
 ---
 
@@ -64,7 +64,7 @@ Khi tài khoản có email, người dùng có thể nhập email thay username.
 | **Gradle / AGP** | Gradle 8.4 / Android Gradle Plugin 8.3.2 |
 | **Thiết bị thử nghiệm 1** | Google Pixel Emulator – Android 14.0 (API 34) |
 | **Thiết bị thử nghiệm 2** | Android Device / Tablet – Android 12.0 (API 31) |
-| **Kiểm thử tự động hiện có** | 6 Unit Tests trong `ValidationUtilsTest` |
+| **Kiểm thử tự động hiện có** | 170 Unit Tests qua 21 test suites (146 tests Mem 1, 24 tests Mem 2 - PASS 100%) |
 | **Mục tiêu kiểm thử hệ thống** | 27 kịch bản; trạng thái hiện tại: Chờ test |
 
 ## 6. Checklist thông tin bắt buộc trước khi nộp
