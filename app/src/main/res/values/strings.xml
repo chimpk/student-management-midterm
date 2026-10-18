@@ -4,4 +4,148 @@
     <string name="action_settings">Cài đặt</string>
     <string name="welcome_message">Chào mừng đến với ứng dụng quản lý sinh viên</string>
     <string name="settings_clicked">Đã chọn Cài đặt</string>
+
+    <!-- Login Screen -->
+    <string name="login_subtitle">Hệ thống quản lý sinh viên</string>
+    <string name="login_title">Đăng nhập</string>
+    <string name="hint_username">Tên đăng nhập</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="btn_login">Đăng nhập</string>
+
+    <!-- Common Actions & Buttons -->
+    <string name="btn_retry">Thử lại</string>
+    <string name="btn_save">Lưu</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="btn_lock">Khóa</string>
+    <string name="btn_unlock">Mở khóa</string>
+    <string name="btn_edit">Sửa</string>
+    <string name="btn_delete">Xóa</string>
+    <string name="btn_delete_profile">Xóa hồ sơ</string>
+    <string name="btn_create_profile">Tạo hồ sơ</string>
+    <string name="btn_add_user">Thêm người dùng</string>
+    <string name="error_generic">Có lỗi xảy ra</string>
+
+    <!-- Roles & Statuses -->
+    <string name="role_admin">Admin</string>
+    <string name="role_manager">Manager</string>
+    <string name="role_employee">Employee</string>
+    <string name="role_admin_display">Quản trị viên (Admin)</string>
+    <string name="role_manager_display">Quản lý (Manager)</string>
+    <string name="role_employee_display">Nhân viên (Employee)</string>
+    <string name="status_normal">Bình thường</string>
+    <string name="status_locked">Đã khóa</string>
+    <string name="status_active">Hoạt động</string>
+    <string name="status_normal_display">Normal (Hoạt động)</string>
+    <string name="status_locked_display">Locked (Khóa)</string>
+
+    <!-- User Management Screen & Dialog -->
+    <string name="empty_users_message">Chưa có người dùng nào trong hệ thống.</string>
+    <string name="error_load_users">Không thể tải danh sách người dùng</string>
+    <string name="title_lock_account">Khóa tài khoản</string>
+    <string name="title_unlock_account">Mở khóa tài khoản</string>
+    <string name="confirm_lock_user_format">Bạn có chắc chắn muốn khóa người dùng @%1$s (%2$s) không?</string>
+    <string name="confirm_unlock_user_format">Bạn có chắc chắn muốn mở khóa người dùng @%1$s (%2$s) không?</string>
+    <string name="title_confirm_delete_user">Xác nhận xóa người dùng</string>
+    <string name="confirm_delete_user_format">Bạn có chắc chắn muốn xóa hồ sơ của @%1$s khỏi Firestore?\n\nLưu ý quan trọng: Thao tác này chỉ xóa dữ liệu hồ sơ Firestore. Tài khoản xác thực Firebase Auth vẫn tồn tại trên hệ thống và cần backend/Admin SDK để xóa hoàn toàn.</string>
+    <string name="title_edit_user">Chỉnh sửa người dùng</string>
+    <string name="title_add_user">Thêm người dùng mới</string>
+    <string name="dialog_title_user_info">Thông tin người dùng</string>
+    <string name="dialog_backend_notice">[TODO(auth-backend)] Lưu ý bảo mật: Việc tạo tài khoản Auth yêu cầu Admin SDK/Backend riêng để không làm mất phiên đăng nhập hiện tại của Admin. Tại client chỉ tạo hồ sơ Firestore khi đã có UID tin cậy.</string>
+    <string name="hint_uid">UID người dùng (từ Auth backend)</string>
+    <string name="hint_username_format">Username (3-32 ký tự, bắt đầu bằng chữ cái)</string>
+    <string name="hint_full_name">Họ và tên (2-100 ký tự)</string>
+    <string name="hint_age">Tuổi (18 - 60)</string>
+    <string name="hint_phone">Số điện thoại (10 số, bắt đầu bằng 0)</string>
+    <string name="hint_email_optional">Email (tùy chọn)</string>
+    <string name="label_role">Vai trò:</string>
+    <string name="label_status_init">Trạng thái khởi tạo:</string>
+    <string name="username_display_format">@%1$s</string>
+    <string name="user_details_format">Tuổi: %1$d • SĐT: %2$s</string>
+
+    <!-- Login History Screen -->
+    <string name="history_title">Lịch sử đăng nhập</string>
+    <string name="history_subtitle">Danh sách phiên đăng nhập theo thời gian máy chủ (mới nhất trước).</string>
+    <string name="history_title_self">Lịch sử đăng nhập của bạn</string>
+    <string name="history_subtitle_self">Danh sách các lần đăng nhập tài khoản của bạn (mới nhất trước).</string>
+    <string name="history_title_target">Lịch sử: %1$s</string>
+    <string name="history_uid_format">UID: %1$s</string>
+    <string name="history_subtitle_admin">Lịch sử đăng nhập của người dùng được chọn (quyền Quản trị viên).</string>
+    <string name="empty_history_message">Chưa có lịch sử đăng nhập nào.</string>
+    <string name="desc_history_icon">Biểu tượng lịch sử</string>
+    <string name="history_device_format">Thiết bị: %1$s</string>
+    <string name="history_time_format">Thời gian: %1$s</string>
+
+    <!-- Profile Screen -->
+    <string name="desc_avatar">Ảnh đại diện người dùng</string>
+    <string name="btn_change_avatar">Đổi ảnh đại diện</string>
+    <string name="status_uploading">Đang tải ảnh lên&#8230;</string>
+    <string name="btn_retry_save_profile">Thử lại lưu hồ sơ</string>
+    <string name="title_personal_info">Thông tin cá nhân</string>
+    <string name="label_full_name">Họ và tên</string>
+    <string name="name_unspecified">Chưa đặt tên</string>
+    <string name="label_username">Tên đăng nhập</string>
+    <string name="label_email_alias">Email (bí danh)</string>
+    <string name="value_not_updated">Chưa cập nhật</string>
+    <string name="label_age">Tuổi</string>
+    <string name="age_format">%1$d tuổi</string>
+    <string name="label_phone">Số điện thoại</string>
+    <string name="btn_view_login_history">Xem lịch sử đăng nhập</string>
+    <string name="upload_progress_format">Đang tải ảnh lên&#8230; %1$d%%</string>
+    <string name="status_updating_profile">Đang cập nhật hồ sơ người dùng&#8230;</string>
+    <string name="toast_avatar_success">Cập nhật ảnh đại diện thành công!</string>
+    <string name="error_read_image_format">Không thể đọc tệp ảnh đã chọn: %1$s</string>
+
+    <!-- Main Menu -->
+    <string name="menu_students">Sinh viên</string>
+    <string name="menu_users">Quản lý người dùng</string>
+    <string name="menu_profile">Tài khoản</string>
+    <string name="menu_history">Lịch sử đăng nhập</string>
+    <string name="menu_logout">Đăng xuất</string>
+
+    <!-- Placeholders -->
+    <string name="placeholder_profile_title">Thông tin tài khoản</string>
+    <string name="placeholder_username_format">Tên đăng nhập: %1$s</string>
+    <string name="placeholder_role_format">Vai trò: %1$s</string>
+    <string name="placeholder_user_mgmt_title">Quản lý người dùng</string>
+    <string name="placeholder_admin_notice">Khu vực dành riêng cho Quản trị viên (Admin).</string>
+
+    <!-- Student & Certificate Module (Member 2) -->
+    <string name="student_id_format">MSSV: %1$s</string>
+    <string name="student_class_format">Lớp: %1$s</string>
+    <string name="student_dob_format">Ngày sinh: %1$s</string>
+    <string name="student_faculty_format">Khoa: %1$s</string>
+    <string name="cert_count_format">%1$d chứng chỉ</string>
+    <string name="cert_issuer_format">Nơi cấp: %1$s</string>
+    <string name="cert_date_format">Ngày cấp: %1$s</string>
+    <string name="student_list_title">Danh sách sinh viên</string>
+    <string name="student_list_subtitle">Quản lý hồ sơ và chứng chỉ sinh viên theo thời gian thực.</string>
+    <string name="search_student_hint">Tìm theo tên, MSSV, lớp&#8230;</string>
+    <string name="filter_all">Tất cả</string>
+    <string name="filter_it">CNTT</string>
+    <string name="filter_cs">Khoa học máy tính</string>
+    <string name="filter_se">Kỹ thuật phần mềm</string>
+    <string name="btn_add_student">Thêm sinh viên</string>
+    <string name="btn_import_csv">Nhập CSV</string>
+    <string name="btn_export_csv">Xuất CSV</string>
+    <string name="empty_students_message">Chưa có sinh viên nào phù hợp.</string>
+    <string name="dialog_add_student_title">Thêm sinh viên mới</string>
+    <string name="dialog_edit_student_title">Chỉnh sửa thông tin sinh viên</string>
+    <string name="label_student_id">Mã sinh viên (MSSV)</string>
+    <string name="label_student_name">Họ và tên sinh viên</string>
+    <string name="label_student_dob">Ngày sinh (YYYY-MM-DD)</string>
+    <string name="label_student_class">Lớp</string>
+    <string name="label_student_faculty">Khoa</string>
+    <string name="dialog_add_cert_title">Thêm chứng chỉ sinh viên</string>
+    <string name="label_cert_name">Tên chứng chỉ</string>
+    <string name="label_cert_issuer">Nơi cấp</string>
+    <string name="label_cert_date">Ngày cấp (YYYY-MM-DD)</string>
+    <string name="student_detail_title">Chi tiết sinh viên</string>
+    <string name="section_certificates">Danh sách chứng chỉ</string>
+    <string name="empty_certificates_message">Sinh viên chưa có chứng chỉ nào.</string>
+    <string name="btn_add_certificate">Thêm chứng chỉ</string>
+    <string name="confirm_delete_student_format">Bạn có chắc chắn muốn xóa sinh viên %1$s (%2$s) không?</string>
+    <string name="confirm_delete_cert_format">Bạn có chắc chắn muốn xóa chứng chỉ %1$s không?</string>
+    <string name="m2_placeholder_notice">TODO(member-2): Phân hệ Sinh viên, Chứng chỉ &amp; CSV do Thành viên 2 phụ trách (đang dùng dữ liệu mẫu).</string>
+    <string name="csv_exported_toast">Đã xuất %1$d sinh viên ra tệp CSV thành công.</string>
+    <string name="csv_imported_toast">Đã nhập thành công %1$d sinh viên từ CSV.</string>
 </resources>

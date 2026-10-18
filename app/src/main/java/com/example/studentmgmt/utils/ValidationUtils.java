@@ -12,9 +12,15 @@ public final class ValidationUtils {
             Pattern.compile("^[0-9A-Z]{8}$");
     private static final Pattern KNOWN_IT_CLASS_CODE_PATTERN =
             Pattern.compile("^[0-9]{2}(?:05|H5)(?:02|03|04)[0-9]{2}$");
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     private ValidationUtils() {
         throw new AssertionError("Không được khởi tạo lớp tiện ích");
+    }
+
+    public static boolean isValidEmail(String email) {
+        return email != null && EMAIL_PATTERN.matcher(email.trim()).matches();
     }
 
     public static boolean isValidUsername(String username) {

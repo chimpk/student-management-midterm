@@ -36,6 +36,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    lint {
+        enable += setOf("HardcodedText", "SetTextI18n")
+        abortOnError = false
+    }
 }
 
 dependencies {
