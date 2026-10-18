@@ -26,6 +26,24 @@ public class ValidationUtilsTest {
     }
 
     @Test
+    public void validEmails_areRecognized() {
+        assertTrue(ValidationUtils.isValidEmail("admin@tdtu.edu.vn"));
+        assertTrue(ValidationUtils.isValidEmail("user@gmail.com"));
+        assertTrue(ValidationUtils.isValidEmail("someone.test+tag@sub.domain.org"));
+    }
+
+    @Test
+    public void invalidEmails_areRejected() {
+        assertFalse(ValidationUtils.isValidEmail(null));
+        assertFalse(ValidationUtils.isValidEmail(""));
+        assertFalse(ValidationUtils.isValidEmail("admin"));
+        assertFalse(ValidationUtils.isValidEmail("admin@"));
+        assertFalse(ValidationUtils.isValidEmail("@tdtu.edu.vn"));
+        assertFalse(ValidationUtils.isValidEmail("admin@domain"));
+        assertFalse(ValidationUtils.isValidEmail("admin@@domain.com"));
+    }
+
+    @Test
     public void validStudentIds_followTdtuKyyTssssFormat() {
         assertTrue(ValidationUtils.isValidStudentId("524H0123"));
         assertTrue(ValidationUtils.isValidStudentId("52400001"));
