@@ -17,3 +17,30 @@ google-services.json
 .build-outputs/
 *.apk
 *.aab
+
+# Logs & temp files
+*.log
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+*.tmp
+*.bak
+.tmp-*/
+Thumbs.db
+
+# AI & Agent artifacts
+.agents/
+agent_chat/
+/agent_chat
+skills-lock.json
+.claude/
+.kilo/
+.cursor/
+docs/superpowers/
+
+# Firebase local cache & config
+.firebase/
+.firebaserc
+
+# Large local design export
+docs/Untitled.pdf
