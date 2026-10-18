@@ -1,6 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Authentication & User state helpers
     function signedIn() {
       return request.auth != null;
     }
@@ -9,15 +11,25 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid));
     }
 
+    function userExists() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // Fail-closed: Must exist and have status strictly 'Normal'. Locked or missing users are rejected.
+    function isActiveUser() {
+      return userExists() && currentUser().data.status == 'Normal';
+    }
+
+    // Authority must strictly derive from the existing stored user document
     function isAdmin() {
-      return signedIn() && currentUser().data.role == 'admin';
+      return isActiveUser() && currentUser().data.role == 'admin';
     }
 
     function isManagerOrAdmin() {
-      return signedIn()
-        && currentUser().data.role in ['admin', 'manager'];
+      return isActiveUser() && currentUser().data.role in ['admin', 'manager'];
     }
 
+    // Validation schemas
     function validUser(userId) {
       return request.resource.data.keys().hasAll([
           'uid', 'username', 'name', 'age', 'phone',
@@ -105,44 +117,58 @@ service cloud.firestore {
             && request.resource.data.device.size() <= 200));
     }
 
+    // Collection users
     match /users/{userId} {
-      allow read: if signedIn()
+      allow read: if isActiveUser()
         && (request.auth.uid == userId || isAdmin());
-      allow create: if isAdmin() && validUser(userId);
+
+      allow create: if isAdmin()
+        && validUser(userId);
+
       allow update: if (isAdmin()
           && validUser(userId)
+          && request.resource.data.uid == resource.data.uid
           && request.resource.data.createdAt == resource.data.createdAt)
-        || (signedIn()
+        || (isActiveUser()
           && request.auth.uid == userId
           && request.resource.data.diff(resource.data)
               .affectedKeys().hasOnly(['avatarUrl'])
-          && request.resource.data.avatarUrl is string
-          && request.resource.data.avatarUrl.size() <= 2048);
+          && (!('avatarUrl' in request.resource.data)
+            || (request.resource.data.avatarUrl is string
+              && request.resource.data.avatarUrl.size() <= 2048)));
+
       allow delete: if isAdmin();
 
       match /loginHistory/{logId} {
-        allow read: if signedIn()
+        allow read: if isActiveUser()
           && (request.auth.uid == userId || isAdmin());
-        allow create: if signedIn()
+
+        allow create: if isActiveUser()
           && request.auth.uid == userId
           && validLoginHistory();
-        allow update: if isAdmin() && validLoginHistory();
-        allow delete: if isAdmin();
       }
     }
 
+    // Collection students (Thành viên 2)
     match /students/{studentId} {
-      allow read: if signedIn();
-      allow create: if isManagerOrAdmin() && validStudent(studentId);
+      allow read: if isActiveUser();
+
+      allow create: if isManagerOrAdmin()
+        && validStudent(studentId);
+
       allow update: if isManagerOrAdmin()
         && validStudent(studentId)
+        && request.resource.data.studentId == resource.data.studentId
         && request.resource.data.createdAt == resource.data.createdAt;
+
       allow delete: if isManagerOrAdmin();
 
       match /certificates/{certId} {
-        allow read: if signedIn();
+        allow read: if isActiveUser();
+
         allow create, update: if isManagerOrAdmin()
           && validCertificate();
+
         allow delete: if isManagerOrAdmin();
       }
     }
