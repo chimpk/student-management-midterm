@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Toàn bộ văn bản tiếng Việt xuất hiện trong tài liệu thiết kế PDF (Nguồn: PDF trang 1-37) -->
+<resources>
+    <!-- BRAND-PLACEHOLDER: thay bằng tên dự án chính thức -->
+    <string name="app_name">UniData</string>
+    <!-- BRAND-PLACEHOLDER: thay bằng tagline dự án chính thức -->
+    <string name="app_tagline">Dữ liệu rõ ràng. Quản lý dễ dàng.</string>
+    <!-- BRAND-PLACEHOLDER: thay bằng phụ đề chính thức -->
+    <string name="app_subtitle">Quản lý dữ liệu sinh viên</string>
+
+    <!-- Xác thực & Đăng nhập (PDF trang 1, 2, 3, 27) -->
+    <string name="login_title">Đăng nhập</string>
+    <string name="login_instruction">Sử dụng tài khoản được nhà trường cấp để truy cập hệ thống.</string>
+    <string name="username_label">Tên đăng nhập</string>
+    <string name="username_hint">Nhập tên đăng nhập</string>
+    <string name="password_label">Mật khẩu</string>
+    <string name="password_hint">Nhập mật khẩu</string>
+    <string name="btn_login">Đăng nhập</string>
+    <string name="btn_logging_in">Đang đăng nhập…</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="no_account_hint">Chưa có tài khoản? Liên hệ quản trị viên</string>
+    <string name="security_notice">Thông tin của bạn được bảo mật</string>
+    <string name="login_error_invalid_credentials">Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng kiểm tra và thử lại.</string>
+
+    <!-- Điều hướng chính & Dashboard (PDF trang 4, 9, 28) -->
+    <string name="greeting_format">Xin chào, %s</string>
+    <string name="greeting_sub">Một ngày làm việc tốt!</string>
+    <string name="status_synced">Đã đồng bộ</string>
+    <string name="space_mgmt_title">Không gian quản lý</string>
+    <string name="card_student_title">Sinh viên</string>
+    <string name="card_student_sub">Sinh viên trong hệ thống</string>
+    <string name="card_user_title">Người dùng</string>
+    <string name="card_user_sub">Tài khoản đang hoạt động</string>
+    <string name="card_io_title">Import/Export</string>
+    <string name="card_io_sub">Nhập và xuất dữ liệu</string>
+    <string name="card_io_format">CSV , Excel</string>
+    <string name="card_profile_title">Hồ sơ</string>
+    <string name="card_profile_sub">Thông tin và bảo mật</string>
+    <string name="card_profile_category">Cá nhân</string>
+    <string name="stats_ready_banner">Dữ liệu luôn sẵn sàng</string>
+    <string name="stats_summary_format">%d sinh viên • %d khoa • %d lớp</string>
+    <string name="employee_dashboard_title">Tra cứu dữ liệu sinh viên</string>
+    <string name="employee_dashboard_desc">Bạn có quyền xem danh sách, chi tiết sinh viên và quản lý hồ sơ cá nhân.</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_students">Sinh viên</string>
+    <string name="nav_profile">Hồ sơ</string>
+
+    <!-- Danh sách & Chi tiết sinh viên (PDF trang 7, 8, 12, 13, 14, 15, 16, 24, 25, 26, 29, 30) -->
+    <string name="title_students">Sinh viên</string>
+    <string name="search_hint">Tìm tên hoặc MSSV</string>
+    <string name="filter_all">Tất cả</string>
+    <string name="filter_faculty_all">Khoa: Tất cả</string>
+    <string name="filter_class_all">Lớp: Tất cả</string>
+    <string name="student_count_sort_synced_format">%d sinh viên · Tên A → Z Đã đồng bộ</string>
+    <string name="student_count_sort_offline_format">%d sinh viên · Tên A → Z Ngoại tuyến</string>
+    <string name="student_offline_banner">Không có kết nối · Đang xem dữ liệu gần nhất</string>
+    <string name="student_cached_time_format">Bản lưu gần nhất: %s</string>
+    <string name="student_loading_text">Đang tải sinh viên…</string>
+    <string name="student_empty_title">Danh sách đang trống</string>
+    <string name="student_empty_desc">Chưa có sinh viên. Nhấn + để thêm hoặc nhập từ CSV</string>
+    <string name="btn_add_student_inline">+ Thêm sinh viên</string>
+    <string name="btn_import_csv_inline">Nhập từ CSV</string>
+    <string name="sort_sheet_title">Sắp xếp sinh viên</string>
+    <string name="sort_sheet_desc">Chọn thứ tự hiển thị trong danh sách</string>
+    <string name="sort_name_asc">Tên A → Z (mặc định)</string>
+    <string name="sort_name_desc">Tên Z → A</string>
+    <string name="sort_mssv_asc">MSSV tăng dần</string>
+    <string name="sort_birth_asc">Ngày sinh cũ nhất</string>
+    <string name="btn_apply_sort">Áp dụng</string>
+    <string name="snackbar_deleted_student_format">Đã xóa %s</string>
+    <string name="btn_undo">Hoàn tác</string>
+    <string name="btn_add_fab">Thêm</string>
+    <string name="title_student_detail">Chi tiết sinh viên</string>
+    <string name="menu_action_edit">Sửa</string>
+    <string name="menu_action_delete">Xóa</string>
+    <string name="status_studying">Đang theo học</string>
+    <string name="section_student_info">Thông tin sinh viên</string>
+    <string name="label_faculty">Khoa</string>
+    <string name="label_class">Lớp</string>
+    <string name="label_dob">Ngày sinh</string>
+    <string name="label_email">Email</string>
+    <string name="section_certificates_format">Chứng chỉ (%d)</string>
+
+    <!-- Thêm & Sửa sinh viên (PDF trang 5, 6, 19, 20, 31, 32) -->
+    <string name="title_add_student">Thêm sinh viên</string>
+    <string name="subtitle_add_student">Thông tin sinh viên mới</string>
+    <string name="form_required_note">Các trường có dấu * là bắt buộc.</string>
+    <string name="field_mssv_required">MSSV *</string>
+    <string name="field_name_required">Họ và tên *</string>
+    <string name="field_dob_required">Ngày sinh *</string>
+    <string name="field_faculty_required">Khoa *</string>
+    <string name="field_class_required">Lớp *</string>
+    <string name="field_email_required">Email *</string>
+    <string name="note_new_student_status">Hồ sơ mới có trạng thái Đang theo học.</string>
+    <string name="btn_save">Lưu</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="title_edit_student">Sửa sinh viên</string>
+    <string name="subtitle_edit_student_format">Thông tin %s</string>
+    <string name="note_mssv_immutable">MSSV là định danh duy nhất, không thể thay đổi.</string>
+    <string name="note_keep_certificates_format">%d chứng chỉ đã lưu được giữ nguyên.</string>
+    <string name="dialog_delete_student_title">Xóa sinh viên?</string>
+    <string name="dialog_delete_student_warning_format">Thao tác này sẽ xóa hồ sơ sinh viên và xóa cả %d chứng chỉ đã lưu trên hệ thống.</string>
+    <string name="btn_confirm_delete">Xóa sinh viên</string>
+    <string name="datepicker_title">CHỌN NGÀY SINH</string>
+    <string name="error_mssv_exists_format">MSSV %s đã tồn tại trong hệ thống.</string>
+    <string name="error_email_invalid_example">Email chưa hợp lệ. Ví dụ: minh@unidata.edu.vn</string>
+
+    <!-- Quản lý người dùng (PDF trang 10, 21, 33) -->
+    <string name="title_users">Người dùng</string>
+    <string name="user_count_summary_format">%d tài khoản · %d đang hoạt động</string>
+    <string name="admin_user_mgmt_desc">Bạn đang quản trị với vai trò Admin. Chọn tài khoản để xem lịch sử đăng nhập.</string>
+    <string name="user_you_tag">(Bạn)</string>
+    <string name="status_active">Hoạt động</string>
+    <string name="status_locked_tag">Đã khóa</string>
+    <string name="note_cannot_self_lock">Không thể tự khóa</string>
+    <string name="btn_lock_account">Khóa tài khoản</string>
+    <string name="btn_unlock_account">Mở khóa tài khoản</string>
+    <string name="dialog_lock_user_title">Khóa tài khoản?</string>
+    <string name="dialog_lock_user_desc_format">Người dùng %s (%s) sẽ không thể đăng nhập vào hệ thống sau khi bị khóa.</string>
+    <string name="card_inline_unlock_confirm_format">Mở khóa %s?</string>
+    <string name="btn_confirm_unlock">Mở khóa</string>
+
+    <!-- Lịch sử đăng nhập & Hồ sơ (PDF trang 11, 17, 22, 34, 35) -->
+    <string name="title_login_history">Lịch sử đăng nhập</string>
+    <string name="login_history_desc_format">Các lần truy cập gần đây của tài khoản này.</string>
+    <string name="date_group_today">Hôm nay · 09/10/2026</string>
+    <string name="date_group_yesterday">Hôm qua · 08/10/2026</string>
+    <string name="login_status_success">Thành công</string>
+    <string name="login_current_session_badge">Phiên hiện tại</string>
+    <string name="title_profile">Hồ sơ cá nhân</string>
+    <string name="section_account_info">Thông tin tài khoản</string>
+    <string name="label_unit">Đơn vị</string>
+    <string name="label_role">Vai trò</string>
+    <string name="label_status">Trạng thái</string>
+    <string name="unit_value_demo">Phòng Đào tạo</string>
+    <string name="role_admin_full">Admin · Quản trị hệ thống</string>
+    <string name="role_manager_full">Manager · Quản lý sinh viên</string>
+    <string name="role_employee_full">Employee · Nhân viên tra cứu</string>
+    <string name="section_my_login_history">Lịch sử đăng nhập của tôi</string>
+    <string name="uploading_avatar_format">Đang tải ảnh lên · %d%%</string>
+    <string name="toast_avatar_success">Cập nhật ảnh đại diện thành công</string>
+
+    <!-- Import / Export (PDF trang 18, 23, 36) -->
+    <string name="title_import_export">Import/Export</string>
+    <string name="io_subtitle">Nhập và xuất hồ sơ sinh viên bằng tệp CSV.</string>
+    <string name="section_import_data">Nhập dữ liệu</string>
+    <string name="io_import_spec">CSV · UTF-8 · Tối đa 5 MB</string>
+    <string name="io_import_desc">Chọn tệp theo mẫu. Mỗi dòng là một sinh viên; MSSV phải duy nhất.</string>
+    <string name="btn_choose_csv_file">Chọn tệp CSV</string>
+    <string name="btn_download_csv_template">Tải mẫu CSV</string>
+    <string name="section_export_data">Xuất dữ liệu</string>
+    <string name="io_export_spec_format">CSV · UTF-8 · %d sinh viên</string>
+    <string name="io_export_desc">Xuất toàn bộ thông tin sinh viên hiện có trong hệ thống.</string>
+    <string name="btn_export_csv">Xuất CSV</string>
+    <string name="title_import_result">Kết quả nhập dữ liệu</string>
+    <string name="import_summary_format">5 dòng: 3 thành công, 2 lỗi</string>
+    <string name="import_detail_summary">6 hồ sơ ban đầu → 9 hồ sơ hiện tại.</string>
+    <string name="btn_share_error_report">Chia sẻ báo cáo lỗi</string>
+
+    <!-- Trợ năng & Phân quyền Roles (PDF trang 37) -->
+    <string name="role_label_admin">Admin</string>
+    <string name="role_label_manager">Manager</string>
+    <string name="role_label_employee">Employee</string>
+    <string name="status_label_normal">Hoạt động</string>
+    <string name="status_label_locked">Đã khóa</string>
+
+    <!-- Cài đặt hiệu ứng chuyển động (Đề xuất bổ sung Gói B) -->
+    <string name="settings_title">Cài đặt</string>
+    <string name="settings_effects_group_title">Hiệu ứng &amp; Chuyển động</string>
+    <string name="settings_effects_switch_title">Hiệu ứng nâng cao</string>
+    <string name="settings_effects_switch_desc">Bật hiệu ứng số nhảy, xuất hiện so le, nảy nhẹ và chuyển cảnh mượt mà</string>
+    <string name="settings_effects_disabled_system_note">Chuyển động nâng cao tạm khóa do thiết bị đang bật chế độ Giảm hiệu ứng động trong Cài đặt hệ thống</string>
+    <string name="settings_effects_status_on">Đang bật</string>
+    <string name="settings_effects_status_off">Đang tắt</string>
+    <string name="settings_effects_status_disabled">Bị vô hiệu hóa bởi hệ thống</string>
+</resources>

@@ -1,0 +1,202 @@
+{
+  "_brandVariables": {
+    "emailDomain": "unidata.edu.vn",
+    "universityName": "Đại học UniData"
+  },
+  "users": [
+    {
+      "uid": "usr_admin_01",
+      "username": "minhanh.admin",
+      "name": "Minh Anh",
+      "email": "minhanh@unidata.edu.vn",
+      "unit": "Phòng Đào tạo",
+      "role": "admin",
+      "status": "Normal",
+      "isCurrentUser": true
+    },
+    {
+      "uid": "usr_mgr_01",
+      "username": "binh.manager",
+      "name": "Lê Thanh Bình",
+      "email": "binh.manager@unidata.edu.vn",
+      "unit": "Khoa CNTT",
+      "role": "manager",
+      "status": "Normal",
+      "isCurrentUser": false
+    },
+    {
+      "uid": "usr_emp_01",
+      "username": "huong.employee",
+      "name": "Phạm Thu Hương",
+      "email": "huong.employee@unidata.edu.vn",
+      "unit": "Phòng Khảo thí",
+      "role": "employee",
+      "status": "Normal",
+      "isCurrentUser": false
+    },
+    {
+      "uid": "usr_emp_02",
+      "username": "huy.locked",
+      "name": "Vũ Quốc Huy",
+      "email": "huy.locked@unidata.edu.vn",
+      "unit": "Phòng Công tác SV",
+      "role": "employee",
+      "status": "Locked",
+      "isCurrentUser": false
+    }
+  ],
+  "students": [
+    {
+      "studentId": "22110001",
+      "name": "Đặng Gia Bảo",
+      "dateOfBirth": "2004-01-15",
+      "className": "CNTT K22A",
+      "faculty": "Công nghệ thông tin",
+      "email": "bao.dg22@unidata.edu.vn",
+      "status": "Đang theo học",
+      "certificates": []
+    },
+    {
+      "studentId": "22120001",
+      "name": "Lê Ngọc Hà",
+      "dateOfBirth": "2004-03-20",
+      "className": "QTKD K22A",
+      "faculty": "Quản trị kinh doanh",
+      "email": "ha.ln22@unidata.edu.vn",
+      "status": "Đang theo học",
+      "certificates": []
+    },
+    {
+      "studentId": "22110002",
+      "name": "Nguyễn Hoàng Nam",
+      "dateOfBirth": "2004-09-18",
+      "className": "CNTT K22A",
+      "faculty": "Công nghệ thông tin",
+      "email": "nam.nh22@unidata.edu.vn",
+      "status": "Đang theo học",
+      "certificates": [
+        {
+          "certId": "cert_01",
+          "certName": "IELTS Academic",
+          "result": "6.5 Overall",
+          "issuedBy": "British Council",
+          "issueDate": "2026-06-15"
+        },
+        {
+          "certId": "cert_02",
+          "certName": "MOS Excel Associate",
+          "result": "920 / 1.000",
+          "issuedBy": "Certiport",
+          "issueDate": "2026-01-10"
+        },
+        {
+          "certId": "cert_03",
+          "certName": "VSTEP B2",
+          "result": "7.0 / 10.0",
+          "issuedBy": "Trường Đại học Sư phạm",
+          "issueDate": "2025-11-22"
+        }
+      ]
+    },
+    {
+      "studentId": "22120002",
+      "name": "Phạm Thu Linh",
+      "dateOfBirth": "2004-07-12",
+      "className": "QTKD K22A",
+      "faculty": "Quản trị kinh doanh",
+      "email": "linh.pt22@unidata.edu.vn",
+      "status": "Đang theo học",
+      "certificates": []
+    },
+    {
+      "studentId": "22130001",
+      "name": "Trần Minh Anh",
+      "dateOfBirth": "2004-11-05",
+      "className": "NNA K22A",
+      "faculty": "Ngoại ngữ",
+      "email": "anh.tm22@unidata.edu.vn",
+      "status": "Đang theo học",
+      "certificates": []
+    },
+    {
+      "studentId": "22130002",
+      "name": "Vũ Khánh Vy",
+      "dateOfBirth": "2004-08-25",
+      "className": "NNA K22A",
+      "faculty": "Ngoại ngữ",
+      "email": "vy.vk22@unidata.edu.vn",
+      "status": "Đang theo học",
+      "certificates": []
+    }
+  ],
+  "loginHistory": [
+    {
+      "userId": "usr_emp_01",
+      "username": "huong.employee",
+      "records": [
+        {
+          "timestamp": "2026-10-09T09:15:00Z",
+          "displayTime": "09:15 · 09/10/2026",
+          "dateGroup": "Hôm nay · 09/10/2026",
+          "device": "Samsung Galaxy A55",
+          "os": "Android 14",
+          "location": "Hà Nội",
+          "status": "Thành công"
+        },
+        {
+          "timestamp": "2026-10-09T08:02:00Z",
+          "displayTime": "08:02 · 09/10/2026",
+          "dateGroup": "Hôm nay · 09/10/2026",
+          "device": "Samsung Galaxy A55",
+          "os": "Android 14",
+          "location": "Hà Nội",
+          "status": "Thành công"
+        },
+        {
+          "timestamp": "2026-10-08T16:40:00Z",
+          "displayTime": "16:40 · 08/10/2026",
+          "dateGroup": "Hôm qua · 08/10/2026",
+          "device": "Samsung Galaxy A55",
+          "os": "Android 14",
+          "location": "Hà Nội",
+          "status": "Thành công"
+        }
+      ]
+    },
+    {
+      "userId": "usr_admin_01",
+      "username": "minhanh.admin",
+      "records": [
+        {
+          "timestamp": "2026-10-09T09:41:00Z",
+          "displayTime": "09:41 · 09/10/2026",
+          "dateGroup": "Hôm nay · 09/10/2026",
+          "device": "Samsung Galaxy S24",
+          "os": "Android 14",
+          "location": "Hà Nội",
+          "status": "Thành công",
+          "isCurrentSession": true
+        }
+      ]
+    }
+  ],
+  "csvImportSummary": {
+    "totalRows": 5,
+    "successRows": 3,
+    "errorRows": 2,
+    "initialStudentCount": 6,
+    "finalStudentCount": 9,
+    "errors": [
+      {
+        "row": 3,
+        "studentId": "22110002",
+        "reason": "MSSV 22110002 đã tồn tại trong hệ thống"
+      },
+      {
+        "row": 5,
+        "studentId": "22110005",
+        "reason": "Email không đúng định dạng hợp lệ"
+      }
+    ]
+  }
+}

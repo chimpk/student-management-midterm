@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Design tokens: Dimensions & Spacing (Nguồn: PDF trang 37) -->
+<resources>
+    <!-- Grid & Margins -->
+    <dimen name="grid_unit">8dp</dimen>
+    <dimen name="screen_margin">16dp</dimen>
+    <dimen name="card_gap">12dp</dimen>
+    <dimen name="content_spacing_small">4dp</dimen>
+    <dimen name="content_spacing_medium">8dp</dimen>
+    <dimen name="content_spacing_large">16dp</dimen>
+
+    <!-- Corner Radii -->
+    <dimen name="radius_card">16dp</dimen>
+    <dimen name="radius_input">12dp</dimen>
+    <dimen name="radius_pill">999dp</dimen>
+    <dimen name="radius_avatar">999dp</dimen>
+
+    <!-- Touch Targets & Borders -->
+    <dimen name="min_touch_target">48dp</dimen>
+    <dimen name="stroke_width">1dp</dimen>
+    <dimen name="elevation_flat">0dp</dimen>
+
+    <!-- Typography Text Sizes (sp) -->
+    <dimen name="text_size_title">22sp</dimen>
+    <dimen name="text_size_name">16sp</dimen>
+    <dimen name="text_size_subtitle">14sp</dimen>
+    <dimen name="text_size_chip">12sp</dimen>
+    <dimen name="text_size_caption">11sp</dimen>
+</resources>

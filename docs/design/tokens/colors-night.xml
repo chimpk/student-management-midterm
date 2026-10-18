@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Design tokens: Dark theme (Nguồn: PDF trang 37) -->
+<resources>
+    <!-- Brand colors -->
+    <color name="color_primary">#B6BFFF</color>
+    <color name="color_secondary">#6FD8C8</color>
+
+    <!-- Surface and text -->
+    <color name="color_surface">#121318</color>
+    <color name="color_on_surface">#F1F0F7</color>
+    <color name="color_on_surface_variant">#BFC1D2</color>
+
+    <!-- Status -->
+    <color name="color_status_normal">#81C784</color>
+    <color name="color_status_locked">#EF9A9A</color>
+
+    <!-- Roles -->
+    <color name="color_role_admin">#E2B8FA</color>
+    <color name="color_role_manager">#A6CDFF</color>
+    <color name="color_role_employee">#C1D8E2</color>
+
+    <!-- Background tints -->
+    <color name="bg_card">#1B1C24</color>
+    <color name="bg_primary">#292F54</color>
+    <color name="bg_normal">#203927</color>
+    <color name="bg_locked">#48282C</color>
+    <color name="bg_offline">#482F1D</color>
+
+    <!-- Icon color mappings -->
+    <color name="ic_default">#BFC1D2</color>
+    <color name="ic_active">#B6BFFF</color>
+    <color name="ic_verified">#6FD8C8</color>
+    <color name="ic_locked">#EF9A9A</color>
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Design tokens: Light theme (Nguồn: PDF trang 37) -->
+<!-- có thể đổi khi chốt nhận diện thương hiệu -->
+<resources>
+    <!-- Brand colors -->
+    <color name="color_primary">#3F51B5</color>
+    <color name="color_secondary">#00897B</color>
+
+    <!-- Surface and text -->
+    <color name="color_surface">#FAFAFD</color>
+    <color name="color_on_surface">#1B1B23</color>
+    <color name="color_on_surface_variant">#5E6072</color>
+
+    <!-- Status -->
+    <color name="color_status_normal">#2E7D32</color>
+    <color name="color_status_locked">#C62828</color>
+
+    <!-- Roles -->
+    <color name="color_role_admin">#6A1B9A</color>
+    <color name="color_role_manager">#1565C0</color>
+    <color name="color_role_employee">#546E7A</color>
+
+    <!-- Background tints -->
+    <color name="bg_card">#FFFFFF</color>
+    <color name="bg_primary">#EEF0FC</color>
+    <color name="bg_normal">#EDF6EE</color>
+    <color name="bg_locked">#FDECEC</color>
+    <color name="bg_offline">#FFF0DE</color>
+
+    <!-- Icon color mappings -->
+    <color name="ic_default">#5E6072</color>
+    <color name="ic_active">#3F51B5</color>
+    <color name="ic_verified">#00897B</color>
+    <color name="ic_locked">#C62828</color>
+</resources>
