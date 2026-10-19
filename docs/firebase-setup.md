@@ -13,7 +13,8 @@
 Để cả hai thành viên (**Trần Ngọc Tấn** và **Nguyễn Vĩnh Khâm**) cùng thao tác, chạy ứng dụng trên máy của mình và đồng bộ dữ liệu thời gian thực đến **cùng một cơ sở dữ liệu Firebase**, hãy thực hiện 2 bước đơn giản sau:
 
 ### Bước 1: Phân quyền truy cập trên Firebase Console (Dành cho người tạo Project)
-1. Người tạo dự án truy cập: <https://console.firebase.google.com/project/mid-moblie/settings/iam>.
+
+1. Người tạo dự án truy cập: [https://console.firebase.google.com/project/mid-moblie/settings/iam](https://console.firebase.google.com/project/mid-moblie/settings/iam).
 2. Vào biểu tượng **Bánh răng (Project Settings)** ở góc trên bên trái $\rightarrow$ Chọn tab **Users and permissions**.
 3. Bấm nút **Add member** (Thêm thành viên):
    - Nhập email Google của thành viên thứ hai (ví dụ: `52400128@student.tdtu.edu.vn` hoặc tài khoản Gmail của bạn Khâm).
@@ -21,6 +22,7 @@
    - Bấm **Done** $\rightarrow$ **Add member**. Thành viên thứ hai sẽ nhận được email mời và có thể truy cập Firebase Console dự án `mid-moblie`.
 
 ### Bước 2: Chia sẻ tệp cấu hình `google-services.json` vào mã nguồn Android
+
 - Tệp `google-services.json` chứa các khóa kết nối của ứng dụng với Firebase Project `mid-moblie`. Để đảm bảo an toàn bảo mật, tệp này **được bảo vệ bởi `.gitignore` và không commit lên kho Git công khai**.
 - Do đó, khi clone mã nguồn về máy thứ hai:
   1. Người giữ tệp gửi trực tiếp tệp `google-services.json` (qua Zalo, Google Drive, hoặc USB) cho thành viên còn lại.
@@ -34,20 +36,21 @@
 
 ## 2. Thông tin cấu hình kỹ thuật của dự án
 
-| Hạng mục | Giá trị chuẩn của dự án | Ghi chú |
-|---|---|---|
-| **Firebase Project ID** | `mid-moblie` | Xác định trong `google-services.json` |
-| **Android Package Name** | `com.example.studentmgmt` | Khớp `applicationId` trong `app/build.gradle.kts` |
-| **Vị trí Firestore (Location)** | `asia-southeast1 (Singapore)` | Vị trí khuyến nghị tốc độ cao cho Việt Nam |
-| **Gói dịch vụ (Billing Plan)** | Spark (Gói Miễn phí) | Không bắt buộc thẻ tín dụng |
-| **Cơ chế lưu ảnh đại diện** | Local Private Storage Fallback | Tự động lưu bộ nhớ riêng của app khi Cloud Storage chưa kích hoạt |
-| **Quy tắc bảo mật** | [`firestore.rules`](../firestore.rules) & [`storage.rules`](../storage.rules) | Đã kiểm định bằng 170 test cases tự động (21 test suites) |
+| Hạng mục                               | Giá trị chuẩn của dự án                                                   | Ghi chú                                                                     |
+| ---------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Firebase Project ID**            | `mid-moblie`                                                                  | Xác định trong `google-services.json`                                   |
+| **Android Package Name**           | `com.example.studentmgmt`                                                     | Khớp `applicationId` trong `app/build.gradle.kts`                       |
+| **Vị trí Firestore (Location)**  | `asia-southeast1 (Singapore)`                                                 | Vị trí khuyến nghị tốc độ cao cho Việt Nam                           |
+| **Gói dịch vụ (Billing Plan)**  | Spark (Gói Miễn phí)                                                         | Không bắt buộc thẻ tín dụng                                            |
+| **Cơ chế lưu ảnh đại diện** | Local Private Storage Fallback                                                  | Tự động lưu bộ nhớ riêng của app khi Cloud Storage chưa kích hoạt |
+| **Quy tắc bảo mật**             | [`firestore.rules`](../firestore.rules) & [`storage.rules`](../storage.rules) | Đã kiểm định bằng 170 test cases tự động (21 test suites)           |
 
 ---
 
 ## 3. Các bước thiết lập dịch vụ trên Firebase Console
 
 ### 3.1. Thiết lập Authentication (Đăng nhập)
+
 1. Trên Firebase Console, vào menu **Build** $\rightarrow$ **Authentication** $\rightarrow$ bấm **Get started**.
 2. Tại tab **Sign-in method**, bấm vào nhà cung cấp **Email/Password**:
    - Gạt công tắc **Enable** ở mục *Email/Password* sang Bật.
@@ -56,13 +59,13 @@
 3. Tại tab **Users**, bấm **Add user** để tạo sẵn 3 tài khoản mẫu phục vụ demo phân quyền:
    - Tài khoản Admin:
      - Email: `admin@tdtu.edu.vn`
-     - Password: `admin123` (hoặc mật khẩu tối thiểu 6 ký tự bạn chọn)
+     - Password: `admin@123456` (hoặc mật khẩu tối thiểu 6 ký tự bạn chọn)
    - Tài khoản Manager:
      - Email: `manager@tdtu.edu.vn`
-     - Password: `manager123`
+     - Password: `manager@123456`
    - Tài khoản Employee:
      - Email: `employee@tdtu.edu.vn`
-     - Password: `employee123`
+     - Password: `employee@123456`
 4. **Sao chép UID của từng tài khoản:** Sau khi tạo, tại bảng danh sách người dùng sẽ có cột **User UID**. Hãy sao chép 3 chuỗi UID này để dùng cho Bước 3.2.
 
 > **Cơ chế đăng nhập trên ứng dụng Android:**
@@ -71,6 +74,7 @@
 ---
 
 ### 3.2. Thiết lập Cloud Firestore (Cơ sở dữ liệu)
+
 1. Trên Firebase Console, vào **Build** $\rightarrow$ **Firestore Database** $\rightarrow$ bấm **Create database**.
 2. Chọn vị trí: `asia-southeast1 (Singapore)`.
 3. Chọn chế độ: **Start in production mode** (hoặc Test mode).
@@ -108,9 +112,11 @@
 ---
 
 ### 3.3. Dữ liệu sinh viên mẫu (Collection `students` - Phục vụ Thành viên 2)
+
 Không bắt buộc phải nhập tay từng sinh viên trên web vì phân hệ của Thành viên 2 đã được tích hợp sẵn các bộ dữ liệu mẫu trong `MockStudentRepository` và tính năng **Nhập CSV** ngay trong ứng dụng.
 
 Nếu muốn tạo sẵn 1 sinh viên trực tiếp trên Firestore Console để test đồng bộ:
+
 1. Trong tab **Data**, bấm **Start collection** với tên: `students`.
 2. *Document ID:* Nhập Mã sinh viên (ví dụ: `524H0001`).
 3. Các trường:
@@ -144,10 +150,10 @@ Sau khi hoàn tất cấu hình, mở terminal tại thư mục gốc dự án v
 
 ## 5. Xử lý các sự cố thường gặp (Troubleshooting)
 
-| Hiện tượng | Nguyên nhân | Cách khắc phục |
-|---|---|---|
-| Đăng nhập báo *"Tên đăng nhập hoặc mật khẩu không chính xác"* | 1. Chưa bật Email/Password trên Console.<br>2. Chưa tạo tài khoản tương ứng.<br>3. Nhầm mật khẩu. | Kiểm tra tab **Authentication** $\rightarrow$ **Users** trên web Console xem tài khoản `admin@tdtu.edu.vn` đã có chưa. |
-| Đăng nhập thành công nhưng lập tức bị thoát ra màn hình Login | Tài liệu trong collection `users` bị thiếu, sai Document ID, hoặc `status != "Normal"`. | Kiểm tra tab **Firestore Data**: Document ID phải trùng khớp 100% với chuỗi UID trong Authentication, và trường `status` phải ghi đúng chính xác là `Normal` (viết hoa chữ N). |
-| Báo lỗi `PERMISSION_DENIED` | Quy tắc bảo mật chưa được Publish lên Firebase. | Vào tab **Rules** trên Firestore Console, dán nội dung [`firestore.rules`](../firestore.rules) và bấm **Publish**. |
-| Thông báo lỗi lưu trữ ảnh / Cloud Storage bắt nạp tiền | Gói cước Free không cho tạo Cloud Storage Bucket. | Không cần nạp tiền. Ứng dụng đã tự động kích hoạt chế độ **Local Private Storage Fallback**, ảnh đại diện vẫn được lưu và hiển thị bình thường trên máy. |
-| Máy của bạn cùng nhóm không kết nối được Firebase | Thiếu tệp `google-services.json` trong thư mục `app/` của máy bạn đó. | Gửi tệp `google-services.json` cho bạn cùng nhóm và đặt vào `app/google-services.json`. |
+| Hiện tượng                                                                 | Nguyên nhân                                                                                          | Cách khắc phục                                                                                                                                                                                         |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Đăng nhập báo *"Tên đăng nhập hoặc mật khẩu không chính xác"* | 1. Chưa bật Email/Password trên Console.2. Chưa tạo tài khoản tương ứng.3. Nhầm mật khẩu. | Kiểm tra tab **Authentication** $\rightarrow$ **Users** trên web Console xem tài khoản `admin@tdtu.edu.vn` đã có chưa.                                                            |
+| Đăng nhập thành công nhưng lập tức bị thoát ra màn hình Login     | Tài liệu trong collection `users` bị thiếu, sai Document ID, hoặc `status != "Normal"`.       | Kiểm tra tab **Firestore Data**: Document ID phải trùng khớp 100% với chuỗi UID trong Authentication, và trường `status` phải ghi đúng chính xác là `Normal` (viết hoa chữ N). |
+| Báo lỗi `PERMISSION_DENIED`                                               | Quy tắc bảo mật chưa được Publish lên Firebase.                                                | Vào tab **Rules** trên Firestore Console, dán nội dung [`firestore.rules`](../firestore.rules) và bấm **Publish**.                                                                     |
+| Thông báo lỗi lưu trữ ảnh / Cloud Storage bắt nạp tiền               | Gói cước Free không cho tạo Cloud Storage Bucket.                                                 | Không cần nạp tiền. Ứng dụng đã tự động kích hoạt chế độ **Local Private Storage Fallback**, ảnh đại diện vẫn được lưu và hiển thị bình thường trên máy.           |
+| Máy của bạn cùng nhóm không kết nối được Firebase                  | Thiếu tệp `google-services.json` trong thư mục `app/` của máy bạn đó.                     | Gửi tệp `google-services.json` cho bạn cùng nhóm và đặt vào `app/google-services.json`.                                                                                                      |

@@ -99,12 +99,12 @@ public class UiStateAndOfflinePolicyTest {
         DefferableAuthRepo authRepo = new DefferableAuthRepo();
         LoginViewModel vm = new LoginViewModel(authRepo, null, "Pixel 7");
 
-        vm.login("admin", "admin123");
+        vm.login("admin", "admin@123456");
         assertEquals(1, authRepo.signInCallCount);
         assertTrue(Boolean.TRUE.equals(vm.getIsLoading().getValue()));
 
         // Second click while first is still in-flight
-        vm.login("admin", "admin123");
+        vm.login("admin", "admin@123456");
         assertEquals("Double submission must be ignored while in-flight", 1, authRepo.signInCallCount);
 
         // Resolve first request
@@ -290,7 +290,7 @@ public class UiStateAndOfflinePolicyTest {
         DefferableAuthRepo authRepo = new DefferableAuthRepo();
         LoginViewModel vm = new LoginViewModel(authRepo, null, "Pixel 7");
 
-        vm.login("admin", "admin123");
+        vm.login("admin", "admin@123456");
         AppUser loggedInUser = new AppUser("admin-uid", "admin", "admin@tdtu.edu.vn", "Admin", 30, "0901234567", AppUser.STATUS_NORMAL, AppUser.ROLE_ADMIN, null);
         authRepo.resolveSuccess(loggedInUser);
 
