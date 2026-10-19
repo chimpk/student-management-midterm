@@ -5,4 +5,26 @@
     <color name="green_accent">#4CAF50</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Material 3 roles based on docs/design/tokens/colors.xml. -->
+    <color name="color_primary">#3F51B5</color>
+    <color name="color_on_primary">#FFFFFF</color>
+    <color name="color_primary_container">#EEF0FC</color>
+    <color name="color_on_primary_container">#18204F</color>
+    <color name="color_secondary">#00897B</color>
+    <color name="color_on_secondary">#FFFFFF</color>
+    <color name="color_secondary_container">#D1F2EE</color>
+    <color name="color_on_secondary_container">#003731</color>
+    <color name="color_tertiary">#6A1B9A</color>
+    <color name="color_on_tertiary">#FFFFFF</color>
+    <color name="color_tertiary_container">#F2DAFF</color>
+    <color name="color_on_tertiary_container">#31004F</color>
+    <color name="color_error">#C62828</color>
+    <color name="color_on_error">#FFFFFF</color>
+    <color name="color_surface">#FAFAFD</color>
+    <color name="color_on_surface">#1B1B23</color>
+    <color name="color_surface_variant">#E4E3EC</color>
+    <color name="color_on_surface_variant">#5E6072</color>
+    <color name="color_outline">#747683</color>
+    <color name="color_outline_variant">#C4C5D0</color>
 </resources>

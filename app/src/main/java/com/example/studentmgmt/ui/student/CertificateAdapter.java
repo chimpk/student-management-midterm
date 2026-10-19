@@ -20,13 +20,20 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
 
     public interface OnCertificateDeleteListener {
         void onDeleteCertificate(Certificate certificate);
+        void onEditCertificate(Certificate certificate);
     }
 
     private final List<Certificate> certificates = new ArrayList<>();
     private final OnCertificateDeleteListener deleteListener;
+    private final boolean canManageCertificates;
 
     public CertificateAdapter(OnCertificateDeleteListener deleteListener) {
+        this(deleteListener, false);
+    }
+
+    public CertificateAdapter(OnCertificateDeleteListener deleteListener, boolean canManageCertificates) {
         this.deleteListener = deleteListener;
+        this.canManageCertificates = canManageCertificates;
     }
 
     public void setCertificates(List<Certificate> newCertificates) {
@@ -68,6 +75,12 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
             binding.tvCertName.setText(cert.getCertName());
             binding.tvCertIssuer.setText(binding.getRoot().getContext().getString(R.string.cert_issuer_format, cert.getIssuedBy()));
             binding.tvCertDate.setText(binding.getRoot().getContext().getString(R.string.cert_date_format, cert.getIssueDate()));
+
+            binding.btnCertEdit.setVisibility(canManageCertificates ? android.view.View.VISIBLE : android.view.View.GONE);
+            binding.btnCertDelete.setVisibility(canManageCertificates ? android.view.View.VISIBLE : android.view.View.GONE);
+            binding.btnCertEdit.setOnClickListener(v -> {
+                if (canManageCertificates && deleteListener != null) deleteListener.onEditCertificate(cert);
+            });
 
             binding.btnCertDelete.setOnClickListener(v -> {
                 if (deleteListener != null) {

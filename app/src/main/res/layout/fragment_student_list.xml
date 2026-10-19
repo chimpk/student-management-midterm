@@ -18,7 +18,7 @@
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="6dp"
             app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant">
+            app:cardBackgroundColor="?attr/colorSurface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -93,6 +93,16 @@
                 android:layout_weight="1"
                 android:layout_marginStart="6dp"
                 android:text="@string/btn_export_csv"
+                android:textSize="12sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_sort_student"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="@string/btn_sort_student"
                 android:textSize="12sp" />
         </LinearLayout>
 

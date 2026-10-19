@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 roles based on docs/design/tokens/colors-night.xml. -->
+    <color name="color_primary">#B6BFFF</color>
+    <color name="color_on_primary">#202A61</color>
+    <color name="color_primary_container">#343C70</color>
+    <color name="color_on_primary_container">#E0E3FF</color>
+    <color name="color_secondary">#6FD8C8</color>
+    <color name="color_on_secondary">#003731</color>
+    <color name="color_secondary_container">#004F49</color>
+    <color name="color_on_secondary_container">#B2DFDB</color>
+    <color name="color_tertiary">#E2B8FA</color>
+    <color name="color_on_tertiary">#3B005A</color>
+    <color name="color_tertiary_container">#542D72</color>
+    <color name="color_on_tertiary_container">#F2DAFF</color>
+    <color name="color_error">#EF9A9A</color>
+    <color name="color_on_error">#3B080A</color>
+    <color name="color_surface">#121318</color>
+    <color name="color_on_surface">#F1F0F7</color>
+    <color name="color_surface_variant">#444650</color>
+    <color name="color_on_surface_variant">#BFC1D2</color>
+    <color name="color_outline">#898A96</color>
+    <color name="color_outline_variant">#444650</color>
+</resources>
