@@ -44,3 +44,10 @@ docs/superpowers/
 
 # Large local design export
 docs/Untitled.pdf
+
+# Local account credentials note
+ACCOUNT_NOTES.md
+*credentials*.md
+*note*.md
+!README.md
+!docs/*.md
