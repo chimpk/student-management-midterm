@@ -52,13 +52,13 @@ public class LoginHistoryViewModelTest {
         });
 
         adminUser = new AppUser(
-                "admin-uid", "admin", "admin@studentmgmt.edu.vn",
+                "admin-uid", "admin", "admin@tdtu.edu.vn",
                 "Admin User", 30, "0912345678",
                 AppUser.STATUS_NORMAL, AppUser.ROLE_ADMIN, null
         );
 
         employeeUser = new AppUser(
-                "emp-uid", "employee", "emp@studentmgmt.edu.vn",
+                "emp-uid", "employee", "emp@tdtu.edu.vn",
                 "Employee User", 22, "0912345670",
                 AppUser.STATUS_NORMAL, AppUser.ROLE_EMPLOYEE, null
         );

@@ -21,25 +21,25 @@ import java.util.List;
 public class LoginHistoryPolicyTest {
 
     private final AppUser adminUser = new AppUser(
-            "admin-uid", "admin", "admin@studentmgmt.edu.vn",
+            "admin-uid", "admin", "admin@tdtu.edu.vn",
             "Admin User", 30, "0912345678",
             AppUser.STATUS_NORMAL, AppUser.ROLE_ADMIN, null
     );
 
     private final AppUser managerUser = new AppUser(
-            "mgr-uid", "manager", "mgr@studentmgmt.edu.vn",
+            "mgr-uid", "manager", "mgr@tdtu.edu.vn",
             "Manager User", 28, "0912345679",
             AppUser.STATUS_NORMAL, AppUser.ROLE_MANAGER, null
     );
 
     private final AppUser employeeUser = new AppUser(
-            "emp-uid", "employee", "emp@studentmgmt.edu.vn",
+            "emp-uid", "employee", "emp@tdtu.edu.vn",
             "Employee User", 22, "0912345670",
             AppUser.STATUS_NORMAL, AppUser.ROLE_EMPLOYEE, null
     );
 
     private final AppUser lockedUser = new AppUser(
-            "locked-uid", "locked", "locked@studentmgmt.edu.vn",
+            "locked-uid", "locked", "locked@tdtu.edu.vn",
             "Locked User", 25, "0912345671",
             AppUser.STATUS_LOCKED, AppUser.ROLE_EMPLOYEE, null
     );

@@ -9,7 +9,7 @@ public interface UsernameAuthResolver {
     /**
      * Resolves identifier (username or email alias) to the email expected by Firebase Auth.
      *
-     * @param identifier user-entered identifier (e.g., "admin" or "admin@studentmgmt.edu.vn")
+     * @param identifier user-entered identifier (e.g., "admin" or "admin@tdtu.edu.vn")
      * @return Firebase Auth email string, or null if unresolvable
      */
     String resolveAuthEmail(String identifier);

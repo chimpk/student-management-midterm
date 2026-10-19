@@ -14,7 +14,7 @@
         app:cardCornerRadius="12dp"
         app:cardElevation="2dp"
         app:strokeWidth="1dp"
-        app:strokeColor="?attr/colorOutline">
+        app:strokeColor="?attr/colorControlNormal">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
-                android:background="?attr/colorOutline" />
+                android:background="?attr/colorControlNormal" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,7 +103,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_certificate"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_add_certificate"
