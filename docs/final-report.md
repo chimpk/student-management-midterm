@@ -1,7 +1,9 @@
 # BÁO CÁO BÀI TẬP GIỮA KỲ
 ## Ứng dụng di động quản lý thông tin sinh viên với Firebase
 
-> **Trạng thái:** BÁO CÁO TIẾN ĐỘ THỰC HIỆN — Hoàn thành toàn diện phạm vi Thành viên 1 (Tasks 1–8)
+> **CẢNH BÁO ĐẦU RA:** File này hiện là bản nháp tiếng Việt. `Mid-term.pdf` bắt buộc báo cáo nộp cuối là PDF **bằng tiếng Anh** theo mẫu chung của Khoa; không được xuất file này để nộp khi chưa dịch, biên tập và bổ sung đủ bìa/mục lục/lời cảm ơn/phụ lục/tài liệu tham khảo.
+
+> **Trạng thái:** BÁO CÁO TIẾN ĐỘ THỰC HIỆN — Phạm vi Thành viên 1 còn thiếu backend tạo/xóa danh tính Firebase Auth và nghiệm thu live
 >
 > **Học phần:** Phát triển ứng dụng di động (Mobile Application Development - Mã HP: 503074)
 >
@@ -35,11 +37,11 @@
 
 Đề tài xây dựng ứng dụng Android quản lý thông tin sinh viên thời gian thực trên nền tảng Google Firebase. Ứng dụng áp dụng kiến trúc **MVVM (Model - View - ViewModel)** kết hợp **ViewBinding**, **LiveData**, **Material Components**, đảm bảo tính tách bạch tầng dữ liệu, tính khả thử (testability) và an toàn bảo mật nhiều lớp.
 
-Đến thời điểm hiện tại, **Thành viên 1 đã hoàn thành trọn vẹn 100% phạm vi công việc cam kết (Tasks 1 đến 8)**:
-- Toàn bộ 16 bộ test suite kiểm thử đơn vị với **146 test cases** đã được xây dựng và **PASS 100%** trên cả 2 cấu hình build `debug` và `release`.
+Đến thời điểm hiện tại, **phần lớn phạm vi Thành viên 1 đã có code và unit test, nhưng chưa thể kết luận hoàn thành 100%**:
+- 16 test suite / 146 unit tests thuộc phạm vi Thành viên 1 đã có trong bộ test Debug; kết quả fresh được ghi ở Mục 4.
 - Toàn bộ quy tắc bảo mật `firestore.rules` và `storage.rules` được thiết kế chặt chẽ theo nguyên lý **phòng vệ đa tầng (Defense in Depth)** và **thất bại an toàn (Fail-Closed)**.
 - Giao diện người dùng được chuẩn hóa bằng tài nguyên chuỗi (`strings.xml`), đạt chỉ số **0 cảnh báo scoped lint** cho `HardcodedText`, `SetTextI18n` và `DefaultLocale`.
-- Phân định ranh giới rõ ràng: Các màn hình thuộc phạm vi Thành viên 2 (Sinh viên, Chứng chỉ, CSV) hiện được điều hướng an toàn qua các Placeholder Fragment có gắn nhãn `TODO(member-2)` rõ ràng, không làm phát sinh mã nguồn ngoài phạm vi phân rã.
+- Phần Thành viên 2 hiện đã điều hướng tới `StudentListFragment`, nhưng Student/Certificate provider mặc định vẫn là in-memory mock; chưa phải bằng chứng Firestore realtime/live.
 
 ---
 
@@ -63,8 +65,8 @@
 ## 2. Chi tiết Triển khai Module Thành viên 1 (Tasks 1–8)
 
 ### 2.1. Module Xác thực & Quản lý phiên (Authentication & Session Security - Tasks 1, 2)
-- **Cơ chế phân giải tài khoản:** Ứng dụng triển khai lớp `DefaultUsernameAuthResolver` ánh xạ tên đăng nhập hợp lệ sang định danh kỹ thuật Firebase Auth dạng `username@tdtu.edu.vn`. Người dùng chỉ cần nhập username ngắn gọn và mật khẩu trên giao diện `LoginActivity`.
-- **Chính sách Fail-Closed đối với Email:** Mọi chuỗi nhập chứa ký tự `@` (bao gồm cả email bí danh và email có tenant domain) đều bị từ chối đăng nhập (`return null`) tại client. Quyết định kiến trúc này bảo đảm tính an toàn tuyệt đối khi chưa có dịch vụ backend directory tin cậy kiểm tra tính ánh xạ 1-1 giữa email và username.
+- **Cơ chế phân giải tài khoản:** `DefaultUsernameAuthResolver` nhận username hoặc email hợp lệ. Username được ánh xạ sang định danh Firebase Auth `username@<technical-domain>`; source hiện dùng `tdtu.edu.vn` làm giá trị demo mặc định nhưng constructor cho phép cấu hình domain khác. Domain kỹ thuật này không giới hạn trường email hồ sơ.
+- **Email tùy chọn, không khóa domain:** Chuỗi có `@` được chấp nhận khi đúng định dạng email và được chuyển sang chữ thường trước khi gửi Firebase Auth. Email hồ sơ có thể thuộc mọi domain hợp lệ; tài khoản không có email vẫn đăng nhập bằng username.
 - **Ranh giới xác thực tài liệu người dùng (`UserDocumentValidator`):**
   - Kiểm tra case sensitivity nghiêm ngặt: Vai trò bắt buộc khớp `admin`, `manager`, `employee`; Trạng thái bắt buộc khớp `Normal`, `Locked`.
   - Tuổi (`age`) bắt buộc là kiểu số nguyên trong khoảng từ `18` đến `60`, được kiểm tra trên kiểu `long` 64-bit trước khi chuyển sang `int` để ngăn ngừa hoàn toàn lỗi tràn số (integer overflow bypass).
@@ -92,8 +94,9 @@
 - **Giao diện & Thao tác quản trị (`UserListFragment`, `UserManagementViewModel`):**
   - Hiển thị danh sách người dùng realtime qua `RecyclerView` với `MaterialCardView`, chip màu phân biệt vai trò và trạng thái.
   - Chức năng Khóa/Mở khóa tài khoản với AlertDialog xác nhận hành động.
-  - Chức năng Xóa hồ sơ: Có hộp thoại cảnh báo nêu rõ thao tác chỉ xóa tài liệu Firestore `users/{uid}`, tài khoản Firebase Auth vẫn tồn tại trên hệ thống và cần backend/Admin SDK để xóa hoàn toàn.
-  - Chức năng Tạo người dùng: Sử dụng `firestore.runTransaction()` kiểm tra tiên quyết (precondition check) đảm bảo tài liệu chưa tồn tại trước khi tạo nhằm ngăn chặn việc ghi đè (overwrite) dữ liệu; ghi chú rõ ràng notice `[TODO(auth-backend)]` về việc cấp phát Auth UID từ backend.
+  - Chức năng Xóa hồ sơ hiện tại: Có hộp thoại cảnh báo nêu rõ thao tác mới xóa tài liệu Firestore `users/{uid}`; xóa danh tính Firebase Auth hoàn toàn vẫn cần backend/Admin SDK.
+  - Chức năng Tạo người dùng mục tiêu: Admin nhập username, mật khẩu, vai trò và hồ sơ trên ứng dụng; backend/Cloud Function xác minh Admin, tạo Firebase Auth bằng Admin SDK rồi tạo `users/{uid}` mà không làm đổi phiên Admin.
+  - **Giới hạn implementation hiện tại:** `UserRepository.createUserProfile()` mới tạo Firestore profile cho UID đã được cấp sẵn và chưa gọi backend tạo Firebase Auth. Vì vậy FR-USR-02 phải ghi `NOT IMPLEMENTED END-TO-END` cho tới khi có bằng chứng tạo được cả Auth và Firestore từ thao tác Admin.
   - Cơ chế tự bảo vệ: Vô hiệu hóa nút Khóa và Xóa đối với chính tài khoản Admin đang đăng nhập.
 
 ### 2.5. Phân hệ Hồ sơ cá nhân & Tải ảnh đại diện (Profile & Avatar - Task 6)
@@ -136,9 +139,9 @@ Theo đúng quy ước phân rã trách nhiệm giữa hai thành viên, các ch
 3. **Đồng bộ thời gian thực:** Realtime listener cho bộ sưu tập sinh viên và chứng chỉ.
 
 **Hiện trạng tích hợp trên nhánh mã nguồn:**
-- Thành viên 1 đã thiết lập sẵn các điểm đến điều hướng trong `nav_graph.xml` và `main_menu.xml`.
-- Điểm đến `nav_student_list` hiện liên kết với [`StudentPlaceholderFragment`](file:///d:/Study/mobile/MidTerm/app/src/main/java/com/example/studentmgmt/ui/placeholder/StudentPlaceholderFragment.java) hiển thị thông báo rõ ràng: `TODO(member-2): Chức năng danh sách sinh viên, chi tiết và CRUD do Thành viên 2 phụ trách.`
-- Toàn bộ mã nguồn hiện tại không can thiệp, không tạo class giả mạo hay xóa bỏ bất kỳ tài nguyên nào thuộc thẩm quyền của Thành viên 2.
+- `nav_student_list` hiện liên kết trực tiếp với `StudentListFragment`, không còn dùng `StudentPlaceholderFragment` cho route này.
+- `StudentRepositoryProvider` và `CertificateRepositoryProvider` hiện mặc định khởi tạo `MockStudentRepository`/`MockCertificateRepository`. Vì vậy CRUD hiện chỉ được chứng minh ở mức demo in-memory và unit test, chưa phải tích hợp Firestore realtime.
+- Các yêu cầu bắt buộc còn thiếu ở phần này: sắp xếp sinh viên; sửa chứng chỉ từ UI; import/export sinh viên bằng file thật; import/export chứng chỉ. `StudentCsvHelper` mới xử lý chuỗi CSV, UI import còn dùng sample hardcode và export chỉ hiển thị Toast.
 
 ---
 
@@ -181,7 +184,7 @@ Lệnh kiểm thử fresh toàn diện đã được thực thi trên môi trư�
 | 18 | `CertificateRepositoryTest` | Mem 2 | 4 | **PASS** | CRUD chứng chỉ trong subcollection (Auto ID, Add, Update, Delete) |
 | 19 | `StudentDetailViewModelTest` | Mem 2 | 4 | **PASS** | Chi tiết SV, nạp chứng chỉ, trạng thái rỗng 0 chứng chỉ, Add/Delete chứng chỉ |
 | 20 | `StudentModelAndCsvTest` | Mem 2 | 4 | **PASS** | Model Student/Certificate getters-setters, CSV export UTF-8 BOM/import helper |
-| 21 | `DefaultUsernameAuthResolverTest` | Mem 1 | 3 | **PASS** | Kiểm tra ánh xạ username sang tenant domain, fail-closed khi chứa ký tự `@` |
+| 21 | `DefaultUsernameAuthResolverTest` | Mem 1 | 3 | **PASS** | Kiểm tra ánh xạ username sang domain kỹ thuật, chấp nhận email hợp lệ thuộc domain bất kỳ và từ chối identifier sai định dạng |
 | **TỔNG CỘNG** | **21 Suites** | **Mem 1 + 2** | **170 Tests** | **PASS 100%** | **0 failures, 0 errors, 0 skipped** |
 
 ### 4.3. Minh bạch Hiện trạng Môi trường & Các Hạng mục Chưa Kiểm thử (NOT TESTED)
@@ -190,11 +193,11 @@ Nhằm đảm bảo tính trung thực tuyệt đối trong báo cáo khoa học
 | Hạng mục kiểm thử | Trạng thái hiện tại | Nguyên nhân / Kế hoạch thực hiện |
 |---|:---:|---|
 | **Cấu hình Firebase Client** | **PASS** | Tệp `google-services.json` đã khớp Project ID `mid-moblie` và Package `com.example.studentmgmt`, được bảo vệ bởi `.gitignore`. |
-| **Kiểm thử đơn vị tự động** | **PASS** | 146 tests đã thực thi và vượt qua 100% trên runner Java/Gradle. |
+| **Kiểm thử đơn vị tự động** | **PASS** | 170 tests Debug đã thực thi: 146 thuộc Mem 1 và 24 thuộc Mem 2. |
 | **Firebase Rules Emulator** | **NOT TESTED** | Lệnh CLI `firebase` chưa được cài đặt trong biến môi trường PATH máy phát triển. |
 | **Thiết bị thật / Máy ảo AVD** | **NOT TESTED** | Chưa kết nối thiết bị online tại thời điểm chạy gate tự động (`adb devices` rỗng). |
 | **Giao diện Visual Light / Dark** | **NOT TESTED** | Cần khởi chạy trực tiếp trên màn hình thiết bị để chụp ảnh minh chứng visual. |
-| **Firebase Live Backend** | **NOT TESTED** | Firebase Cloud Storage bucket chưa được cấp phát trên Console (giới hạn gói cước Free); ứng dụng sử dụng cơ chế local private storage fallback cho ảnh đại diện. |
+| **Firebase Live Backend** | **NOT TESTED / CHƯA ĐỦ** | Storage live chưa có bằng chứng; backend Admin SDK cho tạo/xóa danh tính Auth cũng chưa được triển khai. |
 | **Kịch bản Thành viên 2 (Student/CSV)** | **NOT TESTED** | Giữ nguyên độc lập theo đúng thỏa thuận phân rã trách nhiệm. |
 
 ---
@@ -222,13 +225,15 @@ Nhằm đảm bảo tính trung thực tuyệt đối trong báo cáo khoa học
    - Thay thế các Placeholder Fragment bằng Fragment thực tế của Thành viên 2 trong `nav_graph.xml`.
 2. **Triển khai Firebase Live:**
    - Cấp phát và cấu hình Firebase Storage Bucket trên Firebase Console (hoặc cấu hình nâng cấp nếu cần thiết).
-   - Cấp phát 3 tài khoản demo chuẩn: `admin`, `manager`, `employee` trên Firebase Authentication và Firestore.
+   - Triển khai backend/Cloud Function Admin SDK cho luồng Admin tạo/xóa tài khoản. Trước khi có backend, chỉ cấp thủ công 3 tài khoản demo `admin`, `manager`, `employee` và gắn nhãn `MANUALLY PROVISIONED`.
    - Triển khai `firestore.rules` và `storage.rules` lên máy chủ Firebase Live.
 3. **Chạy nghiệm thu trên Thiết bị thật:**
-   - Chạy toàn bộ 27 kịch bản kiểm thử trên máy ảo Pixel và thiết bị Android thật.
+   - Chạy toàn bộ 28 kịch bản kiểm thử trên máy ảo Pixel và thiết bị Android thật.
    - Chụp ảnh màn hình giao diện ở cả hai chế độ Light Theme và Dark Theme.
    - Quay video demo thực tế có thuyết minh kịch bản.
 4. **Hoàn thiện Báo cáo:**
+   - Chuyển toàn bộ nội dung sang tiếng Anh và định dạng theo mẫu chung của Khoa.
+   - Bổ sung phần kiến thức Firebase Firestore đã học, phân tích/đánh giá và chi tiết cách xây dựng ứng dụng; không chỉ liệt kê code.
    - Điền đầy đủ họ tên Giảng viên hướng dẫn và Mã lớp học phần / Nhóm.
    - Bổ sung đường dẫn video demo và xuất tệp PDF chính thức nộp bài.
 
@@ -247,12 +252,13 @@ Nhằm đảm bảo tính trung thực tuyệt đối trong báo cáo khoa học
 ## Checklist Bàn giao Báo cáo Task 9
 
 - [x] Điền đầy đủ thông tin định danh Thành viên A và Thành viên B kèm MSSV chính xác.
-- [x] Báo cáo trung thực, đầy đủ toàn bộ 8 Task của Thành viên 1 dựa trên mã nguồn thực tế.
+- [x] Báo cáo nêu rõ phần đã có, phần chưa có backend và phần chưa nghiệm thu live của Thành viên 1.
 - [x] Bảo vệ ranh giới phân rã: Không viết thay hoặc chỉnh sửa phần Student/Certificate/CSV của Thành viên 2.
-- [x] Phản ánh chính xác các quyết định kiến trúc: Username mapping, fail-closed email alias, session forced logout, append-only login history, local storage fallback.
-- [x] Đưa ra số liệu kiểm thử thực tế từ XML test runner: 16 suites, 146 debug unit tests, 146 release unit tests, 0 lint fatal errors.
+- [x] Phản ánh chính xác các quyết định kiến trúc: Username mapping qua domain kỹ thuật cấu hình được, email tùy chọn không khóa domain, session forced logout, append-only login history và local storage fallback.
+- [x] Đưa ra số liệu kiểm thử Debug: 21 suites / 170 tests toàn dự án, trong đó 16 suites / 146 tests thuộc Mem 1.
 - [x] Ghi rõ các hạng mục `NOT TESTED` (Firebase live, Rules emulator, thiết bị thật, giao diện visual).
 - [x] Đặt nhãn placeholder rõ ràng cho giảng viên, lớp học phần, Storage bucket, ảnh chụp và video demo.
 - [ ] Điền thông tin Giảng viên hướng dẫn và Lớp học phần khi nộp bài chính thức.
+- [ ] Dịch và biên tập toàn bộ báo cáo sang tiếng Anh theo mẫu Khoa.
 - [ ] Chèn ảnh chụp màn hình và video demo sau khi nghiệm thu thiết bị thật cùng Thành viên 2.
 - [ ] Xuất tệp PDF báo cáo nộp môn học.

@@ -105,3 +105,5 @@ Các mục sau đây là chi tiết kỹ thuật hoặc luồng hành vi mà b�
 9. `TODO(design-motion-storage)`: **Kho lưu trữ công tắc Cài đặt hiệu ứng:** Đề xuất sử dụng `SharedPreferences` hoặc Jetpack `DataStore` (Khuyến nghị: `SharedPreferences` để đọc đồng bộ tức thì lúc Application Start, tránh giật chớp trạng thái UI).
 10. `TODO(design-settings-location)`: **Vị trí bố trí màn hình Cài đặt hiệu ứng:** Tích hợp trực tiếp thành một khối Card trong màn Hồ sơ cá nhân (S17/S35) hay tạo màn hình con riêng mở từ icon bánh răng AppBar? (Khuyến nghị: Tích hợp trực tiếp trong Hồ sơ cá nhân).
 11. `TODO(design-spring-dependency)`: **Duyệt Dependency cho Spring Animation:** Dự án hiện chưa có thư viện `androidx.dynamicanimation`. Cần quyết định bổ sung dependency này hay sử dụng phương án thay thế `OvershootInterpolator` có sẵn trong SDK tiêu chuẩn (Khuyến nghị: Dùng `OvershootInterpolator`).
+
+> **Phụ thuộc implementation, không phải quyết định thiết kế:** Frame Add User suy ra chỉ được coi là hoàn chỉnh khi đã nối backend/Cloud Function dùng Admin SDK để tạo cả Firebase Auth và `users/{uid}`. Client không tự tạo Auth và không yêu cầu Admin nhập UID.

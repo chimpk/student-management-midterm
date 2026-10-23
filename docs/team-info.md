@@ -1,6 +1,6 @@
 # Thông tin nhóm và môi trường bàn giao sản phẩm
 
-> **Trạng thái:** BẢN NHÁP. Đây là nơi tập trung thông tin định danh và môi trường dự kiến. Trước khi nộp, phải hoàn tất các trường `[BẮT BUỘC ĐIỀN]` và đối chiếu với báo cáo, slide, video.
+> **Trạng thái:** BẢN NHÁP. Đây là nơi tập trung thông tin định danh và môi trường dự kiến. Trước khi nộp, phải hoàn tất các trường `[BẮT BUỘC ĐIỀN]`, đối chiếu với báo cáo/video và xác nhận lại năm học với giảng viên vì PDF đề gốc ghi 2023–2024 còn hồ sơ này đang ghi 2026–2027.
 
 ---
 
@@ -38,7 +38,7 @@
 | **Firestore Location** | `asia-southeast1 (Singapore)` | Vị trí máy chủ cơ sở dữ liệu |
 | **Storage Bucket** | `Local Private Storage Fallback` | Hỗ trợ lưu trữ cục bộ khi gói Spark chưa cấp phát bucket |
 | **Gói dịch vụ** | Spark (Miễn phí) | Gói dịch vụ Firebase hiện tại |
-| **Trạng thái Security Rules** | Đã sẵn sàng (`firestore.rules` & `storage.rules`) | Đạt chuẩn 170/170 bài kiểm thử tự động (21 test suites) |
+| **Trạng thái Security Rules** | Có source (`firestore.rules` & `storage.rules`) | Có 9 kiểm tra tĩnh; chưa có bằng chứng Rules Emulator/live deploy |
 
 ---
 
@@ -65,7 +65,7 @@ Khi tài khoản có email, người dùng có thể nhập email thay username.
 | **Thiết bị thử nghiệm 1** | Google Pixel Emulator – Android 14.0 (API 34) |
 | **Thiết bị thử nghiệm 2** | Android Device / Tablet – Android 12.0 (API 31) |
 | **Kiểm thử tự động hiện có** | 170 Unit Tests qua 21 test suites (146 tests Mem 1, 24 tests Mem 2 - PASS 100%) |
-| **Mục tiêu kiểm thử hệ thống** | 27 kịch bản; trạng thái hiện tại: Chờ test |
+| **Mục tiêu kiểm thử hệ thống** | 28 kịch bản; trạng thái hiện tại: Chờ test |
 
 ## 6. Checklist thông tin bắt buộc trước khi nộp
 
@@ -76,4 +76,7 @@ Khi tài khoản có email, người dùng có thể nhập email thay username.
 - [ ] Storage Bucket và gói dịch vụ thực tế, hoặc ghi rõ chưa sử dụng Storage.
 - [ ] Trạng thái triển khai Security Rules.
 - [ ] Xác nhận ba username demo đã được cấp; ghi email chỉ với tài khoản có sử dụng email.
+- [ ] Báo cáo cuối là PDF **bằng tiếng Anh**, theo mẫu Khoa, có bìa, mục lục, lời cảm ơn, phụ lục, tài liệu tham khảo và hình/bảng/sơ đồ có chú thích/nguồn.
+- [ ] Video có âm thanh, do thành viên nhóm trình bày, không quá 20 phút và tối thiểu 720p.
+- [ ] Gói nộp có đủ source code, thư viện/cấu hình, database cần thiết, hướng dẫn chạy trên máy khác và tài khoản Admin chấm bài.
 - [ ] Thiết bị, ngày chạy và kết quả kiểm thử thực tế.

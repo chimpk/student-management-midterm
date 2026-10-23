@@ -186,7 +186,7 @@ Danh sách    viên         chỉ & Tìm    Xuất CSV    & Viết BC    Video D
      - Mem 1 demo phần: Đăng nhập, Admin khóa user, đổi avatar, xem lịch sử đăng nhập.
      - Mem 2 demo phần: Xem danh sách sinh viên realtime, tìm kiếm, thêm/sửa/xóa sinh viên, thêm chứng chỉ, xuất CSV ra Excel và nạp CSV vào hệ thống.
 - **Tiêu chí nghiệm thu:**
-  - Toàn bộ 27 kịch bản kiểm thử trong `test-and-setup.md` đều có kết quả `PASS`.
+  - Toàn bộ 28 kịch bản kiểm thử trong `test-and-setup.md` đều có kết quả `PASS`.
   - Có đường link video demo hoàn chỉnh nộp cùng mã nguồn.
 
 ---

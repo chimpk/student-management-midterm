@@ -43,7 +43,7 @@ Quy ước giá trị lưu trữ:
 | `avatarUrl` | string | ✖ | `"https://firebasestorage.googleapis.com/..."` |
 | `createdAt` | timestamp | ✔ | `2026-10-08T08:00:00Z` |
 
-`name`, `age`, `phone`, `status` là các trường mà đề bài yêu cầu. `username` là định danh đăng nhập chính. `email` chỉ là thông tin bổ sung; khi có, ứng dụng có thể dùng nó làm bí danh đăng nhập. `role` phục vụ phân quyền. Tính duy nhất của username/email phải được bảo đảm bởi luồng cấp tài khoản trong môi trường tin cậy; Security Rules chỉ kiểm tra hình dạng của từng document.
+`name`, `age`, `phone`, `status` là các trường mà đề bài yêu cầu. `username` là định danh đăng nhập chính. `email` chỉ là thông tin bổ sung; khi có, ứng dụng có thể dùng nó làm bí danh đăng nhập và chấp nhận mọi domain hợp lệ. Domain kỹ thuật mà Firebase Auth có thể dùng để ánh xạ username là cấu hình nội bộ, không phải giá trị bắt buộc của trường `email`. `role` phục vụ phân quyền. Tính duy nhất của username/email phải được bảo đảm bởi luồng cấp tài khoản trong môi trường tin cậy; Security Rules chỉ kiểm tra hình dạng của từng document.
 
 ```json
 {
@@ -147,7 +147,7 @@ Rules hiện tại đã bao phủ `users`, `loginHistory`, `students`, `certific
 - **Realtime listener:** đăng ký `addSnapshotListener()` trong Repository, gọi `ListenerRegistration.remove()` khi ViewModel bị hủy (`onCleared()`).
 - **Ghi theo lô:** import CSV ghi tối đa **400 document mỗi batch** (`WriteBatch`) để chừa dư địa cho các thao tác phụ.
 - **Offline:** bật persistence qua `setPersistenceEnabled(true)` (hoặc cài đặt tương đương của SDK đang dùng).
-- **Cấp tài khoản demo:** chuẩn bị ba tài khoản `admin/admin@123456`, `manager/manager@123456`, `employee/employee@123456` trong môi trường tin cậy, rồi tạo `users/{uid}` với username và role tương ứng. Email có thể bỏ trống; nếu có thì được dùng như bí danh đăng nhập. Không đưa mật khẩu môi trường thật vào mã nguồn.
+- **Cấp tài khoản demo:** Admin đầu tiên được tạo trong môi trường tin cậy. Manager/Employee nên được Admin tạo từ ứng dụng thông qua backend Admin SDK; khi backend chưa sẵn sàng, có thể cấp sẵn trong Firebase Console để phục vụ demo. Tạo `users/{uid}` với username và role tương ứng. Email có thể bỏ trống; nếu có thì nhận mọi domain hợp lệ và được dùng như bí danh đăng nhập. Không đưa mật khẩu môi trường thật vào mã nguồn.
 - **Giới hạn Firebase Auth:** provider Email/Password yêu cầu mật khẩu tối thiểu 6 ký tự; mật khẩu demo dạng `<username>@123456` đã đáp ứng yêu cầu này.
-- **Xóa người dùng:** chỉ xóa document `users/{uid}`. Tài khoản Firebase Auth vẫn tồn tại (xóa Auth cần Admin SDK hoặc Cloud Functions), nhưng app từ chối đăng nhập khi không tìm thấy document (FR-ACC-01).
+- **Xóa người dùng:** implementation Android hiện tại chỉ xóa document `users/{uid}`; app sẽ từ chối đăng nhập khi không tìm thấy document (FR-ACC-01). Xóa danh tính Firebase Auth hoàn toàn là trách nhiệm của backend Admin SDK/Cloud Functions, không phải client SDK.
 - **Xóa sinh viên:** phải xóa cả subcollection `certificates` (Firestore không tự xóa subcollection).

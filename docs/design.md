@@ -38,13 +38,13 @@ Dự án áp dụng mô hình tổ chức **Package-by-Feature** kết hợp v�
 |---|---|---|
 | `model/` | `AppUser`, `Student`, `Certificate`, `LoginRecord`, `UiState<T>` | Định nghĩa thực thể dữ liệu nghiệp vụ và trạng thái giao diện chuẩn (`LOADING`, `CONTENT`, `EMPTY`, `ERROR`). Đổi tên `User` thành `AppUser` để tránh xung đột với `FirebaseUser`. |
 | `data/` | **Interfaces:** `AuthRepository`, `UserRepository`, `StudentRepository`, `CertificateRepository`, `ProfileRepository`, `LoginHistoryRepository`<br>**Providers:** `*Provider.java` (Dependency Inversion)<br>**Firebase Impl:** `FirebaseAuthRepository`, `FirestoreUserRepository`, `FirebaseProfileRepository`, `FirebaseLoginHistoryRepository`<br>**Mock Impl:** `MockStudentRepository`, `MockCertificateRepository`<br>**Validators:** `UserDocumentValidator`, `DefaultUsernameAuthResolver` | Tầng trừu tượng dữ liệu và truy cập Firebase Cloud / bộ nhớ đệm in-memory. Cung cấp cơ chế Provider để dễ dàng mock dữ liệu khi chạy Unit Tests độc lập. |
-| `ui/auth/` | `LoginActivity`, `LoginViewModel` | Màn hình đăng nhập bằng username/mật khẩu, xử lý trạng thái đăng nhập, xác thực tenant domain và quản lý phiên. |
+| `ui/auth/` | `LoginActivity`, `LoginViewModel` | Màn hình đăng nhập bằng username/mật khẩu hoặc email tùy chọn, xử lý trạng thái đăng nhập và quản lý phiên. Domain kỹ thuật để ánh xạ username là cấu hình nội bộ, không giới hạn domain email hồ sơ. |
 | `ui/student/` | `StudentListFragment`, `StudentDetailFragment`, `StudentListViewModel`, `StudentDetailViewModel`, `StudentAdapter`, `CertificateAdapter` | Danh sách sinh viên realtime, tìm kiếm tiếng Việt có dấu, lọc theo Khoa, xem chi tiết và danh sách chứng chỉ con. Form thêm/sửa tích hợp qua Material Dialog (`dialog_student_add_edit.xml`, `dialog_certificate_add.xml`). |
 | `ui/user/` | `UserListFragment`, `UserManagementViewModel`, `UserAdapter`, `UserManagementPolicy` | Danh sách người dùng dành cho Admin, đổi vai trò, khóa/mở khóa tài khoản, form thêm/sửa qua `dialog_user_edit.xml`. |
 | `ui/profile/` | `ProfileFragment`, `ProfileViewModel`, `AvatarUploadPolicy` | Xem hồ sơ cá nhân, đổi ảnh đại diện (giới hạn < 5MB, JPG/PNG), hỗ trợ Local Storage Fallback khi chưa kích hoạt Cloud Storage bucket. |
 | `ui/history/` | `LoginHistoryFragment`, `LoginHistoryViewModel`, `LoginHistoryAdapter`, `LoginHistoryPolicy` | Ghi nhận thời gian thực và xem lịch sử đăng nhập (Admin xem toàn bộ, người dùng thường xem của chính mình). |
 | `ui/navigation/` | `RoleNavigationPolicy`, `SessionSecurityPolicy` | Chính sách phân quyền menu hiển thị theo 3 vai trò và cơ chế lắng nghe realtime để cưỡng chế đăng xuất ngay khi tài khoản bị khóa (`Locked`). |
-| `ui/placeholder/` | `StudentPlaceholderFragment`, `UserManagementPlaceholderFragment`, `ProfilePlaceholderFragment` | Các Fragment giữ chỗ điều hướng giúp đảm bảo ranh giới làm việc độc lập và ứng dụng luôn build thành công giữa 2 thành viên. |
+| `ui/placeholder/` | `StudentPlaceholderFragment`, `UserManagementPlaceholderFragment`, `ProfilePlaceholderFragment` | Mã giữ chỗ legacy còn trong source; `nav_student_list` hiện trỏ tới `StudentListFragment`, không trỏ tới `StudentPlaceholderFragment`. Không dùng các class này làm bằng chứng chức năng đã hoàn thành. |
 | `utils/` | `ValidationUtils`, `StudentCsvHelper` | Kiểm tra định dạng MSSV (`KYYTSSSS`), mã lớp, phone, username; Xử lý xuất/nhập tệp CSV chuẩn UTF-8 có BOM. |
 
 > [!NOTE]
@@ -85,7 +85,7 @@ flowchart TD
 - **Ẩn chức năng theo vai trò:** `RoleNavigationPolicy` quyết định hiện hoặc ẩn menu; giao diện ẩn nút thêm/sửa/xóa đối với vai trò `Employee`. Tầng dữ liệu đám mây được bảo vệ bởi `firestore.rules`.
 - **Kiểm tra `Locked`:** Sau khi đăng nhập Auth, `SessionSecurityPolicy` kiểm tra ngay `users/{uid}.status`. Nếu là `Locked`, hệ thống cưỡng chế đăng xuất ngay và quay lại màn hình Login.
 - **Cấp Admin đầu tiên:** Được tạo từ Firebase Console hoặc môi trường máy chủ tin cậy; ứng dụng client không tự cấp quyền Admin.
-- **Admin tạo người dùng:** Username là bắt buộc, email là tùy chọn; `UserDocumentValidator` kiểm tra nghiêm ngặt giới hạn tuổi 18–60 (trên kiểu 64-bit tránh tràn số), số điện thoại 10 số.
+- **Admin tạo người dùng:** Admin thao tác trên ứng dụng; backend/Cloud Function tin cậy xác minh quyền Admin, tạo Firebase Auth bằng Admin SDK rồi tạo `users/{uid}`. Username là bắt buộc, email là tùy chọn và nhận mọi domain hợp lệ; client không lưu mật khẩu hoặc tự tạo Auth làm đổi phiên Admin.
 - **Tìm kiếm/sắp xếp:** Xử lý tức thì trên client trên danh sách lắng nghe snapshot theo thời gian thực (hỗ trợ Unicode tiếng Việt chuẩn).
 - **Trạng thái ngoại tuyến:** Tự động lưu cache Firestore; hiển thị thông báo và nút "Thử lại" khi mất kết nối mạng.
 

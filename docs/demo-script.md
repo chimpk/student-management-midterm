@@ -8,7 +8,7 @@
 
 ## 1. Nguyên tắc sử dụng
 
-- Không nói “đã hoàn thành”, “đạt 100%” hoặc “27/27 test đạt” khi chưa có bằng chứng.
+- Không nói “đã hoàn thành”, “đạt 100%” hoặc “28/28 kịch bản đạt” khi chưa có bằng chứng.
 - Nếu chức năng chưa tồn tại, chuyển phần đó thành trình bày thiết kế hoặc bỏ khỏi video.
 - Không hiển thị khóa dịch vụ, thông tin thanh toán hoặc dữ liệu cá nhân thật.
 - Ghi rõ phiên bản, ngày quay, thiết bị và Firebase Project ID dùng cho demo.
@@ -21,9 +21,9 @@
 - Ba tài khoản demo dự kiến được cấp từ môi trường đáng tin cậy, không seed hoặc nâng quyền từ ứng dụng:
 
 ```text
-Admin: admin / admin
-Manager: manager / manager
-Employee: employee / employee
+Admin: admin / admin@123456
+Manager: manager / manager@123456
+Employee: employee / employee@123456
 ```
 
 - Email không bắt buộc. Nếu tài khoản có email, có thể dùng email thay username khi đăng nhập.
@@ -62,7 +62,7 @@ Chỉ thực hiện nếu chức năng đã triển khai:
 
 ### 08:30–11:00 — Quản lý người dùng
 
-Chỉ thực hiện nếu chức năng đã triển khai: xem danh sách, kiểm tra dữ liệu sai, tạo tài khoản Manager/Employee, khóa/mở khóa và xem lịch sử đăng nhập.
+Chỉ demo tạo tài khoản Manager/Employee khi backend/Cloud Function Admin SDK đã được triển khai: Admin nhập thông tin trên ứng dụng, backend tạo Firebase Auth và `users/{uid}`, sau đó tài khoản mới đăng nhập được. Tiếp tục demo sửa hồ sơ và xóa tài khoản; sau khi xóa phải không còn cả Auth lẫn `users/{uid}`. Nếu backend chưa sẵn sàng, nói rõ `NOT IMPLEMENTED` và chỉ demo tài khoản đã được cấp sẵn; không trình bày thao tác chỉ tạo/xóa Firestore profile là quản lý tài khoản hoàn chỉnh.
 
 ### 11:00–14:30 — Sinh viên và chứng chỉ
 
@@ -71,7 +71,7 @@ Chỉ thực hiện nếu chức năng đã triển khai:
 1. Thêm sinh viên với MSSV `524H0123` và mã lớp hợp lệ.
 2. Thử MSSV sai cấu trúc và xác minh ứng dụng từ chối.
 3. Sửa thông tin không bao gồm GPA.
-4. Thêm chứng chỉ, tìm kiếm tên tiếng Việt và sắp xếp theo tên.
+4. Thêm rồi sửa chứng chỉ; tìm kiếm tên tiếng Việt và sắp xếp danh sách sinh viên.
 5. Dùng Employee để xác minh không có quyền ghi.
 
 ### 14:30–16:30 — Nhập và xuất CSV
@@ -79,7 +79,8 @@ Chỉ thực hiện nếu chức năng đã triển khai:
 1. Import file sinh viên mẫu.
 2. Import file lỗi và chỉ ra lỗi theo dòng.
 3. Giải thích cách chia tối đa 400 thao tác ghi mỗi batch.
-4. Export CSV và kiểm tra UTF-8, số cột, số dòng.
+4. Export CSV sinh viên và kiểm tra UTF-8, số cột, số dòng.
+5. Import và export chứng chỉ bằng file CSV; đối chiếu MSSV và nội dung sau khi xuất.
 
 Không đọc sẵn số lượng bản ghi từ kịch bản; nêu số lượng quan sát được từ file và kết quả thực tế.
 
