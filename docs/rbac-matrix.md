@@ -10,7 +10,7 @@
 | **Manager** | Quản lý sinh viên, chứng chỉ và nhập/xuất dữ liệu; không quản lý tài khoản. |
 | **Employee** | Chỉ xem sinh viên và chứng chỉ; được đổi avatar và xem lịch sử đăng nhập của chính mình. |
 
-Admin đầu tiên phải được cấp bằng Firebase Console hoặc Admin SDK/Cloud Functions. Ứng dụng client không được tự tạo hoặc tự nâng quyền thành Admin.
+Admin đầu tiên phải được cấp bằng Firebase Console hoặc Admin SDK/Cloud Functions. Sau khi đăng nhập, Admin được yêu cầu backend tin cậy tạo tài khoản khác từ màn Quản lý người dùng; client không tự bootstrap Admin, không tự nâng quyền và không trực tiếp giữ Admin SDK credential.
 
 ## 2. Ma trận chức năng ứng dụng
 

@@ -25,13 +25,10 @@ public class DefaultUsernameAuthResolverTest {
     }
 
     @Test
-    public void identifiersWithAtSymbol_returnNull_failClosedUntilBackendProvisioned() {
-        // Enforces Finding 3 & Review Round 3: All inputs containing '@' (aliases and tenant domain) must fail-closed
-        assertNull(resolver.resolveAuthEmail("admin@tdtu.edu.vn"));
-        assertNull(resolver.resolveAuthEmail("ADMIN@TDTU.EDU.VN"));
-        assertNull(resolver.resolveAuthEmail("admin@university.edu.vn"));
-        assertNull(resolver.resolveAuthEmail("manager@student.app"));
-        assertNull(resolver.resolveAuthEmail("user123@gmail.com"));
+    public void validEmailAliases_arePassedToFirebaseAuth() {
+        assertEquals("admin@tdtu.edu.vn", resolver.resolveAuthEmail("admin@tdtu.edu.vn"));
+        assertEquals("admin@tdtu.edu.vn", resolver.resolveAuthEmail("  ADMIN@TDTU.EDU.VN  "));
+        assertEquals("manager@student.app", resolver.resolveAuthEmail("manager@student.app"));
     }
 
     @Test
@@ -41,5 +38,7 @@ public class DefaultUsernameAuthResolverTest {
         assertNull(resolver.resolveAuthEmail("   "));
         assertNull(resolver.resolveAuthEmail("ab")); // Too short for username
         assertNull(resolver.resolveAuthEmail("User With Spaces"));
+        assertNull(resolver.resolveAuthEmail("admin@"));
+        assertNull(resolver.resolveAuthEmail("@tdtu.edu.vn"));
     }
 }

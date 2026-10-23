@@ -18,7 +18,7 @@ Tài liệu này quy định việc quản lý và thay thế nhận diện thư
 | **Biểu tượng (Logo)** | Mũ tốt nghiệp (Graduation Cap) | Tạm thời dùng `branding/logo-placeholder.svg` |
 | **Màu chủ đạo (`color_primary`)** | `#3F51B5` (Light) / `#B6BFFF` (Dark) | Tông xanh tím học thuật (Indigo Academic) |
 | **Tên trường** | `Trường Đại học Tôn Đức Thắng (TDTU)` | Khai báo trong `fixtures.json` |
-| **Domain email** | `@student.tdtu.edu.vn` | Khai báo trong `fixtures.json` |
+| **Domain email trong fixture** | `@student.tdtu.edu.vn` | Chỉ là dữ liệu mẫu thương hiệu trong `fixtures.json`; validation thực tế chấp nhận mọi domain email hợp lệ |
 
 ---
 
@@ -51,7 +51,7 @@ Nhằm đảm bảo layout giao diện luôn giữ nguyên và độc lập hoà
 | `docs/design/strings-vi.xml` | `app_name` | Thay thế chuỗi tên ứng dụng chính thức |
 | `docs/design/strings-vi.xml` | `app_tagline` | Thay thế khẩu hiệu chính thức |
 | `docs/design/strings-vi.xml` | `app_subtitle` | Cập nhật phụ đề ứng dụng |
-| `docs/design/fixtures.json` | `_brandVariables.emailDomain` | Thay thế domain email nội bộ trường |
+| `docs/design/fixtures.json` | `_brandVariables.emailDomain` | Thay thế domain email dùng cho dữ liệu minh họa; không biến thành ràng buộc đăng nhập/validation |
 | `docs/design/fixtures.json` | `_brandVariables.universityName`| Thay thế tên trường đại học chính thức |
 | `docs/design/tokens/colors.xml` | `color_primary`, `bg_primary` | Cập nhật mã màu nhận diện thương hiệu nếu thay đổi |
 | `docs/design/branding/` | `logo-placeholder.svg` | Thay thế bằng file SVG vector logo chính thức |

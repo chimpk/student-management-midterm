@@ -204,7 +204,9 @@ Toàn bộ dự án hiện có **170 unit tests** phân bổ trên **21 test sui
 - **Toàn dự án:** 21 suites / 170 unit tests (PASS 100%)
 
 > [!NOTE]
-> Các unit test trên đảm bảo tính toàn vẹn của logic nghiệp vụ, ViewModel state, xử lý dữ liệu CSV và luồng CRUD cục bộ mà không cần kết nối mạng. Song song với đó, **27 kịch bản kiểm thử hệ thống (Manual System Tests)** ở Mục 5 vẫn phải được thực hiện trên thiết bị thật/máy ảo để xác nhận tương tác mạng và Firebase Cloud.
+> Các unit test trên đảm bảo tính toàn vẹn của logic nghiệp vụ, ViewModel state, xử lý dữ liệu CSV và luồng CRUD cục bộ mà không cần kết nối mạng. Song song với đó, **28 kịch bản kiểm thử hệ thống (Manual System Tests)** ở Mục 5 vẫn phải được thực hiện trên thiết bị thật/máy ảo để xác nhận tương tác mạng và Firebase Cloud.
+
+> **Ranh giới bằng chứng:** test helper CSV không chứng minh thao tác chọn/đọc/ghi file trên Android; test repository in-memory không chứng minh Firestore realtime. Import/export sinh viên bằng file, import/export chứng chỉ, sort sinh viên và edit chứng chỉ UI phải có test/kiểm thử riêng sau khi được triển khai.
 
 2. **Biên dịch bộ cài đặt Debug APK:**
    ```powershell
@@ -218,16 +220,17 @@ Toàn bộ dự án hiện có **170 unit tests** phân bổ trên **21 test sui
 
 ---
 
-### 3.2 Cấp ba tài khoản demo từ môi trường đáng tin cậy
+### 3.2 Cấp tài khoản ban đầu và tài khoản do Admin tạo
 
-Không tự seed hoặc tự nâng quyền Admin từ ứng dụng Android. Chuẩn bị bằng môi trường máy chủ đáng tin cậy:
+Không tự seed hoặc tự nâng quyền Admin từ ứng dụng Android.
 
-1. Tạo ba thông tin demo: `admin/admin@123456`, `manager/manager@123456`, `employee/employee@123456`.
-2. Cấp UID bằng cơ chế xác thực đã chọn.
-3. Tạo `users/{uid}` với `username`, `role`, `status: "Normal"` và các trường bắt buộc; `email` có thể bỏ trống.
-4. Đối chiếu UID document với danh tính xác thực trước khi đăng nhập.
+1. Cấp Admin đầu tiên bằng Firebase Console hoặc môi trường máy chủ tin cậy.
+2. Khi backend Admin SDK đã triển khai, đăng nhập Admin và tạo Manager/Employee từ màn Quản lý người dùng. Backend phải tạo Auth trước, dùng UID trả về để tạo `users/{uid}` và rollback Auth nếu bước ghi hồ sơ thất bại.
+3. Khi backend chưa sẵn sàng, có thể cấp ba tài khoản demo thủ công: `admin/admin@123456`, `manager/manager@123456`, `employee/employee@123456`; trạng thái này phải ghi `MANUALLY PROVISIONED`, không tính là bằng chứng chức năng Admin tạo tài khoản đã hoàn tất.
+4. Email hồ sơ có thể bỏ trống; nếu có thì chấp nhận mọi domain hợp lệ. Nếu dùng Email/Password cho ánh xạ username, domain kỹ thuật phải khớp cấu hình `DefaultUsernameAuthResolver` nhưng không ràng buộc email hồ sơ.
+5. Đối chiếu UID document với danh tính xác thực trước khi đăng nhập.
 
-Cách này tránh cho client có đường tự cấp quyền Admin. Chỉ ghi nhận tài khoản demo là đã cấp khi có bằng chứng tạo thành công trên Firebase.
+Cách này tránh cho client có đường tự cấp quyền Admin. Chỉ ghi nhận FR-USR-02 là PASS khi có bằng chứng yêu cầu từ Admin đã tạo thành công cả Firebase Auth và `users/{uid}` qua backend tin cậy.
 
 ---
 
@@ -265,7 +268,7 @@ Cách này tránh cho client có đường tự cấp quyền Admin. Chỉ ghi n
 
 ---
 
-## 5. Bảng Phân Công 27 Kịch Bản Kiểm Thử (Test Cases Plan)
+## 5. Bảng Phân Công 28 Kịch Bản Kiểm Thử (Test Cases Plan)
 
 > **Ghi chú phân công giao việc:** Cột "Người test" được chỉ định theo nguyên tắc kiểm thử chéo độc lập (Thành viên B test code Auth của A; Thành viên A test code Student của B). Kết quả thực tế ban đầu được để trống `– (Chờ test)` để thành viên thực hiện khi hoàn thành tính năng.
 
@@ -278,13 +281,14 @@ Cách này tránh cho client có đường tự cấp quyền Admin. Chỉ ghi n
 | **TC-05** | FR-USR-02 | Admin | Thêm người dùng mới với Tuổi = 17 hoặc 65 | Báo lỗi validation "Tuổi người dùng phải từ 18 đến 60" | – (Chờ test) | Thành viên B | – | Chặn tại Client và Security Rules bảo vệ |
 | **TC-06** | FR-USR-02 | Admin | Thêm người dùng với SĐT 9 chữ số hoặc có chữ cái | Báo lỗi "Số điện thoại phải gồm 10 chữ số hợp lệ" | – (Chờ test) | Thành viên B | – | Regex `^0[0-9]{9}$` kiểm tra chuẩn |
 | **TC-07** | FR-USR-02 | Manager | Cố gắng gọi chức năng hoặc API thêm người dùng | Bị chặn: Giao diện không có nút; Rules trả `PERMISSION_DENIED` | – (Chờ test) | Thành viên B | – | Kiểm thử chéo: Rules từ chối ghi vào `users` |
+| **TC-07A** | FR-USR-02/03/04 | Admin | Tạo Manager hợp lệ → đăng nhập kiểm tra → Admin sửa hồ sơ → xóa tài khoản | Backend tạo cả Firebase Auth và `users/{uid}` mà không đổi phiên Admin; sửa có hiệu lực; sau khi xóa không còn Auth/profile và không đăng nhập lại được | – (Chờ backend) | Thành viên B | – | Không chấp nhận chỉ tạo/xóa Firestore profile là PASS |
 | **TC-08** | FR-USR-05 | Admin | Chuyển trạng thái Manager sang `Locked` | Tài khoản Manager bị đăng xuất hoặc không thể đăng nhập lại | – (Chờ test) | Thành viên B | – | Kiểm tra status thời gian thực chặn đăng nhập |
 | **TC-09** | FR-STU-02 | Manager | Thêm sinh viên có MSSV `524H0123`, mã lớp đủ 8 ký tự và dữ liệu hợp lệ | Lưu thành công vào Firestore, xuất hiện trên danh sách | – (Chờ test) | Thành viên A | – | Document ID dùng MSSV theo cấu trúc `KYYTSSSS` |
 | **TC-10** | FR-STU-02 | Employee | Mở màn hình danh sách sinh viên | Nút FAB "Thêm sinh viên" bị ẩn; thao tác sửa/xóa bị khóa | – (Chờ test) | Thành viên A | – | Kiểm thử chéo: RBAC ẩn các nút chức năng ghi |
 | **TC-11** | FR-STU-05 | Tất cả | Gõ từ khóa tìm kiếm "Nguyễn" vào ô tìm kiếm | Lọc tức thì tất cả sinh viên có họ/tên chứa "Nguyễn" | – (Chờ test) | Thành viên A | – | Lọc realtime trên client theo danh sách snapshot |
 | **TC-12** | FR-STU-05 | Tất cả | Tìm kiếm tên có dấu tiếng Việt "Thị" | Lọc chính xác các sinh viên có chữ "Thị", không lỗi font | – (Chờ test) | Thành viên A | – | Hỗ trợ Unicode Tiếng Việt chuẩn xác |
 | **TC-13** | FR-STU-06 | Tất cả | Chọn sắp xếp theo tên từ A–Z | Danh sách sắp xếp đúng bảng chữ cái tiếng Việt | – (Chờ test) | Thành viên A | – | Sử dụng Collator tiếng Việt chuẩn |
-| **TC-14** | FR-CER-02 | Manager | Mở chi tiết SV → Bấm Thêm chứng chỉ → Nhập thông tin | Lưu thành công vào subcollection `students/{id}/certificates` | – (Chờ test) | Thành viên A | – | Quan hệ 1-N đúng thiết kế kiến trúc |
+| **TC-14** | FR-CER-02/03 | Manager | Mở chi tiết SV → thêm chứng chỉ → mở lại và sửa thông tin | Tạo và cập nhật thành công document trong `students/{id}/certificates`; UI hiển thị giá trị mới | – (Chờ code UI) | Thành viên A | – | Repository có update nhưng UI sửa hiện chưa triển khai |
 | **TC-15** | FR-CER-04 | Employee | Truy cập chi tiết sinh viên xem danh sách chứng chỉ | Chỉ xem được danh sách chứng chỉ, không có nút Xóa/Sửa | – (Chờ test) | Thành viên A | – | Kiểm thử chéo: Employee không có quyền sửa chứng chỉ |
 | **TC-16** | FR-IO-01 | Manager | Import `sample-data/students.csv` | Các dòng hợp lệ được thêm đúng theo báo cáo kết quả thực tế | – (Chờ test) | Thành viên A | – | Chia tối đa 400 thao tác ghi mỗi batch |
 | **TC-17** | FR-IO-01 | Manager | Import file `sample-data/students-invalid.csv` | Bỏ qua dòng lỗi (thiếu MSSV), import dòng đúng, có báo cáo | – (Chờ test) | Thành viên A | – | Thông báo chi tiết số dòng thành công và số dòng lỗi |
@@ -297,7 +301,7 @@ Cách này tránh cho client có đường tự cấp quyền Admin. Chỉ ghi n
 | **TC-24** | FR-IO-01 | Manager | Import CSV chứa tên có dấu tiếng Việt phức tạp | Dữ liệu trên Firestore và giao diện giữ nguyên nội dung Unicode | – (Chờ test) | Thành viên A | – | Đối chiếu từng giá trị sau khi nhập |
 | **TC-25** | FR-STU-04 | Manager | Xóa một sinh viên đã có 3 chứng chỉ | Cả document sinh viên và 3 chứng chỉ con đều bị xóa sạch | – (Chờ test) | Thành viên A | – | Xóa đệ quy subcollection trước khi xóa cha |
 | **TC-26** | FR-ACC-04 | Admin | Cấp bộ ba demo bằng môi trường tin cậy, sau đó cài mới ứng dụng | Đăng nhập được bằng `admin/admin@123456`; client không tự tạo hoặc nâng quyền Admin | – (Chờ test) | Cả hai | – | Đối chiếu UID xác thực và `users/{uid}` |
-| **TC-27** | FR-IO-03 | Manager | Import `sample-data/certificates.csv` sau khi có SV | Chứng chỉ tự động gán đúng vào từng sinh viên theo MSSV | – (Chờ test) | Thành viên A | – | Tra cứu MSSV hợp lệ trước khi ghi subcollection |
+| **TC-27** | FR-IO-03/04 | Manager | Import `sample-data/certificates.csv` sau khi có SV → export danh sách chứng chỉ ra file CSV | Import gán đúng theo MSSV; file export mở được, đủ cột/dòng và giữ nguyên tiếng Việt | – (Chờ code) | Thành viên A | – | Hiện chưa có luồng import/export certificate trong code |
 
 ---
 

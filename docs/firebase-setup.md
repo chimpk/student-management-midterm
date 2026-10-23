@@ -43,7 +43,7 @@
 | **Vị trí Firestore (Location)**  | `asia-southeast1 (Singapore)`                                                 | Vị trí khuyến nghị tốc độ cao cho Việt Nam                           |
 | **Gói dịch vụ (Billing Plan)**  | Spark (Gói Miễn phí)                                                         | Không bắt buộc thẻ tín dụng                                            |
 | **Cơ chế lưu ảnh đại diện** | Local Private Storage Fallback                                                  | Tự động lưu bộ nhớ riêng của app khi Cloud Storage chưa kích hoạt |
-| **Quy tắc bảo mật**             | [`firestore.rules`](../firestore.rules) & [`storage.rules`](../storage.rules) | Đã kiểm định bằng 170 test cases tự động (21 test suites)           |
+| **Quy tắc bảo mật**             | [`firestore.rules`](../firestore.rules) & [`storage.rules`](../storage.rules) | Có 9 kiểm tra tĩnh trong `SecurityRulesAuditTest`; Rules Emulator/live deploy vẫn phải kiểm thử riêng |
 
 ---
 
@@ -56,20 +56,22 @@
    - Gạt công tắc **Enable** ở mục *Email/Password* sang Bật.
    - Mục *Email link (passwordless sign-in)* giữ Tắt.
    - Bấm **Save**.
-3. Tại tab **Users**, bấm **Add user** để tạo sẵn 3 tài khoản mẫu phục vụ demo phân quyền:
+3. Tại tab **Users**, bấm **Add user** để cấp sẵn 3 tài khoản mẫu khi backend tạo tài khoản chưa được triển khai. Các địa chỉ dưới đây là định danh kỹ thuật minh họa, không phải quy tắc bắt buộc domain TDTU:
    - Tài khoản Admin:
-     - Email: `admin@tdtu.edu.vn`
+     - Email kỹ thuật: `admin@<technical-domain>`
      - Password: `admin@123456` (hoặc mật khẩu tối thiểu 6 ký tự bạn chọn)
    - Tài khoản Manager:
-     - Email: `manager@tdtu.edu.vn`
+     - Email kỹ thuật: `manager@<technical-domain>`
      - Password: `manager@123456`
    - Tài khoản Employee:
-     - Email: `employee@tdtu.edu.vn`
+     - Email kỹ thuật: `employee@<technical-domain>`
      - Password: `employee@123456`
 4. **Sao chép UID của từng tài khoản:** Sau khi tạo, tại bảng danh sách người dùng sẽ có cột **User UID**. Hãy sao chép 3 chuỗi UID này để dùng cho Bước 3.2.
 
 > **Cơ chế đăng nhập trên ứng dụng Android:**
-> Người dùng trên ứng dụng chỉ cần nhập **Tên đăng nhập (Username)** ngắn gọn: `admin`, `manager`, hoặc `employee` và mật khẩu tương ứng. Hệ thống Android đã có bộ phân giải tự động `DefaultUsernameAuthResolver` ánh xạ sang định danh kỹ thuật `username@tdtu.edu.vn`.
+> Người dùng trên ứng dụng chỉ cần nhập **Tên đăng nhập (Username)** ngắn gọn: `admin`, `manager`, hoặc `employee` và mật khẩu tương ứng. `DefaultUsernameAuthResolver` ánh xạ username sang `username@<technical-domain>`. Giá trị `<technical-domain>` phải giống domain dùng khi cấp Firebase Auth; source hiện có giá trị demo mặc định `tdtu.edu.vn`, nhưng có thể cấu hình domain khác. Đây không phải giới hạn đối với email hồ sơ: email tùy chọn chấp nhận mọi domain hợp lệ.
+
+> **Luồng mục tiêu sau khi có backend:** chỉ Admin đầu tiên cần cấp bằng Console. Admin đăng nhập ứng dụng và dùng màn Quản lý người dùng; Cloud Function/backend dùng Admin SDK để tạo Auth và `users/{uid}` cho Manager/Employee mà không làm thay đổi phiên Admin. Không đặt Admin SDK credential trong ứng dụng Android.
 
 ---
 
@@ -86,7 +88,7 @@
    - Chuyển sang tab **Data**.
    - Bấm **Start collection**, nhập tên collection: `users`.
    - **Tài liệu cho Admin:**
-     - *Document ID:* Nhập chính xác **UID của tài khoản `admin@tdtu.edu.vn`** vừa tạo ở phần Auth.
+     - *Document ID:* Nhập chính xác **UID của tài khoản Admin** vừa tạo ở phần Auth.
      - Thêm các trường sau:
        - `uid` (string): `<UID_CỦA_ADMIN>`
        - `username` (string): `admin`
@@ -99,11 +101,11 @@
      - Bấm **Save**.
    - **Tài liệu cho Manager:**
      - Bấm **Add document** trong collection `users`.
-     - *Document ID:* Nhập **UID của `manager@tdtu.edu.vn`**.
+     - *Document ID:* Nhập **UID của tài khoản Manager**.
      - Thêm các trường: `uid`, `username: "manager"`, `name: "Quản Lý Demo"`, `age: 28`, `phone: "0901234568"`, `role: "manager"`, `status: "Normal"`, `createdAt`.
    - **Tài liệu cho Employee:**
      - Bấm **Add document** trong collection `users`.
-     - *Document ID:* Nhập **UID của `employee@tdtu.edu.vn`**.
+     - *Document ID:* Nhập **UID của tài khoản Employee**.
      - Thêm các trường: `uid`, `username: "employee"`, `name: "Nhân Viên Demo"`, `age: 24`, `phone: "0901234569"`, `role: "employee"`, `status: "Normal"`, `createdAt`.
 
 > **Tại sao cần tạo Document ID bằng UID?**
@@ -152,7 +154,7 @@ Sau khi hoàn tất cấu hình, mở terminal tại thư mục gốc dự án v
 
 | Hiện tượng                                                                 | Nguyên nhân                                                                                          | Cách khắc phục                                                                                                                                                                                         |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Đăng nhập báo *"Tên đăng nhập hoặc mật khẩu không chính xác"* | 1. Chưa bật Email/Password trên Console.2. Chưa tạo tài khoản tương ứng.3. Nhầm mật khẩu. | Kiểm tra tab **Authentication** $\rightarrow$ **Users** trên web Console xem tài khoản `admin@tdtu.edu.vn` đã có chưa.                                                            |
+| Đăng nhập báo *"Tên đăng nhập hoặc mật khẩu không chính xác"* | 1. Chưa bật Email/Password trên Console.2. Chưa tạo tài khoản tương ứng.3. Domain kỹ thuật trong Auth không trùng cấu hình resolver.4. Nhầm mật khẩu. | Kiểm tra tab **Authentication** $\rightarrow$ **Users** và bảo đảm tài khoản kỹ thuật `admin@<technical-domain>` khớp cấu hình ứng dụng. |
 | Đăng nhập thành công nhưng lập tức bị thoát ra màn hình Login     | Tài liệu trong collection `users` bị thiếu, sai Document ID, hoặc `status != "Normal"`.       | Kiểm tra tab **Firestore Data**: Document ID phải trùng khớp 100% với chuỗi UID trong Authentication, và trường `status` phải ghi đúng chính xác là `Normal` (viết hoa chữ N). |
 | Báo lỗi `PERMISSION_DENIED`                                               | Quy tắc bảo mật chưa được Publish lên Firebase.                                                | Vào tab **Rules** trên Firestore Console, dán nội dung [`firestore.rules`](../firestore.rules) và bấm **Publish**.                                                                     |
 | Thông báo lỗi lưu trữ ảnh / Cloud Storage bắt nạp tiền               | Gói cước Free không cho tạo Cloud Storage Bucket.                                                 | Không cần nạp tiền. Ứng dụng đã tự động kích hoạt chế độ **Local Private Storage Fallback**, ảnh đại diện vẫn được lưu và hiển thị bình thường trên máy.           |

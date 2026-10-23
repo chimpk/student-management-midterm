@@ -6,7 +6,7 @@ Tài liệu này chuẩn hóa toàn bộ các thông số thời lượng (Durat
 
 ## 1. Tokens thời lượng (Motion Duration Tokens)
 
-Tuân thủ nguyên tắc chuyển động an toàn của Android Material 3: thời lượng vi mô 150–400 ms, không làm chậm thao tác người dùng, tự động đưa về 0 ms khi hệ thống bật chế độ "Giảm hiệu ứng động" (Reduce Motion).
+Tuân thủ nguyên tắc chuyển động an toàn của Android và Material Components: thời lượng vi mô 150–400 ms, không làm chậm thao tác người dùng, tự động đưa về 0 ms khi hệ thống bật chế độ "Giảm hiệu ứng động" (Reduce Motion).
 
 | Token | Giá trị đề xuất | Mục đích sử dụng | Ghi chú & Giới hạn |
 |:---|:---:|:---|:---|

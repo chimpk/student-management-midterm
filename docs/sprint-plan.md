@@ -27,7 +27,7 @@
 | Task | Công việc | Người làm | Giờ | Sản phẩm |
 |---|---|---|---|---|
 | T00 | Sửa khung: thêm `gradlew`, sửa `pathData` icon, bỏ màu chữ cứng ở dark mode, bỏ nút back ở màn hình chính | A | 1 | Build được trên Windows/macOS/Linux |
-| T01 | Cấu hình Firebase (Auth, Firestore, Storage), tạo 3 tài khoản demo | A | 3 | `FirebaseClient.java`, `AuthRepository.java` |
+| T01 | Cấu hình Firebase (Auth, Firestore, Storage) và cấp sẵn tài khoản Admin ban đầu | A | 3 | `FirebaseClient.java`, `AuthRepository.java` |
 | T02 | Màn hình đăng nhập bằng **username**/mật khẩu (email là bí danh tùy chọn) | A | 4 | `LoginActivity.java`, `activity_login.xml` |
 | T04 | Danh sách sinh viên + RecyclerView realtime | B | 5 | `StudentListFragment.java`, `StudentAdapter.java` |
 | T09 | Màn hình chi tiết sinh viên | B | 3 | `StudentDetailFragment.java`, `fragment_student_detail.xml` |
@@ -48,7 +48,7 @@
 
 | Task | Công việc | Người làm | Giờ | Sản phẩm |
 |---|---|---|---|---|
-| T05 | Danh sách người dùng + thêm/sửa/xóa (Admin) | A | 5 | `UserListFragment.java`, `UserEditFragment.java` |
+| T05 | Danh sách người dùng + Admin tạo/sửa/xóa tài khoản qua backend tin cậy | A | 5 | `UserListFragment.java`, backend/Cloud Function, `UserRepository.java` |
 | T06 | Khóa/mở khóa người dùng + chặn đăng nhập | A | 3 | `UserRepository.java` |
 | T14 | CRUD chứng chỉ trong chi tiết sinh viên | B | 4 | `CertificateRepository.java`, `CertificateEditFragment.java` |
 | T12 | Tìm kiếm đa tiêu chí realtime (tiếng Việt có dấu) | B | 4 | `StudentViewModel.java` |
@@ -74,7 +74,7 @@
 | T15 | Hoàn thiện UI (Material, dark mode, loading) | A | 4 | Theme, layout |
 | T16 | Xử lý lỗi, mất mạng, thông báo | A | 3 | Firestore offline cache, Snackbar |
 | T27 | Báo cáo (tiếng Anh): chương Firestore + phần Auth/User/Rules | A | 3 | `docs/final-report.md` |
-| T17 | Import sinh viên từ CSV (chia batch ≤ 500) | B | 5 | `CsvHelper.java`, `ImportExportFragment.java` |
+| T17 | Import sinh viên từ CSV (quy ước dự án: chia batch ≤ 400) | B | 5 | `CsvHelper.java`, `ImportExportFragment.java` |
 | T19 | Import chứng chỉ theo MSSV | B | 3 | `CsvHelper.java` |
 | T27 | Báo cáo (tiếng Anh): phần Student/Certificate/CSV | B | 3 | `docs/final-report.md` |
 
