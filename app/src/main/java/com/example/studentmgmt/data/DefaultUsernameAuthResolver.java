@@ -4,7 +4,9 @@ import com.example.studentmgmt.utils.ValidationUtils;
 
 /**
  * Default implementation of UsernameAuthResolver.
- * Maps valid usernames to technical domain credentials and accepts email aliases.
+ * Maps valid usernames to technical domain credentials.
+ * Email aliases are isolated and safely rejected with TODO(auth-backend)
+ * until a trusted resolver/directory backend is provisioned.
  */
 public class DefaultUsernameAuthResolver implements UsernameAuthResolver {
 
@@ -30,9 +32,8 @@ public class DefaultUsernameAuthResolver implements UsernameAuthResolver {
         }
 
         if (trimmed.contains("@")) {
-            return ValidationUtils.isValidEmail(trimmed)
-                    ? trimmed.toLowerCase(java.util.Locale.ROOT)
-                    : null;
+            // Strictly fail-closed for all inputs containing '@' until a trusted directory backend is provisioned
+            return null;
         }
 
         if (ValidationUtils.isValidUsername(trimmed)) {

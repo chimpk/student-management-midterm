@@ -1,9 +1,6 @@
 package com.example.studentmgmt.data;
 
-/**
- * TODO(member-2): Provider for StudentRepository.
- * Member 2 can inject FirestoreStudentRepository or switch implementation here.
- */
+/** Provides the Firestore repository by default while allowing tests to inject a mock. */
 public final class StudentRepositoryProvider {
 
     private static volatile StudentRepository instance;
@@ -14,7 +11,7 @@ public final class StudentRepositoryProvider {
         if (instance == null) {
             synchronized (StudentRepositoryProvider.class) {
                 if (instance == null) {
-                    instance = new MockStudentRepository();
+                    instance = new FirestoreStudentRepository();
                 }
             }
         }

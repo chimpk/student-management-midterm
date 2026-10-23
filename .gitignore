@@ -10,6 +10,9 @@ build/
 .cxx
 local.properties
 
+# Module build output
+app/build/
+
 # Google Services (Important: DO NOT LEAK)
 google-services.json
 
@@ -51,3 +54,7 @@ ACCOUNT_NOTES.md
 *note*.md
 !README.md
 !docs/*.md
+
+# Keystores / signing
+*.jks
+*.keystore
