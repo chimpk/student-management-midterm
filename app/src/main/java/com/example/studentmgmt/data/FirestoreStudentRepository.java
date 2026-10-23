@@ -7,7 +7,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Firestore-backed read repository for the Sprint 1 student list and detail screens. */
 public final class FirestoreStudentRepository implements StudentRepository {
@@ -31,6 +35,9 @@ public final class FirestoreStudentRepository implements StudentRepository {
             return () -> { };
         }
 
+        List<Student> visibleStudents = new ArrayList<>();
+        Map<String, ListenerRegistration> countListeners = new HashMap<>();
+
         ListenerRegistration registration = students.addSnapshotListener((snapshot, error) -> {
             if (error != null) {
                 callback.onError(errorMessage(error));
@@ -41,6 +48,7 @@ public final class FirestoreStudentRepository implements StudentRepository {
             }
 
             List<Student> result = new ArrayList<>();
+            Set<String> studentIds = new HashSet<>();
             for (DocumentSnapshot document : snapshot.getDocuments()) {
                 Student student = toStudent(document);
                 if (student == null) {
@@ -48,10 +56,54 @@ public final class FirestoreStudentRepository implements StudentRepository {
                     return;
                 }
                 result.add(student);
+                studentIds.add(student.getStudentId());
             }
-            callback.onSuccess(result);
+
+            for (String existingId : new HashSet<>(countListeners.keySet())) {
+                if (!studentIds.contains(existingId)) {
+                    countListeners.remove(existingId).remove();
+                }
+            }
+
+            visibleStudents.clear();
+            visibleStudents.addAll(result);
+            callback.onSuccess(new ArrayList<>(visibleStudents));
+
+            for (Student student : result) {
+                String studentId = student.getStudentId();
+                if (countListeners.containsKey(studentId)) {
+                    continue;
+                }
+                ListenerRegistration countListener = students.document(studentId)
+                        .collection("certificates")
+                        .addSnapshotListener((certificates, countError) -> {
+                            if (countError != null) {
+                                callback.onError("Không thể tải số chứng chỉ của " + studentId
+                                        + ": " + errorMessage(countError));
+                                return;
+                            }
+                            if (certificates == null) {
+                                return;
+                            }
+                            for (Student current : visibleStudents) {
+                                if (studentId.equals(current.getStudentId())) {
+                                    current.setCertificateCount(certificates.size());
+                                    callback.onSuccess(new ArrayList<>(visibleStudents));
+                                    break;
+                                }
+                            }
+                        });
+                countListeners.put(studentId, countListener);
+            }
         });
-        return registration::remove;
+        return () -> {
+            registration.remove();
+            for (ListenerRegistration countListener : countListeners.values()) {
+                countListener.remove();
+            }
+            countListeners.clear();
+            visibleStudents.clear();
+        };
     }
 
     @Override
@@ -92,21 +144,38 @@ public final class FirestoreStudentRepository implements StudentRepository {
     }
 
     private static Student toStudent(DocumentSnapshot document) {
-        String studentId = document.getString("studentId");
-        if (studentId == null || studentId.trim().isEmpty()) {
-            studentId = document.getId();
-        }
-
-        String name = document.getString("name");
-        String dateOfBirth = document.getString("dateOfBirth");
-        String className = document.getString("className");
-        String faculty = document.getString("faculty");
-        if (name == null || dateOfBirth == null || className == null || faculty == null) {
+        Object studentIdValue = document.get("studentId");
+        Object nameValue = document.get("name");
+        Object dateOfBirthValue = document.get("dateOfBirth");
+        Object classNameValue = document.get("className");
+        Object facultyValue = document.get("faculty");
+        Object createdAtValue = document.get("createdAt");
+        if (!(studentIdValue instanceof String)
+                || !(nameValue instanceof String)
+                || !(dateOfBirthValue instanceof String)
+                || !(classNameValue instanceof String)
+                || !(facultyValue instanceof String)
+                || !(createdAtValue instanceof Timestamp)) {
             return null;
         }
 
-        Timestamp createdAt = document.getTimestamp("createdAt");
-        long createdAtMillis = createdAt == null ? 0L : createdAt.toDate().getTime();
+        String studentId = (String) studentIdValue;
+        String name = (String) nameValue;
+        String dateOfBirth = (String) dateOfBirthValue;
+        String className = (String) classNameValue;
+        String faculty = (String) facultyValue;
+        Timestamp createdAt = (Timestamp) createdAtValue;
+        if (studentId == null || studentId.trim().isEmpty()
+                || !studentId.equals(document.getId())
+                || name == null || name.trim().isEmpty()
+                || dateOfBirth == null || dateOfBirth.trim().isEmpty()
+                || className == null || className.trim().isEmpty()
+                || faculty == null || faculty.trim().isEmpty()
+                || createdAt == null) {
+            return null;
+        }
+
+        long createdAtMillis = createdAt.toDate().getTime();
         return new Student(studentId, name, dateOfBirth, className, faculty, createdAtMillis, 0);
     }
 

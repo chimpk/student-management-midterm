@@ -1,8 +1,6 @@
 package com.example.studentmgmt.data;
 
-/**
- * TODO(member-2): Provider for CertificateRepository.
- */
+/** Provides the Firestore certificate repository by default while allowing mock injection. */
 public final class CertificateRepositoryProvider {
 
     private static volatile CertificateRepository instance;
@@ -13,7 +11,7 @@ public final class CertificateRepositoryProvider {
         if (instance == null) {
             synchronized (CertificateRepositoryProvider.class) {
                 if (instance == null) {
-                    instance = new MockCertificateRepository();
+                    instance = new FirestoreCertificateRepository();
                 }
             }
         }
