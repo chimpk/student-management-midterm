@@ -30,7 +30,7 @@ public class UserManagementPolicyTest {
         adminUser = new AppUser(
                 "admin-uid-1",
                 "admin_super",
-                "admin@studentmgmt.edu.vn",
+                "admin@tdtu.edu.vn",
                 "Nguyen Van Admin",
                 30,
                 "0912345678",
@@ -42,7 +42,7 @@ public class UserManagementPolicyTest {
         managerUser = new AppUser(
                 "mgr-uid-1",
                 "manager_1",
-                "mgr@studentmgmt.edu.vn",
+                "mgr@tdtu.edu.vn",
                 "Tran Thi Manager",
                 28,
                 "0987654321",
@@ -54,7 +54,7 @@ public class UserManagementPolicyTest {
         employeeUser = new AppUser(
                 "emp-uid-1",
                 "employee_1",
-                "emp@studentmgmt.edu.vn",
+                "emp@tdtu.edu.vn",
                 "Le Van Employee",
                 24,
                 "0901234567",
@@ -66,7 +66,7 @@ public class UserManagementPolicyTest {
         lockedAdminUser = new AppUser(
                 "admin-locked-uid",
                 "admin_locked",
-                "locked@studentmgmt.edu.vn",
+                "locked@tdtu.edu.vn",
                 "Nguyen Locked Admin",
                 35,
                 "0911223344",
@@ -167,7 +167,7 @@ public class UserManagementPolicyTest {
         AppUser validNewUser = new AppUser(
                 "auth-uid-12345",
                 "employee_new",
-                "new_emp@studentmgmt.edu.vn",
+                "new_emp@tdtu.edu.vn",
                 "Nguyen Van Moi",
                 25,
                 "0912345678",

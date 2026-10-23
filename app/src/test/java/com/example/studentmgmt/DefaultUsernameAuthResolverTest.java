@@ -14,21 +14,21 @@ public class DefaultUsernameAuthResolverTest {
 
     @Before
     public void setUp() {
-        resolver = new DefaultUsernameAuthResolver("studentmgmt.local");
+        resolver = new DefaultUsernameAuthResolver("tdtu.edu.vn");
     }
 
     @Test
     public void validUsernames_areResolvedToDomainEmail() {
-        assertEquals("admin@studentmgmt.local", resolver.resolveAuthEmail("admin"));
-        assertEquals("manager@studentmgmt.local", resolver.resolveAuthEmail("manager"));
-        assertEquals("employee@studentmgmt.local", resolver.resolveAuthEmail("employee"));
+        assertEquals("admin@tdtu.edu.vn", resolver.resolveAuthEmail("admin"));
+        assertEquals("manager@tdtu.edu.vn", resolver.resolveAuthEmail("manager"));
+        assertEquals("employee@tdtu.edu.vn", resolver.resolveAuthEmail("employee"));
     }
 
     @Test
     public void identifiersWithAtSymbol_returnNull_failClosedUntilBackendProvisioned() {
         // Enforces Finding 3 & Review Round 3: All inputs containing '@' (aliases and tenant domain) must fail-closed
-        assertNull(resolver.resolveAuthEmail("admin@studentmgmt.local"));
-        assertNull(resolver.resolveAuthEmail("ADMIN@STUDENTMGMT.LOCAL"));
+        assertNull(resolver.resolveAuthEmail("admin@tdtu.edu.vn"));
+        assertNull(resolver.resolveAuthEmail("ADMIN@TDTU.EDU.VN"));
         assertNull(resolver.resolveAuthEmail("admin@university.edu.vn"));
         assertNull(resolver.resolveAuthEmail("manager@student.app"));
         assertNull(resolver.resolveAuthEmail("user123@gmail.com"));

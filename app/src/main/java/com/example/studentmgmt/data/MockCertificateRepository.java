@@ -121,45 +121,6 @@ public class MockCertificateRepository implements CertificateRepository {
         if (callback != null) callback.onError("Không tìm thấy chứng chỉ cần xóa.");
     }
 
-    @Override
-    public void getCertificatesForStudents(List<String> studentIds, ExportCallback callback) {
-        if (callback == null) return;
-        List<ExportRow> result = new ArrayList<>();
-        if (studentIds != null) for (String studentId : studentIds) {
-            List<Certificate> certificates = certMap.get(studentId);
-            if (certificates != null) for (Certificate certificate : certificates) {
-                result.add(new ExportRow(studentId, certificate));
-            }
-        }
-        callback.onSuccess(result);
-    }
-
-    @Override
-    public void importCertificates(List<ImportItem> items, ImportCallback callback) {
-        List<ImportError> errors = new ArrayList<>();
-        int[] imported = {0};
-        importNext(items == null ? new ArrayList<>() : items, 0, imported, errors, callback);
-    }
-
-    private void importNext(List<ImportItem> items, int index, int[] imported,
-                            List<ImportError> errors, ImportCallback callback) {
-        if (index >= items.size()) {
-            if (callback != null) callback.onComplete(imported[0], errors);
-            return;
-        }
-        ImportItem item = items.get(index);
-        addCertificate(item.studentId, item.certificate, new ActionCallback() {
-            @Override public void onSuccess() {
-                imported[0]++;
-                importNext(items, index + 1, imported, errors, callback);
-            }
-            @Override public void onError(String message) {
-                errors.add(new ImportError(item.dataRow, item.studentId, message));
-                importNext(items, index + 1, imported, errors, callback);
-            }
-        });
-    }
-
     private void notifyListeners(String studentId) {
         List<CertificateListCallback> listCallbacks = listenerMap.get(studentId);
         if (listCallbacks != null) {

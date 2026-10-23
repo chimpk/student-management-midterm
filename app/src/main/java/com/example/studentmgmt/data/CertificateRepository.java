@@ -23,47 +23,6 @@ public interface CertificateRepository {
         void remove();
     }
 
-    final class ExportRow {
-        public final String studentId;
-        public final Certificate certificate;
-        public ExportRow(String studentId, Certificate certificate) {
-            this.studentId = studentId;
-            this.certificate = certificate;
-        }
-    }
-
-    final class ImportItem {
-        public final int dataRow;
-        public final String studentId;
-        public final Certificate certificate;
-        public ImportItem(int dataRow, String studentId, Certificate certificate) {
-            this.dataRow = dataRow;
-            this.studentId = studentId;
-            this.certificate = certificate;
-        }
-    }
-
-    final class ImportError {
-        public final int dataRow;
-        public final String studentId;
-        public final String message;
-        public ImportError(int dataRow, String studentId, String message) {
-            this.dataRow = dataRow;
-            this.studentId = studentId;
-            this.message = message;
-        }
-    }
-
-    interface ExportCallback {
-        void onSuccess(List<ExportRow> rows);
-        void onError(String errorMessage);
-    }
-
-    interface ImportCallback {
-        void onComplete(int importedCount, List<ImportError> errors);
-        void onError(String errorMessage);
-    }
-
     /**
      * Listens to real-time certificates in subcollection "students/{studentId}/certificates".
      */
@@ -83,10 +42,4 @@ public interface CertificateRepository {
      * Deletes a certificate.
      */
     void deleteCertificate(String studentId, String certId, ActionCallback callback);
-
-    /** Retrieves a one-time export snapshot for the selected students. */
-    void getCertificatesForStudents(List<String> studentIds, ExportCallback callback);
-
-    /** Imports new certificates with row-level error reporting. */
-    void importCertificates(List<ImportItem> items, ImportCallback callback);
 }

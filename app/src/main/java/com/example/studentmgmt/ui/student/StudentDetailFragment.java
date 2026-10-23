@@ -14,12 +14,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.studentmgmt.R;
-import com.example.studentmgmt.data.AuthRepositoryProvider;
 import com.example.studentmgmt.databinding.DialogCertificateAddBinding;
 import com.example.studentmgmt.databinding.FragmentStudentDetailBinding;
-import com.example.studentmgmt.model.AppUser;
 import com.example.studentmgmt.model.Certificate;
-import com.example.studentmgmt.utils.StudentDataValidation;
 
 /**
  * TODO(member-2): Student Detail and Certificate management dialog/fragment for Member 2.
@@ -76,14 +73,11 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
             viewModel.loadStudent(studentId);
         }
 
-        binding.btnAddCertificate.setVisibility(canManageData() ? View.VISIBLE : View.GONE);
-        binding.btnAddCertificate.setOnClickListener(v -> {
-            if (canManageData()) showCertificateDialog(null); else showUnauthorized();
-        });
+        binding.btnAddCertificate.setOnClickListener(v -> showAddCertificateDialog());
     }
 
     private void setupRecyclerView() {
-        certificateAdapter = new CertificateAdapter(this, canManageData());
+        certificateAdapter = new CertificateAdapter(this);
         binding.rvCertificates.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvCertificates.setAdapter(certificateAdapter);
     }
@@ -139,21 +133,10 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
     }
 
     private void showAddCertificateDialog() {
-        showCertificateDialog(null);
-    }
-
-    private void showCertificateDialog(@Nullable Certificate existing) {
-        if (!canManageData()) { showUnauthorized(); return; }
         DialogCertificateAddBinding dialogBinding = DialogCertificateAddBinding.inflate(getLayoutInflater());
 
-        if (existing != null) {
-            dialogBinding.etCertName.setText(existing.getCertName());
-            dialogBinding.etCertIssuer.setText(existing.getIssuedBy());
-            dialogBinding.etCertDate.setText(existing.getIssueDate());
-        }
-
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setTitle(existing == null ? R.string.dialog_add_cert_title : R.string.dialog_edit_cert_title)
+                .setTitle(R.string.dialog_add_cert_title)
                 .setView(dialogBinding.getRoot())
                 .setPositiveButton(R.string.btn_save, null)
                 .setNegativeButton(R.string.btn_cancel, null)
@@ -166,46 +149,25 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
             String issuer = dialogBinding.etCertIssuer.getText() != null ? dialogBinding.etCertIssuer.getText().toString().trim() : "";
             String date = dialogBinding.etCertDate.getText() != null ? dialogBinding.etCertDate.getText().toString().trim() : "";
 
-            dialogBinding.tilCertName.setError(null);
-            dialogBinding.tilCertDate.setError(null);
-            dialogBinding.tilCertIssuer.setError(null);
-            String validationError = StudentDataValidation.validateCertificate(name, date, issuer);
-            if (validationError != null) {
-                if (validationError.startsWith("Tên")) dialogBinding.tilCertName.setError(validationError);
-                else if (validationError.startsWith("Ngày")) dialogBinding.tilCertDate.setError(validationError);
-                else dialogBinding.tilCertIssuer.setError(validationError);
+            if (name.isEmpty()) {
+                dialogBinding.tilCertName.setError("Tên chứng chỉ không được để trống");
                 return;
             }
 
-            Certificate value = new Certificate(existing == null ? null : existing.getCertId(), name, date, issuer);
-            if (existing == null) viewModel.addCertificate(value); else viewModel.updateCertificate(value);
+            Certificate newCert = new Certificate(null, name, date, issuer);
+            viewModel.addCertificate(newCert);
             dialog.dismiss();
         });
     }
 
     @Override
-    public void onEditCertificate(Certificate certificate) {
-        showCertificateDialog(certificate);
-    }
-
-    @Override
     public void onDeleteCertificate(Certificate certificate) {
-        if (!canManageData()) { showUnauthorized(); return; }
         new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.btn_delete)
                 .setMessage(getString(R.string.confirm_delete_cert_format, certificate.getCertName()))
                 .setPositiveButton(R.string.btn_delete, (dialog, which) -> viewModel.deleteCertificate(certificate.getCertId()))
                 .setNegativeButton(R.string.btn_cancel, null)
                 .show();
-    }
-
-    private boolean canManageData() {
-        AppUser user = AuthRepositoryProvider.getRepository().getCurrentUser();
-        return user != null && user.isNormal() && (user.isAdmin() || user.isManager());
-    }
-
-    private void showUnauthorized() {
-        if (isAdded()) Toast.makeText(requireContext(), R.string.student_write_forbidden, Toast.LENGTH_SHORT).show();
     }
 
     @Override

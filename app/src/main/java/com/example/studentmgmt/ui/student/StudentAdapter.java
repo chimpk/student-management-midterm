@@ -26,15 +26,9 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     private final List<Student> students = new ArrayList<>();
     private final OnStudentClickListener listener;
-    private final boolean canManageStudents;
 
     public StudentAdapter(OnStudentClickListener listener) {
-        this(listener, false);
-    }
-
-    public StudentAdapter(OnStudentClickListener listener, boolean canManageStudents) {
         this.listener = listener;
-        this.canManageStudents = canManageStudents;
     }
 
     public void setStudents(List<Student> newStudents) {
@@ -77,10 +71,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             binding.tvStudentId.setText(binding.getRoot().getContext().getString(R.string.student_id_format, student.getStudentId()));
             binding.tvStudentClass.setText(binding.getRoot().getContext().getString(R.string.student_class_format, student.getClassName()));
             binding.tvStudentFaculty.setText(student.getFaculty());
-            // The schema has no certificateCount field; never display a fabricated or stale count.
-            binding.chipCertCount.setVisibility(android.view.View.GONE);
-            binding.btnStudentEdit.setVisibility(canManageStudents ? android.view.View.VISIBLE : android.view.View.GONE);
-            binding.btnStudentDelete.setVisibility(canManageStudents ? android.view.View.VISIBLE : android.view.View.GONE);
+            binding.chipCertCount.setText(binding.getRoot().getContext().getString(R.string.cert_count_format, student.getCertificateCount()));
 
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) listener.onStudentClick(student);

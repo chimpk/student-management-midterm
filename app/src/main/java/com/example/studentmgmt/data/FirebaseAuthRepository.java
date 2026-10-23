@@ -62,8 +62,13 @@ public class FirebaseAuthRepository implements AuthRepository {
                     fetchAndValidateUserDocument(uid, callback);
                 })
                 .addOnFailureListener(e -> {
-                    // Safe failure: never disclose whether account exists
-                    callback.onError(ERROR_INVALID_CREDENTIALS);
+                    if (e instanceof com.google.firebase.FirebaseNetworkException
+                            || (e.getMessage() != null && e.getMessage().toLowerCase(java.util.Locale.ROOT).contains("network"))) {
+                        callback.onError(ERROR_NETWORK);
+                    } else {
+                        // Safe failure: never disclose whether account exists
+                        callback.onError(ERROR_INVALID_CREDENTIALS);
+                    }
                 });
     }
 
@@ -77,7 +82,15 @@ public class FirebaseAuthRepository implements AuthRepository {
                 })
                 .addOnFailureListener(e -> {
                     signOut();
-                    callback.onError(ERROR_INVALID_CREDENTIALS);
+                    if (e instanceof com.google.firebase.firestore.FirebaseFirestoreException
+                            && ((com.google.firebase.firestore.FirebaseFirestoreException) e).getCode()
+                                == com.google.firebase.firestore.FirebaseFirestoreException.Code.UNAVAILABLE) {
+                        callback.onError(ERROR_NETWORK);
+                    } else if (e.getMessage() != null && e.getMessage().toLowerCase(java.util.Locale.ROOT).contains("network")) {
+                        callback.onError(ERROR_NETWORK);
+                    } else {
+                        callback.onError(ERROR_INVALID_CREDENTIALS);
+                    }
                 });
     }
 

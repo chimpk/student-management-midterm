@@ -1,7 +1,6 @@
 package com.example.studentmgmt.data;
 
 import com.example.studentmgmt.model.Student;
-import com.example.studentmgmt.utils.StudentDataValidation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,29 +113,6 @@ public class MockStudentRepository implements StudentRepository {
         } else {
             if (callback != null) callback.onError("Không tìm thấy sinh viên cần xóa.");
         }
-    }
-
-    @Override
-    public void importStudents(List<ImportItem> items, ImportCallback callback) {
-        List<ImportError> errors = new ArrayList<>();
-        List<Student> accepted = new ArrayList<>();
-        java.util.Set<String> seen = new java.util.HashSet<>();
-        for (Student existing : students) seen.add(existing.getStudentId());
-        if (items != null) for (ImportItem item : items) {
-            if (item == null || item.student == null) {
-                errors.add(new ImportError(item == null ? 0 : item.dataRow, "", "Dòng không có dữ liệu sinh viên."));
-                continue;
-            }
-            Student student = item.student;
-            String problem = StudentDataValidation.validateStudent(student.getStudentId(), student.getName(),
-                    student.getDateOfBirth(), student.getClassName(), student.getFaculty());
-            if (problem == null && !seen.add(student.getStudentId())) problem = "MSSV đã tồn tại trong file hoặc hệ thống.";
-            if (problem != null) errors.add(new ImportError(item.dataRow, student.getStudentId(), problem));
-            else accepted.add(student);
-        }
-        students.addAll(accepted);
-        if (!accepted.isEmpty()) notifyListeners();
-        if (callback != null) callback.onComplete(accepted.size(), errors);
     }
 
     private void notifyListeners() {

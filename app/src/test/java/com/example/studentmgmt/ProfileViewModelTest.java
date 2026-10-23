@@ -54,7 +54,7 @@ public class ProfileViewModelTest {
         currentUser = new AppUser(
                 "user-123",
                 "testuser",
-                "testuser@studentmgmt.edu.vn",
+                "testuser@tdtu.edu.vn",
                 "Nguyễn Văn A",
                 25,
                 "0901234567",
@@ -128,7 +128,7 @@ public class ProfileViewModelTest {
         fakeAuthRepository.setCurrentUser(new AppUser(
                 "other-uid",
                 "other",
-                "other@studentmgmt.edu.vn",
+                "other@tdtu.edu.vn",
                 "Other",
                 30,
                 "0911223344",

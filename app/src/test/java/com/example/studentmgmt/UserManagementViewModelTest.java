@@ -54,7 +54,7 @@ public class UserManagementViewModelTest {
         adminUser = new AppUser(
                 "admin-uid",
                 "admin",
-                "admin@studentmgmt.edu.vn",
+                "admin@tdtu.edu.vn",
                 "Admin User",
                 30,
                 "0912345678",
@@ -66,7 +66,7 @@ public class UserManagementViewModelTest {
         employeeUser = new AppUser(
                 "emp-uid",
                 "employee",
-                "emp@studentmgmt.edu.vn",
+                "emp@tdtu.edu.vn",
                 "Employee User",
                 25,
                 "0987654321",
@@ -134,7 +134,7 @@ public class UserManagementViewModelTest {
     @Test
     public void createUser_validUserSucceeds() {
         AppUser newUser = new AppUser(
-                "new-uid", "new_user", "new@studentmgmt.edu.vn",
+                "new-uid", "new_user", "new@tdtu.edu.vn",
                 "New User", 26, "0912345678", AppUser.STATUS_NORMAL, AppUser.ROLE_EMPLOYEE, null
         );
         viewModel.createUser(newUser);

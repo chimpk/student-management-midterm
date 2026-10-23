@@ -32,7 +32,7 @@ public class SessionSecurityPolicyTest {
         validAdmin = new AppUser(
                 "uid-1",
                 "admin",
-                "admin@studentmgmt.edu.vn",
+                "admin@tdtu.edu.vn",
                 "Admin User",
                 30,
                 "0912345678",
@@ -44,7 +44,7 @@ public class SessionSecurityPolicyTest {
         lockedAdmin = new AppUser(
                 "uid-1",
                 "admin",
-                "admin@studentmgmt.edu.vn",
+                "admin@tdtu.edu.vn",
                 "Admin User",
                 30,
                 "0912345678",

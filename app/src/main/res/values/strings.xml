@@ -119,7 +119,7 @@
     <string name="cert_date_format">Ngày cấp: %1$s</string>
     <string name="student_list_title">Danh sách sinh viên</string>
     <string name="student_list_subtitle">Quản lý hồ sơ và chứng chỉ sinh viên theo thời gian thực.</string>
-    <string name="search_student_hint">Tìm theo tên, MSSV, lớp, khoa&#8230;</string>
+    <string name="search_student_hint">Tìm theo tên, MSSV, lớp&#8230;</string>
     <string name="filter_all">Tất cả</string>
     <string name="filter_it">CNTT</string>
     <string name="filter_cs">Khoa học máy tính</string>
@@ -127,28 +127,6 @@
     <string name="btn_add_student">Thêm sinh viên</string>
     <string name="btn_import_csv">Nhập CSV</string>
     <string name="btn_export_csv">Xuất CSV</string>
-    <string name="btn_sort_student">Sắp xếp</string>
-    <string name="sort_student_title">Sắp xếp sinh viên</string>
-    <string name="sort_student_id_asc">Mã sinh viên (tăng dần)</string>
-    <string name="sort_student_name_asc">Tên (A → Z)</string>
-    <string name="sort_student_name_desc">Tên (Z → A)</string>
-    <string name="sort_student_dob_asc">Ngày sinh (cũ → mới)</string>
-    <string name="sort_student_dob_desc">Ngày sinh (mới → cũ)</string>
-    <string name="sort_student_class_asc">Lớp (A → Z)</string>
-    <string name="sort_student_class_desc">Lớp (Z → A)</string>
-    <string name="csv_choose_import_title">Chọn loại dữ liệu cần nhập</string>
-    <string name="csv_choose_export_title">Chọn loại dữ liệu cần xuất</string>
-    <string name="csv_students">Sinh viên</string>
-    <string name="csv_certificates">Chứng chỉ</string>
-    <string name="csv_import_summary">Nhập thành công %1$d dòng; có %2$d dòng lỗi.</string>
-    <string name="csv_export_students_filename">students.csv</string>
-    <string name="csv_export_certificates_filename">certificates.csv</string>
-    <string name="csv_empty_export">Không có dữ liệu để xuất.</string>
-    <string name="csv_import_header_error">Tiêu đề CSV không hợp lệ hoặc không đúng mẫu.</string>
-    <string name="csv_export_complete">Đã xuất tệp CSV thành công.</string>
-    <string name="csv_import_result_title">Kết quả nhập CSV</string>
-    <string name="btn_close">Đóng</string>
-    <string name="student_write_forbidden">Chỉ Admin hoặc Manager được thêm, sửa, xóa và nhập/xuất dữ liệu.</string>
     <string name="empty_students_message">Chưa có sinh viên nào phù hợp.</string>
     <string name="dialog_add_student_title">Thêm sinh viên mới</string>
     <string name="dialog_edit_student_title">Chỉnh sửa thông tin sinh viên</string>
@@ -158,7 +136,6 @@
     <string name="label_student_class">Lớp</string>
     <string name="label_student_faculty">Khoa</string>
     <string name="dialog_add_cert_title">Thêm chứng chỉ sinh viên</string>
-    <string name="dialog_edit_cert_title">Chỉnh sửa chứng chỉ</string>
     <string name="label_cert_name">Tên chứng chỉ</string>
     <string name="label_cert_issuer">Nơi cấp</string>
     <string name="label_cert_date">Ngày cấp (YYYY-MM-DD)</string>
@@ -168,7 +145,7 @@
     <string name="btn_add_certificate">Thêm chứng chỉ</string>
     <string name="confirm_delete_student_format">Bạn có chắc chắn muốn xóa sinh viên %1$s (%2$s) không?</string>
     <string name="confirm_delete_cert_format">Bạn có chắc chắn muốn xóa chứng chỉ %1$s không?</string>
-    <string name="m2_placeholder_notice">Quản lý hồ sơ và chứng chỉ sinh viên theo thời gian thực.</string>
+    <string name="m2_placeholder_notice">TODO(member-2): Phân hệ Sinh viên, Chứng chỉ &amp; CSV do Thành viên 2 phụ trách (đang dùng dữ liệu mẫu).</string>
     <string name="csv_exported_toast">Đã xuất %1$d sinh viên ra tệp CSV thành công.</string>
     <string name="csv_imported_toast">Đã nhập thành công %1$d sinh viên từ CSV.</string>
 </resources>

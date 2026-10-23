@@ -53,16 +53,8 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cert_edit"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_edit"
-            android:textSize="12sp" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cert_delete"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/btn_delete"

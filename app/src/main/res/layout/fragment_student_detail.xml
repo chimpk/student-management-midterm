@@ -103,13 +103,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_certificate"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_add_certificate"
-            android:textSize="12sp"
-            android:textColor="?attr/colorPrimary"
-            app:strokeColor="?attr/colorPrimary" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- Certificate List / State Container -->

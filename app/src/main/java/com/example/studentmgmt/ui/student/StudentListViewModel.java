@@ -8,11 +8,10 @@ import com.example.studentmgmt.data.StudentRepository;
 import com.example.studentmgmt.data.StudentRepositoryProvider;
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.UiState;
-import com.example.studentmgmt.utils.StudentSearchSortUtils;
-import com.example.studentmgmt.utils.StudentSearchSortUtils.SortOption;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * TODO(member-2): ViewModel for Student List, search, filter, and CRUD operations.
@@ -27,7 +26,6 @@ public class StudentListViewModel extends ViewModel {
     private List<Student> cachedList = new ArrayList<>();
     private String currentSearchQuery = "";
     private String currentFacultyFilter = "";
-    private SortOption currentSortOption = SortOption.STUDENT_ID_ASC;
     private StudentRepository.ListenerRegistrationHandle listenerHandle;
     private int listenerGeneration = 0;
 
@@ -87,27 +85,28 @@ public class StudentListViewModel extends ViewModel {
         applyFilters();
     }
 
-    public void setSortOption(SortOption option) {
-        currentSortOption = option != null ? option : SortOption.STUDENT_ID_ASC;
-        applyFilters();
-    }
-
-    public SortOption getSortOption() {
-        return currentSortOption;
-    }
-
     private void applyFilters() {
         if (cachedList.isEmpty()) {
             studentListState.setValue(UiState.empty());
             return;
         }
 
-        List<Student> filtered = StudentSearchSortUtils.filter(cachedList, currentSearchQuery);
-        if (!currentFacultyFilter.isEmpty()) {
-            filtered.removeIf(student -> student.getFaculty() == null
-                    || !student.getFaculty().equalsIgnoreCase(currentFacultyFilter));
+        List<Student> filtered = new ArrayList<>();
+        String queryLower = currentSearchQuery.toLowerCase(Locale.ROOT);
+
+        for (Student s : cachedList) {
+            boolean matchesSearch = queryLower.isEmpty()
+                    || (s.getName() != null && s.getName().toLowerCase(Locale.ROOT).contains(queryLower))
+                    || (s.getStudentId() != null && s.getStudentId().toLowerCase(Locale.ROOT).contains(queryLower))
+                    || (s.getClassName() != null && s.getClassName().toLowerCase(Locale.ROOT).contains(queryLower));
+
+            boolean matchesFaculty = currentFacultyFilter.isEmpty()
+                    || (s.getFaculty() != null && s.getFaculty().equalsIgnoreCase(currentFacultyFilter));
+
+            if (matchesSearch && matchesFaculty) {
+                filtered.add(s);
+            }
         }
-        filtered.sort(StudentSearchSortUtils.comparator(currentSortOption));
 
         if (filtered.isEmpty()) {
             studentListState.setValue(UiState.empty());
