@@ -26,14 +26,14 @@
 | **Firebase Storage Bucket** | `[CHƯA CẤP PHÁT TRÊN CONSOLE - CẦN BỔ SUNG KHI NÂNG CẤP PLAN]` |
 
 ### Phân công trách nhiệm chi tiết:
-- **Thành viên 1 (Trần Ngọc Tấn):** Đảm nhiệm toàn bộ Module Xác thực (Auth), Quản lý người dùng (User Management), Hồ sơ cá nhân & Ảnh đại diện (Profile & Avatar), Lịch sử đăng nhập (Login History), Phân quyền truy cập (RBAC), Quy tắc bảo mật (Firestore & Storage Security Rules), Chuẩn hóa giao diện Material3, xử lý trạng thái tải/lỗi/ngoại tuyến (UI State & Offline/Error Handling), TDD Unit Tests, Kiểm thử bảo mật tĩnh và Tổng hợp báo cáo.
+- **Thành viên 1 (Trần Ngọc Tấn):** Đảm nhiệm toàn bộ Module Xác thực (Auth), Quản lý người dùng (User Management), Hồ sơ cá nhân & Ảnh đại diện (Profile & Avatar), Lịch sử đăng nhập (Login History), Phân quyền truy cập (RBAC), Quy tắc bảo mật (Firestore & Storage Security Rules), Chuẩn hóa giao diện Material Components, xử lý trạng thái tải/lỗi/ngoại tuyến (UI State & Offline/Error Handling), TDD Unit Tests, Kiểm thử bảo mật tĩnh và Tổng hợp báo cáo.
 - **Thành viên 2 (Nguyễn Vĩnh Khâm):** Đảm nhiệm Module Quản lý sinh viên & Chứng chỉ (Student & Certificate CRUD), Đồng bộ thời gian thực (Realtime Sync), Nhập/Xuất tệp CSV (CSV Import/Export), Bộ dữ liệu mẫu tiếng Việt, Kịch bản kiểm thử sinh viên và Quay video demo thực tế.
 
 ---
 
 ## Tóm tắt nội dung thực hiện (Executive Summary)
 
-Đề tài xây dựng ứng dụng Android quản lý thông tin sinh viên thời gian thực trên nền tảng Google Firebase. Ứng dụng áp dụng kiến trúc **MVVM (Model - View - ViewModel)** kết hợp **ViewBinding**, **LiveData**, **Material Design 3**, đảm bảo tính tách bạch tầng dữ liệu, tính khả thử (testability) và an toàn bảo mật nhiều lớp.
+Đề tài xây dựng ứng dụng Android quản lý thông tin sinh viên thời gian thực trên nền tảng Google Firebase. Ứng dụng áp dụng kiến trúc **MVVM (Model - View - ViewModel)** kết hợp **ViewBinding**, **LiveData**, **Material Components**, đảm bảo tính tách bạch tầng dữ liệu, tính khả thử (testability) và an toàn bảo mật nhiều lớp.
 
 Đến thời điểm hiện tại, **Thành viên 1 đã hoàn thành trọn vẹn 100% phạm vi công việc cam kết (Tasks 1 đến 8)**:
 - Toàn bộ 16 bộ test suite kiểm thử đơn vị với **146 test cases** đã được xây dựng và **PASS 100%** trên cả 2 cấu hình build `debug` và `release`.
@@ -50,7 +50,7 @@
 | **Ngôn ngữ phát triển** | Java 17 | Ngôn ngữ hướng đối tượng tiêu chuẩn, áp dụng các tính năng hiện đại |
 | **Nền tảng Android SDK** | `minSdk 26` (Android 8.0) / `targetSdk 34` (Android 14) | Đảm bảo tương thích thiết bị rộng rãi và hỗ trợ API bảo mật mới |
 | **Kiến trúc ứng dụng** | MVVM (Model - View - ViewModel) | Tách biệt giao diện (View), trạng thái nghiệp vụ (ViewModel) và dữ liệu (Repository) |
-| **Giao diện người dùng** | XML Layouts, ViewBinding, Material Components 3 | Đảm bảo Type-safety khi bind view, thiết kế hiện đại, hỗ trợ Dark/Light Theme |
+| **Giao diện người dùng** | XML Layouts, ViewBinding, Material Components | Đảm bảo Type-safety khi bind view, thiết kế hiện đại, hỗ trợ Dark/Light Theme |
 | **Quản lý điều hướng** | AndroidX Navigation Component (`nav_graph.xml`) | Quản lý điều hướng đa màn hình an toàn và kiểm soát ranh giới phân quyền |
 | **Xác thực người dùng** | Firebase Authentication (Email/Password Provider) | Dịch vụ xác thực tài khoản an toàn từ Google |
 | **Cơ sở dữ liệu** | Cloud Firestore | Cơ sở dữ liệu NoSQL tài liệu, hỗ trợ đồng bộ thời gian thực và offline persistence |
@@ -240,7 +240,7 @@ Nhằm đảm bảo tính trung thực tuyệt đối trong báo cáo khoa học
 2. Google Firebase, *Firebase Authentication for Android*: <https://firebase.google.com/docs/auth/android/start>
 3. Google Firebase, *Firebase Security Rules Guide*: <https://firebase.google.com/docs/rules>
 4. Android Developers, *Guide to App Architecture*: <https://developer.android.com/topic/architecture>
-5. Android Developers, *Material Design 3 Components*: <https://m3.material.io/>
+5. Material Components for Android: <https://github.com/material-components/material-components-android>
 
 ---
 

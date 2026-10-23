@@ -12,7 +12,7 @@
 
 ## 1. Hiện trạng mã nguồn đã bàn giao sẵn (Scaffolded & Ready)
 
-Trưởng nhóm (Thành viên 1) đã xây dựng sẵn toàn bộ khung (scaffold) hoàn chỉnh, giao diện Material 3, ViewBinding và nạp dữ liệu mẫu in-memory (Mock) kèm nhãn `TODO(member-2)`. Dự án hiện tại đã **vượt qua 170/170 bài kiểm thử đơn vị** (bao gồm 24 unit tests mới cho Student, Certificate, ViewModel và CSV) và build APK debug thành công.
+Trưởng nhóm (Thành viên 1) đã xây dựng sẵn toàn bộ khung (scaffold) hoàn chỉnh, giao diện Material Components (`Theme.MaterialComponents` và `Widget.MaterialComponents.*`), ViewBinding và nạp dữ liệu mẫu in-memory (Mock) kèm nhãn `TODO(member-2)`. Dự án hiện tại đã **vượt qua 170/170 bài kiểm thử đơn vị** (bao gồm 24 unit tests mới cho Student, Certificate, ViewModel và CSV) và build APK debug thành công.
 
 ### Danh mục tệp Thành viên 2 sở hữu và cần làm việc:
 1. **Mô hình dữ liệu (Model):**

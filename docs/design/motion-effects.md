@@ -153,7 +153,7 @@ Toàn bộ hiệu ứng được điều phối thông qua chính sách [motion-
   - Các nút Chip bộ lọc: [S07](file:///d:/Study/mobile/MidTerm/docs/design/screens/S07-student-list-admin-light.md), [S12](file:///d:/Study/mobile/MidTerm/docs/design/screens/S12-student-list-employee-light.md) (`Thành viên 2`)
   - Nút Khóa / Mở khóa tài khoản: [S10](file:///d:/Study/mobile/MidTerm/docs/design/screens/S10-user-list-admin-light.md), [S33](file:///d:/Study/mobile/MidTerm/docs/design/screens/S33-user-list-admin-dark.md) (`Thành viên 1`)
 - **Trigger:** Người dùng chạm vào Chip bộ lọc, gạt Switch hoặc bấm nút Khóa.
-- **Trạng thái chuyển dịch:** Nảy nhẹ tỷ lệ kích thước (`scale 1.0 -> 0.95 -> 1.05 -> 1.0`) tạo cảm giác vật lý sống động kiểu Material 3 Expressive.
+- **Trạng thái chuyển dịch:** Nảy nhẹ tỷ lệ kích thước (`scale 1.0 -> 0.95 -> 1.05 -> 1.0`) tạo cảm giác vật lý sống động theo Material Components.
 - **Hành vi khi bị ngắt giữa chừng:** Chạm liên tục -> Reset chu kỳ nảy, đưa về scale 1.0 an toàn.
 - **Công cụ / API:** 
   - `androidx.dynamicanimation:dynamicanimation` (`CẦN DUYỆT DEPENDENCY`).

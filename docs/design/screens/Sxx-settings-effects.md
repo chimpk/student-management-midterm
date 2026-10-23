@@ -46,7 +46,7 @@
 ## 3. Thành phần giao diện (Components & Material Catalog)
 
 - `MaterialCardView`: Khung bao quanh khối cài đặt
-- `MaterialSwitch`: Công tắc trượt chuẩn Material 3
+- `MaterialSwitch`: Công tắc trượt chuẩn Material Components
 - `TextView`: Nhãn tiêu đề, mô tả và ghi chú hệ thống
 - Icons: `ic_info` (Material Symbols `info`)
 
