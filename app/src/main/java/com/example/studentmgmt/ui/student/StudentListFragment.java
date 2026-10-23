@@ -16,11 +16,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.studentmgmt.R;
+import com.example.studentmgmt.data.AuthRepositoryProvider;
 import com.example.studentmgmt.databinding.DialogStudentAddEditBinding;
 import com.example.studentmgmt.databinding.FragmentStudentListBinding;
+import com.example.studentmgmt.model.AppUser;
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.UiState;
 import com.example.studentmgmt.utils.StudentCsvHelper;
+import com.example.studentmgmt.utils.StudentDataValidation;
+import com.example.studentmgmt.utils.VietnameseTextInputFormatter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -35,6 +39,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     private FragmentStudentListBinding binding;
     private StudentListViewModel viewModel;
     private StudentAdapter adapter;
+    private boolean canManageStudents;
 
     @Nullable
     @Override
@@ -47,6 +52,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(StudentListViewModel.class);
+        canManageStudents = currentUserCanManageStudents();
 
         setupRecyclerView();
         setupSearchAndActions();
@@ -55,6 +61,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
 
     private void setupRecyclerView() {
         adapter = new StudentAdapter(this);
+        adapter.setCanManageStudents(canManageStudents);
         binding.rvStudents.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvStudents.setAdapter(adapter);
 
@@ -62,6 +69,9 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     }
 
     private void setupSearchAndActions() {
+        binding.fabAddStudent.setVisibility(canManageStudents ? View.VISIBLE : View.GONE);
+        binding.btnImportCsv.setVisibility(canManageStudents ? View.VISIBLE : View.GONE);
+
         binding.etSearchStudent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -132,15 +142,18 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
 
     @Override
     public void onStudentEdit(Student student) {
+        if (!canManageStudents) return;
         showEditStudentDialog(student);
     }
 
     @Override
     public void onStudentDelete(Student student) {
+        if (!canManageStudents) return;
         showDeleteConfirmDialog(student);
     }
 
     private void showAddStudentDialog() {
+        if (!canManageStudents) return;
         DialogStudentAddEditBinding dialogBinding = DialogStudentAddEditBinding.inflate(getLayoutInflater());
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
@@ -154,17 +167,15 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             String id = dialogBinding.etStudentId.getText() != null ? dialogBinding.etStudentId.getText().toString().trim() : "";
-            String name = dialogBinding.etStudentName.getText() != null ? dialogBinding.etStudentName.getText().toString().trim() : "";
+            String name = dialogBinding.etStudentName.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentName.getText().toString().trim()) : "";
             String dob = dialogBinding.etStudentDob.getText() != null ? dialogBinding.etStudentDob.getText().toString().trim() : "";
             String className = dialogBinding.etStudentClass.getText() != null ? dialogBinding.etStudentClass.getText().toString().trim() : "";
-            String faculty = dialogBinding.etStudentFaculty.getText() != null ? dialogBinding.etStudentFaculty.getText().toString().trim() : "";
+            String faculty = dialogBinding.etStudentFaculty.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentFaculty.getText().toString().trim()) : "";
 
-            if (id.isEmpty()) {
-                dialogBinding.tilStudentId.setError("MSSV không được để trống");
-                return;
-            }
-            if (name.isEmpty()) {
-                dialogBinding.tilStudentName.setError("Họ tên không được để trống");
+            String validationError = StudentDataValidation.validateStudent(
+                    id, name, dob, className, faculty);
+            if (validationError != null) {
+                Snackbar.make(dialogBinding.getRoot(), validationError, Snackbar.LENGTH_LONG).show();
                 return;
             }
 
@@ -175,6 +186,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     }
 
     private void showEditStudentDialog(Student student) {
+        if (!canManageStudents) return;
         DialogStudentAddEditBinding dialogBinding = DialogStudentAddEditBinding.inflate(getLayoutInflater());
 
         dialogBinding.etStudentId.setText(student.getStudentId());
@@ -194,13 +206,15 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
         dialog.show();
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String name = dialogBinding.etStudentName.getText() != null ? dialogBinding.etStudentName.getText().toString().trim() : "";
+            String name = dialogBinding.etStudentName.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentName.getText().toString().trim()) : "";
             String dob = dialogBinding.etStudentDob.getText() != null ? dialogBinding.etStudentDob.getText().toString().trim() : "";
             String className = dialogBinding.etStudentClass.getText() != null ? dialogBinding.etStudentClass.getText().toString().trim() : "";
-            String faculty = dialogBinding.etStudentFaculty.getText() != null ? dialogBinding.etStudentFaculty.getText().toString().trim() : "";
+            String faculty = dialogBinding.etStudentFaculty.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentFaculty.getText().toString().trim()) : "";
 
-            if (name.isEmpty()) {
-                dialogBinding.tilStudentName.setError("Họ tên không được để trống");
+            String validationError = StudentDataValidation.validateStudent(
+                    student.getStudentId(), name, dob, className, faculty);
+            if (validationError != null) {
+                Snackbar.make(dialogBinding.getRoot(), validationError, Snackbar.LENGTH_LONG).show();
                 return;
             }
 
@@ -215,6 +229,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     }
 
     private void showDeleteConfirmDialog(Student student) {
+        if (!canManageStudents) return;
         new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.btn_delete)
                 .setMessage(getString(R.string.confirm_delete_student_format, student.getName(), student.getStudentId()))
@@ -236,6 +251,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     }
 
     private void importCsvSample() {
+        if (!canManageStudents) return;
         String sampleCsv = "Mã SV,Họ và tên,Ngày sinh,Lớp,Khoa\n" +
                 "524H0099,Vũ Quốc Đạt,2003-07-22,24H50301,Công nghệ thông tin\n" +
                 "524H0100,Lý Mỹ Linh,2003-10-14,24H50302,Kỹ thuật phần mềm";
@@ -248,6 +264,11 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
         } catch (IOException e) {
             Toast.makeText(requireContext(), "Lỗi đọc CSV: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean currentUserCanManageStudents() {
+        AppUser user = AuthRepositoryProvider.getRepository().getCurrentUser();
+        return user != null && user.isNormal() && (user.isAdmin() || user.isManager());
     }
 
     @Override
