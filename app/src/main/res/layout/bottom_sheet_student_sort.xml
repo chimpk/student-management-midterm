@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_surface"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_margin">
+
+    <!-- Drag Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/ic_launcher_background"
+        android:backgroundTint="@color/color_outline_variant" />
+
+    <TextView
+        android:id="@+id/tvSortTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/sort_sheet_title"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvSortDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/sort_sheet_desc"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_size_subtitle" />
+
+    <RadioGroup
+        android:id="@+id/rgSortOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <RadioButton
+            android:id="@+id/rbSortNameAsc"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/min_touch_target"
+            android:text="@string/sort_name_asc"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/rbSortNameDesc"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/min_touch_target"
+            android:text="@string/sort_name_desc"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/rbSortMssvAsc"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/min_touch_target"
+            android:text="@string/sort_mssv_asc"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/rbSortBirthAsc"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/min_touch_target"
+            android:text="@string/sort_birth_asc"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp" />
+    </RadioGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnApplySort"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/min_touch_target"
+        android:layout_marginTop="16dp"
+        android:text="@string/btn_apply_sort"
+        android:textColor="@color/color_on_primary"
+        android:textSize="@dimen/text_size_name"
+        app:backgroundTint="@color/color_primary"
+        app:cornerRadius="@dimen/radius_input" />
+
+</LinearLayout>

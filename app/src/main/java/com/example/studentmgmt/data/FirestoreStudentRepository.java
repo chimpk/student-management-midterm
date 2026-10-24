@@ -1,7 +1,7 @@
 package com.example.studentmgmt.data;
 
-import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.AppUser;
+import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.utils.StudentDataValidation;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
@@ -309,7 +309,7 @@ public final class FirestoreStudentRepository implements StudentRepository {
             }
         }
         return error == null || error.getLocalizedMessage() == null
-                ? "Không thể tải dữ liệu sinh viên từ Firestore."
+                ? "Không thể hoàn tất thao tác sinh viên trên Firestore."
                 : error.getLocalizedMessage();
     }
 

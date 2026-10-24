@@ -1,0 +1,936 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_surface"
+        app:elevation="2dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationContentDescription="@string/nav_back"
+            app:title="@string/title_import_export"
+            app:titleTextColor="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingBottom="@dimen/spacing_medium"
+            android:text="@string/io_subtitle"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_body_small" />
+
+        <!-- Segmented Toggle: Student vs Certificate -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleDataType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingBottom="@dimen/spacing_small"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTypeStudent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_weight="1"
+                android:text="@string/tab_students"
+                android:textSize="@dimen/text_size_body_small" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTypeCertificate"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_weight="1"
+                android:text="@string/tab_certificates"
+                android:textSize="@dimen/text_size_body_small" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <!-- Segmented Toggle: Import vs Export -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleOperationMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingBottom="@dimen/spacing_medium"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnModeImport"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_weight="1"
+                android:text="@string/mode_import"
+                android:textSize="@dimen/text_size_body_small" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnModeExport"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_weight="1"
+                android:text="@string/mode_export"
+                android:textSize="@dimen/text_size_body_small" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/screen_margin">
+
+            <!-- Employee Access Denied Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardAccessDenied"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/color_surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/color_error"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_block"
+                        app:tint="@color/color_error"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:text="@string/toast_employee_no_access"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== STUDENT IMPORT CARD (S18/S36) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardStudentImport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_import_data"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:clickable="false"
+                        android:text="@string/io_import_spec"
+                        android:textColor="@color/text_secondary"
+                        app:chipBackgroundColor="@color/color_surface_variant" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/io_import_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChooseStudentCsv"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/min_touch_target"
+                            android:layout_marginEnd="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/btn_choose_csv_file"
+                            app:icon="@drawable/ic_upload" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnDownloadStudentTemplate"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/min_touch_target"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/btn_download_csv_template"
+                            app:icon="@drawable/ic_download" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== STUDENT EXPORT CARD (S18/S36) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardStudentExport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_export_data"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipStudentExportSpec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:clickable="false"
+                        android:text="@string/io_export_spec_format"
+                        android:textColor="@color/text_secondary"
+                        app:chipBackgroundColor="@color/color_surface_variant" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/io_export_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnExportStudentCsv"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="@string/btn_export_csv"
+                        app:icon="@drawable/ic_download" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== STUDENT RESULT CARD (S23) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardStudentResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/color_outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_import_result"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvStudentResultSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/import_summary_format"
+                        android:textColor="@color/color_primary"
+                        android:textSize="@dimen/text_size_body_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvStudentResultDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_extra_small"
+                        android:text="@string/import_detail_summary"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnShareStudentErrorReport"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:text="@string/btn_share_error_report"
+                        app:icon="@drawable/ic_share" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE IMPORT DEFAULT (S55/S56) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertImportDefault"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/import_certificate_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+
+                    <!-- File Info Subcard -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        app:cardBackgroundColor="@color/color_surface_variant"
+                        app:cardCornerRadius="@dimen/radius_card"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/spacing_medium">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_upload"
+                                app:tint="@color/color_primary"
+                                android:contentDescription="@null" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_medium"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tvCertFileName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="certificates_2026.csv"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="@dimen/text_size_body_medium"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvCertFileSize"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2.4 MB · CSV UTF-8"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="@dimen/text_size_body_small" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Column Structure Note -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:text="@string/certificate_csv_columns"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small"
+                        android:fontFamily="monospace" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnStartCertImport"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/min_touch_target"
+                            android:layout_marginEnd="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/btn_start_import" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChooseOtherCertFile"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/min_touch_target"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/btn_choose_other_file" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE IMPORT PROCESSING (S57/S58) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertProcessing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/certificate_import_processing"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvCertProgressText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:text="Đã xử lý 12 / 20 dòng"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_medium" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressCertImport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:max="100"
+                        android:progress="60"
+                        app:indicatorColor="@color/color_primary"
+                        app:trackColor="@color/color_surface_variant" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/import_wait_note"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCertProcessingDisabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:enabled="false"
+                        android:text="@string/btn_processing" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:gravity="center"
+                        android:text="@string/import_no_resubmit"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE IMPORT RESULT (S59/S60) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/certificate_import_result"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+
+                    <!-- Stat Chips Row: Total = Success + Failed -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipCertTotal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/spacing_extra_small"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:text="Tổng: 20"
+                            android:textColor="@color/text_primary"
+                            app:chipBackgroundColor="@color/color_surface_variant" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipCertSuccess"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/spacing_extra_small"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:text="Thành công: 18"
+                            android:textColor="@color/color_status_normal"
+                            app:chipBackgroundColor="@color/color_surface_variant" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipCertFailed"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_extra_small"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:text="Lỗi: 2"
+                            android:textColor="@color/color_error"
+                            app:chipBackgroundColor="@color/color_surface_variant" />
+                    </LinearLayout>
+
+                    <!-- Row Error Detail List -->
+                    <TextView
+                        android:id="@+id/tvCertErrorDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:lineSpacingExtra="4dp"
+                        android:text="• Dòng 5 · MSSV 20000005: MSSV không có trong hệ thống\n• Dòng 14 · Ngày cấp: Ngày cấp không được ở tương lai"
+                        android:textColor="@color/color_error"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnShareCertReport"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/min_touch_target"
+                            android:layout_marginEnd="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/btn_share_error_report"
+                            app:icon="@drawable/ic_share" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCertChooseOtherAfterResult"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/min_touch_target"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/btn_choose_other_file" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE ERROR: INVALID FORMAT (S61/S62) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertInvalidFormat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/color_error"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_error"
+                            app:tint="@color/color_error"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:text="@string/import_invalid_format_title"
+                            android:textColor="@color/color_error"
+                            android:textSize="@dimen/text_size_title_medium"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/import_invalid_format_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/certificate_csv_columns"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small"
+                        android:fontFamily="monospace" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCertChooseOtherInvalidFormat"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="@string/btn_choose_other_file" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE ERROR: TOO LARGE (S63/S64) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertTooLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/color_error"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_error"
+                            app:tint="@color/color_error"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:text="@string/import_too_large_title"
+                            android:textColor="@color/color_error"
+                            android:textSize="@dimen/text_size_title_medium"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvCertTooLargeDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="Tệp đang chọn có dung lượng 6.8 MB. Chia nhỏ hoặc giảm tệp xuống tối đa 5 MB trước khi chọn lại."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCertChooseOtherTooLarge"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="@string/btn_choose_other_file" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE ERROR: MISSING STUDENT MSSV (S65/S66) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertMissingStudent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/color_error"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_error"
+                            app:tint="@color/color_error"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:text="@string/import_missing_student_title"
+                            android:textColor="@color/color_error"
+                            android:textSize="@dimen/text_size_title_medium"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvCertMissingStudentDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="Dòng CSV 5 · MSSV 20000005 không có trong hệ thống."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCertChooseOtherMissingStudent"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="@string/btn_choose_other_file" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE ERROR: SERVER ERROR (S69/S70) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertServerError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/color_error"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_error"
+                            app:tint="@color/color_error"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:text="@string/import_server_error_title"
+                            android:textColor="@color/color_error"
+                            android:textSize="@dimen/text_size_title_medium"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/import_server_error_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCertRetryServerError"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="@string/btn_retry"
+                        app:icon="@drawable/ic_refresh" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ===================== CERTIFICATE EXPORT CARD (S67/S68) ===================== -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCertExport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/export_certificate_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title_medium"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCertExportSpec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:clickable="false"
+                        android:text="@string/export_certificate_spec_format"
+                        android:textColor="@color/text_secondary"
+                        app:chipBackgroundColor="@color/color_surface_variant" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:text="@string/export_certificate_note"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_body_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:text="@string/csv_preview_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_body_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_extra_small"
+                        android:background="@color/color_surface_variant"
+                        android:fontFamily="monospace"
+                        android:padding="@dimen/spacing_small"
+                        android:text="mssv,ten_chung_chi,ngay_cap,don_vi_cap\n20000001,IELTS 7.0,15/01/2024,IDP Vietnam\n20000001,MOS Excel,20/05/2023,Certiport"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnExportCertCsv"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="@string/btn_export_csv"
+                        app:icon="@drawable/ic_download" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

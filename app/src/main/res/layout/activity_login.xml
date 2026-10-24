@@ -1,129 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
-    android:padding="24dp"
+    android:background="@color/color_background"
+    android:fillViewport="true"
     tools:context=".ui.auth.LoginActivity">
 
-    <TextView
-        android:id="@+id/tvAppTitle"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="@string/app_name"
-        android:textAlignment="center"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_margin"
+        android:paddingTop="36dp"
+        android:paddingBottom="24dp">
 
-    <TextView
-        android:id="@+id/tvSubtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/login_subtitle"
-        android:textAlignment="center"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvAppTitle" />
+        <!-- Slot Logo thương hiệu (64x64dp, bo góc 16dp, nền color_primary) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAppLogo"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:cardBackgroundColor="@color/color_primary"
+            app:cardCornerRadius="@dimen/radius_card"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_app_logo"
+                app:tint="@color/white" />
+        </com.google.android.material.card.MaterialCardView>
 
-        <LinearLayout
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/tvAppTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/app_name"
+            android:textAlignment="center"
+            android:textColor="@color/color_primary"
+            android:textSize="@dimen/text_size_title" />
+
+        <!-- Tagline -->
+        <TextView
+            android:id="@+id/tvAppTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/app_tagline"
+            android:textAlignment="center"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_subtitle" />
+
+        <!-- Card Form Đăng nhập -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="@dimen/radius_card"
+            app:cardElevation="@dimen/card_elevation"
+            app:strokeColor="@color/color_outline_variant"
+            app:strokeWidth="@dimen/stroke_width">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/screen_margin">
+
+                <TextView
+                    android:id="@+id/tvLoginTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/login_title"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvLoginInstruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/login_instruction"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_subtitle" />
+
+                <!-- Input Username -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilIdentifier"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/username_hint"
+                    app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                    app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                    app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                    app:boxCornerRadiusTopStart="@dimen/radius_input"
+                    app:boxStrokeColor="@color/color_primary"
+                    app:startIconDrawable="@drawable/ic_person"
+                    app:startIconTint="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etIdentifier"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textNoSuggestions"
+                        android:maxLines="1"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_subtitle" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Input Password -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPassword"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/password_hint"
+                    app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                    app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                    app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                    app:boxCornerRadiusTopStart="@dimen/radius_input"
+                    app:boxStrokeColor="@color/color_primary"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/text_secondary"
+                    app:startIconDrawable="@drawable/ic_lock"
+                    app:startIconTint="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_subtitle" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Quên mật khẩu link (touch target >= 48dp) -->
+                <TextView
+                    android:id="@+id/tvForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:layout_gravity="end"
+                    android:gravity="center_vertical"
+                    android:text="@string/forgot_password"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/text_size_subtitle" />
+
+                <!-- Thông báo lỗi đăng nhập (S03) -->
+                <LinearLayout
+                    android:id="@+id/layoutLoginError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/ic_launcher_background"
+                    android:backgroundTint="@color/bg_locked"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_error"
+                        app:tint="@color/color_error" />
+
+                    <TextView
+                        android:id="@+id/tvErrorMessage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/login_error_invalid_credentials"
+                        android:textColor="@color/color_error"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <!-- Nút Đăng nhập -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogin"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:text="@string/btn_login"
+                    android:textColor="@color/color_on_primary"
+                    android:textSize="@dimen/text_size_name"
+                    app:backgroundTint="@color/color_primary"
+                    app:cornerRadius="@dimen/radius_input" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Footer Notice -->
+        <TextView
+            android:id="@+id/tvNoAccountHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/no_account_hint"
+            android:textAlignment="center"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_chip" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_shield"
+                app:tint="@color/text_secondary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/login_title"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilIdentifier"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/hint_username">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etIdentifier"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilPassword"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="@string/hint_password"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/tvErrorMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:textColor="?attr/colorError"
-                android:textSize="13sp"
-                android:visibility="gone"
-                tools:text="Tên đăng nhập hoặc mật khẩu không chính xác."
-                tools:visibility="visible" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLogin"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="@string/btn_login"
-                android:textSize="16sp"
-                app:cornerRadius="8dp" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
+                android:layout_marginStart="6dp"
+                android:text="@string/security_notice"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_caption" />
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

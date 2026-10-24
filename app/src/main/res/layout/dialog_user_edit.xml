@@ -1,194 +1,313 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="wrap_content"
+    android:background="@color/color_surface"
+    android:fillViewport="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
-
+        android:padding="@dimen/screen_margin">
         <TextView
             android:id="@+id/tv_dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_title_user_info"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/text_primary"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary" />
-
+            tools:text="@string/title_add_user" />
         <TextView
-            android:id="@+id/tv_backend_notice"
+            android:id="@+id/tvDialogSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/user_required_fields_note"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+        <!-- Self protection warning card (S44) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardSelfProtection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="?attr/colorSurface"
-            android:padding="10dp"
-            android:text="@string/dialog_backend_notice"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="12sp" />
-
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/color_secondary_container"
+            app:cardCornerRadius="@dimen/radius_card"
+            app:strokeColor="@color/color_secondary"
+            app:strokeWidth="1dp"
+            tools:visibility="visible">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_shield"
+                    app:tint="@color/color_secondary" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/admin_account_protection"
+                    android:textColor="@color/color_on_secondary_container"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <!-- Hidden UID field (system auto-generated, not required from Admin) -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_user_uid"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="@string/hint_uid">
-
+            android:visibility="gone">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_uid"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
-
+        <!-- Username -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_user_username"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/hint_username_format">
-
+            android:layout_marginTop="12dp"
+            android:hint="@string/username_label"
+            app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+            app:boxCornerRadiusBottomStart="@dimen/radius_input"
+            app:boxCornerRadiusTopEnd="@dimen/radius_input"
+            app:boxCornerRadiusTopStart="@dimen/radius_input"
+            app:startIconDrawable="@drawable/ic_person"
+            app:startIconTint="@color/text_secondary">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_subtitle" />
         </com.google.android.material.textfield.TextInputLayout>
-
+        <!-- Full Name -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_user_name"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="@string/hint_full_name">
-
+            android:hint="@string/label_full_name"
+            app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+            app:boxCornerRadiusBottomStart="@dimen/radius_input"
+            app:boxCornerRadiusTopEnd="@dimen/radius_input"
+            app:boxCornerRadiusTopStart="@dimen/radius_input"
+            app:startIconDrawable="@drawable/ic_account_circle"
+            app:startIconTint="@color/text_secondary">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_subtitle" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+            <!-- Age -->
+            <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_user_age"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="@string/hint_age">
-
-            <com.google.android.material.textfield.TextInputEditText
+            android:hint="@string/label_age"
+            app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+            app:boxCornerRadiusBottomStart="@dimen/radius_input"
+            app:boxCornerRadiusTopEnd="@dimen/radius_input"
+            app:boxCornerRadiusTopStart="@dimen/radius_input"
+            app:startIconDrawable="@drawable/ic_school"
+            app:startIconTint="@color/text_secondary">
+                <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_subtitle" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Phone -->
+            <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_user_phone"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="@string/hint_phone">
-
-            <com.google.android.material.textfield.TextInputEditText
+            android:hint="@string/label_phone"
+            app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+            app:boxCornerRadiusBottomStart="@dimen/radius_input"
+            app:boxCornerRadiusTopEnd="@dimen/radius_input"
+            app:boxCornerRadiusTopStart="@dimen/radius_input"
+            app:startIconDrawable="@drawable/ic_phone"
+            app:startIconTint="@color/text_secondary">
+                <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+                android:inputType="phone"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_subtitle" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Email (Optional) -->
+            <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_user_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="@string/hint_email_optional">
-
-            <com.google.android.material.textfield.TextInputEditText
+            android:hint="@string/label_email_optional"
+            app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+            app:boxCornerRadiusBottomStart="@dimen/radius_input"
+            app:boxCornerRadiusTopEnd="@dimen/radius_input"
+            app:boxCornerRadiusTopStart="@dimen/radius_input"
+            app:startIconDrawable="@drawable/ic_email"
+            app:startIconTint="@color/text_secondary">
+                <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_subtitle" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Password (Required when creating a new user) -->
+            <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_user_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/password_label"
+            app:passwordToggleEnabled="true"
+            app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+            app:boxCornerRadiusBottomStart="@dimen/radius_input"
+            app:boxCornerRadiusTopEnd="@dimen/radius_input"
+            app:boxCornerRadiusTopStart="@dimen/radius_input"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:startIconTint="@color/text_secondary">
+                <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_user_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_subtitle" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Role -->
+            <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/label_role"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary" />
-
-        <RadioGroup
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+            <RadioGroup
             android:id="@+id/rg_user_role"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="horizontal">
-
-            <RadioButton
+                <RadioButton
                 android:id="@+id/rb_role_employee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/role_employee" />
-
-            <RadioButton
+                <RadioButton
                 android:id="@+id/rb_role_manager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/role_manager" />
-
-            <RadioButton
+                <RadioButton
                 android:id="@+id/rb_role_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/role_admin" />
-        </RadioGroup>
-
-        <TextView
+            </RadioGroup>
+            <!-- Status -->
+            <TextView
             android:id="@+id/tv_status_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/label_status_init"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary" />
-
-        <RadioGroup
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+            <RadioGroup
             android:id="@+id/rg_user_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="horizontal">
-
-            <RadioButton
+                <RadioButton
                 android:id="@+id/rb_status_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/status_normal_display" />
-
-            <RadioButton
+                <RadioButton
                 android:id="@+id/rb_status_locked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/status_locked_display" />
-        </RadioGroup>
-
-    </LinearLayout>
-</ScrollView>
+            </RadioGroup>
+            <!-- Action buttons (S40 / S43) -->
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelUser"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_marginEnd="8dp"
+                android:text="@string/btn_cancel"
+                android:textColor="@color/text_secondary" />
+                <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveUser"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/min_touch_target"
+                android:text="@string/btn_save"
+                android:textColor="@color/color_on_primary"
+                app:backgroundTint="@color/color_primary"
+                app:cornerRadius="@dimen/radius_input" />
+            </LinearLayout>
+            <!-- Legacy stub to avoid breaking any compilation -->
+            <TextView
+            android:id="@+id/tv_backend_notice"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>

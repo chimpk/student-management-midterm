@@ -1,21 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Quản lý sinh viên</string>
+    <!-- BRAND-PLACEHOLDER: thay bằng tên dự án chính thức -->
+    <string name="app_name">UniData</string>
+    <string name="app_tagline">Dữ liệu rõ ràng. Quản lý dễ dàng.</string>
+    <string name="app_subtitle">Quản lý dữ liệu sinh viên</string>
     <string name="action_settings">Cài đặt</string>
     <string name="welcome_message">Chào mừng đến với ứng dụng quản lý sinh viên</string>
     <string name="settings_clicked">Đã chọn Cài đặt</string>
+    <string name="nav_back">Quay lại</string>
 
-    <!-- Login Screen -->
-    <string name="login_subtitle">Hệ thống quản lý sinh viên</string>
+    <!-- Xác thực & Đăng nhập (PDF trang 1, 2, 3, 27) -->
     <string name="login_title">Đăng nhập</string>
+    <string name="login_subtitle">Hệ thống quản lý dữ liệu sinh viên</string>
+    <string name="login_instruction">Sử dụng tài khoản được nhà trường cấp để truy cập hệ thống.</string>
+    <string name="username_label">Tên đăng nhập</string>
+    <string name="username_hint">Nhập tên đăng nhập</string>
     <string name="hint_username">Tên đăng nhập</string>
+    <string name="password_label">Mật khẩu</string>
+    <string name="password_hint">Nhập mật khẩu</string>
     <string name="hint_password">Mật khẩu</string>
     <string name="btn_login">Đăng nhập</string>
+    <string name="btn_logging_in">Đang đăng nhập…</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="no_account_hint">Chưa có tài khoản? Liên hệ quản trị viên</string>
+    <string name="security_notice">Thông tin của bạn được bảo mật</string>
+    <string name="login_error_invalid_credentials">Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng kiểm tra và thử lại.</string>
 
-    <!-- Common Actions & Buttons -->
-    <string name="btn_retry">Thử lại</string>
+    <!-- Điều hướng chính & Dashboard (PDF trang 4, 9, 28) -->
+    <string name="greeting_format">Xin chào, %s</string>
+    <string name="greeting_sub">Một ngày làm việc tốt!</string>
+    <string name="status_synced">Đã đồng bộ</string>
+    <string name="space_mgmt_title">Không gian quản lý</string>
+    <string name="card_student_title">Sinh viên</string>
+    <string name="card_student_sub">Sinh viên trong hệ thống</string>
+    <string name="card_user_title">Người dùng</string>
+    <string name="card_user_sub">Tài khoản đang hoạt động</string>
+    <string name="card_io_title">Import/Export</string>
+    <string name="card_io_sub">Nhập và xuất dữ liệu</string>
+    <string name="card_io_format">CSV , Excel</string>
+    <string name="card_profile_title">Hồ sơ</string>
+    <string name="card_profile_sub">Thông tin và bảo mật</string>
+    <string name="card_profile_category">Cá nhân</string>
+    <string name="stats_ready_banner">Dữ liệu luôn sẵn sàng</string>
+    <string name="stats_summary_format">%1$d sinh viên • %2$d khoa • %3$d lớp</string>
+    <string name="stats_loading">Đang tải thống kê…</string>
+    <string name="stats_error">Không thể tải dữ liệu thống kê</string>
+    <string name="employee_dashboard_title">Tra cứu dữ liệu sinh viên</string>
+    <string name="employee_dashboard_desc">Bạn có quyền xem danh sách, chi tiết sinh viên và quản lý hồ sơ cá nhân.</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_students">Sinh viên</string>
+    <string name="nav_profile">Hồ sơ</string>
+
+    <!-- Danh sách & Chi tiết sinh viên (PDF trang 7, 8, 12, 13, 14, 15, 16, 24, 25, 26, 29, 30) -->
+    <string name="title_students">Sinh viên</string>
+    <string name="student_list_title">Danh sách sinh viên</string>
+    <string name="student_list_subtitle">Quản lý hồ sơ và chứng chỉ sinh viên theo thời gian thực.</string>
+    <string name="search_hint">Tìm tên hoặc MSSV</string>
+    <string name="search_student_hint">Tìm theo tên, MSSV, lớp…</string>
+    <string name="filter_all">Tất cả</string>
+    <string name="filter_faculty_all">Khoa: Tất cả</string>
+    <string name="filter_class_all">Lớp: Tất cả</string>
+    <string name="filter_it">CNTT</string>
+    <string name="filter_cs">Khoa học máy tính</string>
+    <string name="filter_se">Kỹ thuật phần mềm</string>
+    <string name="student_count_sort_synced_format">%1$d sinh viên · %2$s · Đã đồng bộ</string>
+    <string name="student_count_sort_offline_format">%d sinh viên · Tên A → Z Ngoại tuyến</string>
+    <string name="student_offline_banner">Không có kết nối · Đang xem dữ liệu gần nhất</string>
+    <string name="student_cached_time_format">Bản lưu gần nhất: %s</string>
+    <string name="student_loading_text">Đang tải sinh viên…</string>
+    <string name="student_empty_title">Danh sách đang trống</string>
+    <string name="student_empty_desc">Chưa có sinh viên. Nhấn + để thêm hoặc nhập từ CSV</string>
+    <string name="empty_students_message">Chưa có sinh viên nào phù hợp.</string>
+    <string name="btn_add_student">Thêm sinh viên</string>
+    <string name="btn_add_student_inline">+ Thêm sinh viên</string>
+    <string name="btn_import_csv">Nhập CSV</string>
+    <string name="btn_import_csv_inline">Nhập từ CSV</string>
+    <string name="btn_export_csv">Xuất CSV</string>
+    <string name="sort_sheet_title">Sắp xếp sinh viên</string>
+    <string name="sort_sheet_desc">Chọn thứ tự hiển thị trong danh sách</string>
+    <string name="sort_name_asc">Tên A → Z (mặc định)</string>
+    <string name="sort_name_desc">Tên Z → A</string>
+    <string name="sort_mssv_asc">MSSV tăng dần</string>
+    <string name="sort_birth_asc">Ngày sinh cũ nhất</string>
+    <string name="btn_apply_sort">Áp dụng</string>
+    <string name="snackbar_deleted_student_format">Đã xóa %s</string>
+    <string name="btn_undo">Hoàn tác</string>
+    <string name="btn_add_fab">Thêm</string>
+    <string name="title_student_detail">Chi tiết sinh viên</string>
+    <string name="student_detail_title">Chi tiết sinh viên</string>
+    <string name="menu_action_edit">Sửa</string>
+    <string name="menu_action_delete">Xóa</string>
+    <string name="status_studying">Đang theo học</string>
+    <string name="section_student_info">Thông tin sinh viên</string>
+    <string name="label_faculty">Khoa</string>
+    <string name="label_class">Lớp</string>
+    <string name="label_dob">Ngày sinh</string>
+    <string name="label_email">Email</string>
+    <string name="section_certificates_format">Chứng chỉ (%d)</string>
+    <string name="section_certificates">Danh sách chứng chỉ</string>
+    <string name="empty_certificates_message">Sinh viên chưa có chứng chỉ nào.</string>
+    <string name="student_id_format">MSSV: %1$s</string>
+    <string name="student_class_format">Lớp: %1$s</string>
+    <string name="student_dob_format">Ngày sinh: %1$s</string>
+    <string name="student_faculty_format">Khoa: %1$s</string>
+    <string name="cert_count_format">%1$d chứng chỉ</string>
+    <string name="cert_issuer_format">Nơi cấp: %1$s</string>
+    <string name="cert_date_format">Ngày cấp: %1$s</string>
+
+    <!-- Thêm & Sửa sinh viên (PDF trang 5, 6, 19, 20, 31, 32) -->
+    <string name="title_add_student">Thêm sinh viên</string>
+    <string name="dialog_add_student_title">Thêm sinh viên mới</string>
+    <string name="subtitle_add_student">Thông tin sinh viên mới</string>
+    <string name="form_required_note">Các trường có dấu * là bắt buộc.</string>
+    <string name="field_mssv_required">MSSV *</string>
+    <string name="field_name_required">Họ và tên *</string>
+    <string name="field_dob_required">Ngày sinh *</string>
+    <string name="field_faculty_required">Khoa *</string>
+    <string name="field_class_required">Lớp *</string>
+    <string name="field_email_required">Email *</string>
+    <string name="label_student_id">Mã sinh viên (MSSV)</string>
+    <string name="label_student_name">Họ và tên sinh viên</string>
+    <string name="label_student_dob">Ngày sinh (YYYY-MM-DD)</string>
+    <string name="label_student_class">Lớp</string>
+    <string name="label_student_faculty">Khoa</string>
+    <string name="note_new_student_status">Hồ sơ mới có trạng thái Đang theo học.</string>
     <string name="btn_save">Lưu</string>
     <string name="btn_cancel">Hủy</string>
+    <string name="title_edit_student">Sửa sinh viên</string>
+    <string name="dialog_edit_student_title">Chỉnh sửa thông tin sinh viên</string>
+    <string name="subtitle_edit_student_format">Thông tin %s</string>
+    <string name="note_mssv_immutable">MSSV là định danh duy nhất, không thể thay đổi.</string>
+    <string name="note_keep_certificates_format">%d chứng chỉ đã lưu được giữ nguyên.</string>
+    <string name="dialog_delete_student_title">Xóa sinh viên?</string>
+    <string name="dialog_delete_student_warning_format">Thao tác này sẽ xóa hồ sơ sinh viên %1$s và xóa cả %2$d chứng chỉ liên kết trên hệ thống.</string>
+    <string name="confirm_delete_student_format">Bạn có chắc chắn muốn xóa sinh viên %1$s (%2$s) không?</string>
+    <string name="btn_confirm_delete">Xóa sinh viên</string>
+    <string name="datepicker_title">CHỌN NGÀY SINH</string>
+    <string name="error_mssv_exists_format">MSSV %s đã tồn tại trong hệ thống.</string>
+    <string name="error_email_invalid_example">Email chưa hợp lệ. Ví dụ: minh@unidata.edu.vn</string>
+    <string name="error_field_required">Trường này không được để trống</string>
+    <string name="error_invalid_email">Email không đúng định dạng</string>
+    <string name="subtitle_edit_student">Chỉnh sửa thông tin sinh viên</string>
+
+    <!-- Quản lý người dùng (PDF trang 10, 21, 33) -->
+    <string name="title_users">Người dùng</string>
+    <string name="user_count_summary_format">%1$d tài khoản · %2$d đang hoạt động</string>
+    <string name="admin_user_mgmt_desc">Bạn đang quản trị với vai trò Admin. Chọn tài khoản để xem lịch sử đăng nhập.</string>
+    <string name="user_you_tag">(Bạn)</string>
+    <string name="status_active">Hoạt động</string>
+    <string name="status_locked_tag">Đã khóa</string>
+    <string name="note_cannot_self_lock">Không thể tự khóa</string>
+    <string name="btn_lock_account">Khóa tài khoản</string>
+    <string name="btn_unlock_account">Mở khóa tài khoản</string>
     <string name="btn_lock">Khóa</string>
     <string name="btn_unlock">Mở khóa</string>
     <string name="btn_edit">Sửa</string>
@@ -23,28 +159,16 @@
     <string name="btn_delete_profile">Xóa hồ sơ</string>
     <string name="btn_create_profile">Tạo hồ sơ</string>
     <string name="btn_add_user">Thêm người dùng</string>
-    <string name="error_generic">Có lỗi xảy ra</string>
-
-    <!-- Roles & Statuses -->
-    <string name="role_admin">Admin</string>
-    <string name="role_manager">Manager</string>
-    <string name="role_employee">Employee</string>
-    <string name="role_admin_display">Quản trị viên (Admin)</string>
-    <string name="role_manager_display">Quản lý (Manager)</string>
-    <string name="role_employee_display">Nhân viên (Employee)</string>
-    <string name="status_normal">Bình thường</string>
-    <string name="status_locked">Đã khóa</string>
-    <string name="status_active">Hoạt động</string>
-    <string name="status_normal_display">Normal (Hoạt động)</string>
-    <string name="status_locked_display">Locked (Khóa)</string>
-
-    <!-- User Management Screen & Dialog -->
     <string name="empty_users_message">Chưa có người dùng nào trong hệ thống.</string>
     <string name="error_load_users">Không thể tải danh sách người dùng</string>
     <string name="title_lock_account">Khóa tài khoản</string>
     <string name="title_unlock_account">Mở khóa tài khoản</string>
+    <string name="dialog_lock_user_title">Khóa tài khoản?</string>
+    <string name="dialog_lock_user_desc_format">Người dùng %1$s (%2$s) sẽ không thể đăng nhập vào hệ thống sau khi bị khóa.</string>
     <string name="confirm_lock_user_format">Bạn có chắc chắn muốn khóa người dùng @%1$s (%2$s) không?</string>
     <string name="confirm_unlock_user_format">Bạn có chắc chắn muốn mở khóa người dùng @%1$s (%2$s) không?</string>
+    <string name="card_inline_unlock_confirm_format">Mở khóa %s?</string>
+    <string name="btn_confirm_unlock">Mở khóa</string>
     <string name="title_confirm_delete_user">Xác nhận xóa người dùng</string>
     <string name="confirm_delete_user_format">Bạn có chắc chắn muốn xóa hồ sơ của @%1$s khỏi Firestore?\n\nLưu ý quan trọng: Thao tác này chỉ xóa dữ liệu hồ sơ Firestore. Tài khoản xác thực Firebase Auth vẫn tồn tại trên hệ thống và cần backend/Admin SDK để xóa hoàn toàn.</string>
     <string name="title_edit_user">Chỉnh sửa người dùng</string>
@@ -57,12 +181,12 @@
     <string name="hint_age">Tuổi (18 - 60)</string>
     <string name="hint_phone">Số điện thoại (10 số, bắt đầu bằng 0)</string>
     <string name="hint_email_optional">Email (tùy chọn)</string>
-    <string name="label_role">Vai trò:</string>
     <string name="label_status_init">Trạng thái khởi tạo:</string>
     <string name="username_display_format">@%1$s</string>
     <string name="user_details_format">Tuổi: %1$d • SĐT: %2$s</string>
 
-    <!-- Login History Screen -->
+    <!-- Lịch sử đăng nhập & Hồ sơ (PDF trang 11, 17, 22, 34, 35) -->
+    <string name="title_login_history">Lịch sử đăng nhập</string>
     <string name="history_title">Lịch sử đăng nhập</string>
     <string name="history_subtitle">Danh sách phiên đăng nhập theo thời gian máy chủ (mới nhất trước).</string>
     <string name="history_title_self">Lịch sử đăng nhập của bạn</string>
@@ -74,8 +198,22 @@
     <string name="desc_history_icon">Biểu tượng lịch sử</string>
     <string name="history_device_format">Thiết bị: %1$s</string>
     <string name="history_time_format">Thời gian: %1$s</string>
-
-    <!-- Profile Screen -->
+    <string name="login_history_desc_format">Các lần truy cập gần đây của tài khoản này.</string>
+    <string name="date_group_today">Hôm nay · 09/10/2026</string>
+    <string name="date_group_yesterday">Hôm qua · 08/10/2026</string>
+    <string name="login_status_success">Thành công</string>
+    <string name="login_current_session_badge">Phiên hiện tại</string>
+    <string name="title_profile">Hồ sơ cá nhân</string>
+    <string name="section_account_info">Thông tin tài khoản</string>
+    <string name="label_unit">Đơn vị</string>
+    <string name="label_role">Vai trò</string>
+    <string name="label_status">Trạng thái</string>
+    <string name="unit_value_demo">Phòng Đào tạo</string>
+    <string name="role_admin_full">Admin · Quản trị hệ thống</string>
+    <string name="role_manager_full">Manager · Quản lý sinh viên</string>
+    <string name="role_employee_full">Employee · Nhân viên tra cứu</string>
+    <string name="section_my_login_history">Lịch sử đăng nhập của tôi</string>
+    <string name="uploading_avatar_format">Đang tải ảnh lên · %d%%</string>
     <string name="desc_avatar">Ảnh đại diện người dùng</string>
     <string name="btn_change_avatar">Đổi ảnh đại diện</string>
     <string name="status_uploading">Đang tải ảnh lên&#8230;</string>
@@ -92,60 +230,157 @@
     <string name="btn_view_login_history">Xem lịch sử đăng nhập</string>
     <string name="upload_progress_format">Đang tải ảnh lên&#8230; %1$d%%</string>
     <string name="status_updating_profile">Đang cập nhật hồ sơ người dùng&#8230;</string>
-    <string name="toast_avatar_success">Cập nhật ảnh đại diện thành công!</string>
+    <string name="toast_avatar_success">Cập nhật ảnh đại diện thành công</string>
     <string name="error_read_image_format">Không thể đọc tệp ảnh đã chọn: %1$s</string>
 
-    <!-- Main Menu -->
+    <!-- Import / Export (PDF trang 18, 23, 36) -->
+    <string name="title_import_export">Import/Export</string>
+    <string name="io_subtitle">Nhập và xuất hồ sơ sinh viên bằng tệp CSV.</string>
+    <string name="section_import_data">Nhập dữ liệu</string>
+    <string name="io_import_spec">CSV · UTF-8 · Tối đa 5 MB</string>
+    <string name="io_import_desc">Chọn tệp theo mẫu. Mỗi dòng là một sinh viên; MSSV phải duy nhất.</string>
+    <string name="btn_choose_csv_file">Chọn tệp CSV</string>
+    <string name="btn_download_csv_template">Tải mẫu CSV</string>
+    <string name="section_export_data">Xuất dữ liệu</string>
+    <string name="io_export_spec_format">CSV · UTF-8 · %d sinh viên</string>
+    <string name="io_export_desc">Xuất toàn bộ thông tin sinh viên hiện có trong hệ thống.</string>
+    <string name="tab_students">Sinh viên</string>
+    <string name="tab_certificates">Chứng chỉ</string>
+    <string name="mode_import">Nhập CSV</string>
+    <string name="mode_export">Xuất CSV</string>
+    <string name="toast_employee_no_access">Nhân viên không có quyền truy cập Import/Export.</string>
+    <string name="title_import_result">Kết quả nhập dữ liệu</string>
+    <string name="import_summary_format">5 dòng: 3 thành công, 2 lỗi</string>
+    <string name="import_detail_summary">6 hồ sơ ban đầu → 9 hồ sơ hiện tại.</string>
+    <string name="btn_share_error_report">Chia sẻ báo cáo lỗi</string>
+    <string name="csv_exported_toast">Đã xuất %1$d sinh viên ra tệp CSV thành công.</string>
+    <string name="csv_imported_toast">Đã nhập thành công %1$d sinh viên từ CSV.</string>
+
+    <!-- Bổ sung từ Untitled (1).pdf: người dùng, chứng chỉ và trạng thái hệ thống -->
+    <string name="user_required_fields_note">Các trường có dấu * là bắt buộc. Email không bắt buộc.</string>
+    <string name="label_email_optional">Email (tùy chọn)</string>
+    <string name="password_new_label">Mật khẩu mới</string>
+    <string name="password_keep_hint">Để trống để giữ mật khẩu hiện tại</string>
+    <string name="btn_saving">Đang lưu…</string>
+    <string name="user_saving_note">Đang lưu thay đổi. Nút Lưu tạm vô hiệu để tránh gửi lặp.</string>
+    <string name="error_age_range">Tuổi phải từ 18 đến 60.</string>
+    <string name="error_phone_required">Vui lòng nhập số điện thoại.</string>
+    <string name="error_username_spaces">Tên đăng nhập không được chứa khoảng trắng.</string>
+    <string name="error_email_invalid_generic">Email không đúng định dạng, ví dụ: ten@example.com.</string>
+    <string name="form_error_review">Lỗi được hiển thị sau khi rời ô. Kiểm tra các trường có viền đỏ trước khi lưu.</string>
+    <string name="current_account_label">Tài khoản của bạn</string>
+    <string name="self_role_protection">Không thể hạ quyền tài khoản của bạn để tránh mất quyền quản trị.</string>
+    <string name="self_lock_protection">Không thể tự khóa tài khoản của bạn.</string>
+    <string name="admin_account_protection">Bạn không thể tự khóa, tự xóa hoặc tự thay đổi vai trò Admin của chính mình.</string>
+    <string name="dialog_delete_user_title">Xóa người dùng?</string>
+    <string name="dialog_delete_user_desc_format">Bạn muốn xóa %1$s (%2$s)? Tài khoản này sẽ không còn đăng nhập được.</string>
+    <string name="action_irreversible">Thao tác không thể hoàn tác.</string>
+    <string name="user_loading">Đang tải danh sách người dùng…</string>
+    <string name="user_empty_title">Chưa có người dùng</string>
+    <string name="user_empty_desc">Chưa có tài khoản trong danh sách. Thêm người dùng để bắt đầu quản lý quyền truy cập.</string>
+    <string name="user_error_title">Chưa tải được người dùng</string>
+    <string name="user_error_desc">Không thể kết nối máy chủ. Vui lòng thử lại sau.</string>
+    <string name="user_offline_banner">Ngoại tuyến · Dữ liệu đã lưu</string>
+    <string name="cached_at_format">Dữ liệu đã lưu lúc %s</string>
+    <string name="offline_read_only_note">Chỉ xem · Cần kết nối mạng để chỉnh sửa</string>
+
+    <string name="title_certificates">Chứng chỉ</string>
+    <string name="btn_add_certificate">Thêm chứng chỉ</string>
+    <string name="dialog_add_cert_title">Thêm chứng chỉ sinh viên</string>
+    <string name="read_only_label">Chỉ xem</string>
+    <string name="title_add_certificate">Thêm chứng chỉ</string>
+    <string name="title_edit_certificate">Sửa chứng chỉ</string>
+    <string name="label_certificate_name">Tên chứng chỉ</string>
+    <string name="label_cert_name">Tên chứng chỉ</string>
+    <string name="label_issue_date">Ngày cấp</string>
+    <string name="label_cert_date">Ngày cấp (YYYY-MM-DD)</string>
+    <string name="label_issuer">Đơn vị cấp</string>
+    <string name="label_cert_issuer">Nơi cấp</string>
+    <string name="certificate_student_binding_format">Chứng chỉ được gắn với MSSV %1$s (%2$s). Vui lòng kiểm tra thông tin trước khi lưu.</string>
+    <string name="error_issue_date_future">Ngày cấp không được ở tương lai</string>
+    <string name="dialog_delete_certificate_title">Xóa chứng chỉ?</string>
+    <string name="dialog_delete_certificate_desc_format">Xóa chứng chỉ %1$s của %2$s (MSSV: %3$s)? Chỉ chứng chỉ này bị xóa.</string>
+    <string name="confirm_delete_cert_format">Bạn có chắc chắn muốn xóa chứng chỉ %1$s không?</string>
+    <string name="certificate_loading">Đang tải chứng chỉ…</string>
+    <string name="certificate_empty_title">Chưa có chứng chỉ</string>
+    <string name="certificate_empty_desc_format">Thêm chứng chỉ đầu tiên cho %s để hoàn thiện hồ sơ sinh viên.</string>
+    <string name="certificate_error_title">Chưa tải được chứng chỉ</string>
+    <string name="certificate_error_desc">Kết nối tạm thời gián đoạn. Vui lòng thử lại để xem danh sách chứng chỉ.</string>
+    <string name="btn_retry">Thử lại</string>
+
+    <string name="data_type_certificate">Chứng chỉ</string>
+    <string name="import_certificate_title">Nhập chứng chỉ</string>
+    <string name="btn_start_import">Bắt đầu nhập</string>
+    <string name="btn_choose_other_file">Chọn tệp khác</string>
+    <string name="certificate_csv_columns">mssv,ten_chung_chi,ngay_cap,don_vi_cap</string>
+    <string name="certificate_import_processing">Đang xử lý chứng chỉ</string>
+    <string name="import_progress_format">Đã xử lý %1$d / %2$d dòng</string>
+    <string name="import_wait_note">Vui lòng chờ trong khi tệp được xử lý.</string>
+    <string name="btn_processing">Đang xử lý…</string>
+    <string name="import_no_resubmit">Không thể gửi lại tệp khi đang xử lý.</string>
+    <string name="certificate_import_result">Kết quả nhập chứng chỉ</string>
+    <string name="import_total">Tổng dòng</string>
+    <string name="import_success">Thành công</string>
+    <string name="import_failed">Lỗi</string>
+    <string name="import_invalid_format_title">Tệp không đúng định dạng</string>
+    <string name="import_invalid_format_desc">Tệp .xlsx không được hỗ trợ. Hãy lưu thành CSV UTF-8 với đúng tiêu đề cột.</string>
+    <string name="import_too_large_title">Tệp vượt quá 5 MB</string>
+    <string name="import_too_large_desc_format">Tệp đang chọn có dung lượng %s. Chia nhỏ hoặc giảm tệp xuống tối đa 5 MB trước khi chọn lại.</string>
+    <string name="import_missing_student_title">Không tìm thấy MSSV</string>
+    <string name="import_missing_student_desc_format">Dòng CSV %1$d · MSSV %2$s không có trong hệ thống.</string>
+    <string name="export_certificate_title">Xuất chứng chỉ</string>
+    <string name="export_certificate_spec_format">CSV · UTF-8 · %d chứng chỉ</string>
+    <string name="export_certificate_note">Tệp xuất luôn bao gồm MSSV để xác định sinh viên của từng chứng chỉ.</string>
+    <string name="csv_preview_title">Xem trước CSV</string>
+    <string name="import_server_error_title">Chưa thể xử lý tệp</string>
+    <string name="import_server_error_desc">Kết nối máy chủ tạm thời gián đoạn. Tệp đã chọn vẫn được giữ lại. Vui lòng thử lại sau.</string>
+
+    <string name="login_history_loading">Đang tải lịch sử đăng nhập…</string>
+    <string name="login_history_empty_title">Chưa có lịch sử đăng nhập</string>
+    <string name="login_history_empty_desc">Lịch sử sẽ xuất hiện khi tài khoản có lần truy cập được ghi nhận.</string>
+    <string name="login_history_error_title">Chưa tải được lịch sử</string>
+    <string name="login_history_error_desc">Kết nối tạm thời gián đoạn. Thử tải lại các lần đăng nhập của tài khoản này.</string>
+    <string name="vietnam_timezone_note">Thời gian theo múi giờ Việt Nam (GMT+7).</string>
+    <string name="profile_history_updating">Đang cập nhật lịch sử…</string>
+    <string name="btn_change_password">Đổi mật khẩu</string>
+    <string name="profile_cached_error_title">Chưa thể cập nhật. Đang hiển thị dữ liệu đã lưu</string>
+    <string name="profile_cached_error_desc">Thông tin bên dưới được giữ từ lần tải gần nhất.</string>
+    <string name="session_expired_title">Phiên đăng nhập đã hết hạn</string>
+    <string name="session_expired_desc">Phiên truy cập không còn hiệu lực. Vui lòng đăng nhập lại để tiếp tục sử dụng UniData.</string>
+    <string name="btn_back_to_login">Quay lại đăng nhập</string>
+    <string name="session_reauth_note">Đăng nhập lại để xác nhận tài khoản của bạn.</string>
+    <string name="account_locked_title">Tài khoản đã bị khóa</string>
+    <string name="account_locked_desc">Bạn không thể tiếp tục truy cập ứng dụng bằng tài khoản này. Vui lòng liên hệ quản trị viên để được hỗ trợ.</string>
+    <string name="account_access_unavailable">Quyền truy cập hiện không khả dụng.</string>
+
+    <!-- Trợ năng & Phân quyền Roles (PDF trang 37) -->
+    <string name="role_admin">admin</string>
+    <string name="role_manager">manager</string>
+    <string name="role_employee">employee</string>
+    <string name="role_label_admin">Admin</string>
+    <string name="role_label_manager">Manager</string>
+    <string name="role_label_employee">Employee</string>
+    <string name="role_admin_display">Quản trị viên (Admin)</string>
+    <string name="role_manager_display">Quản lý (Manager)</string>
+    <string name="role_employee_display">Nhân viên (Employee)</string>
+    <string name="status_normal">Normal</string>
+    <string name="status_locked">Locked</string>
+    <string name="status_label_normal">Hoạt động</string>
+    <string name="status_label_locked">Đã khóa</string>
+    <string name="status_normal_display">Normal (Hoạt động)</string>
+    <string name="status_locked_display">Locked (Khóa)</string>
+    <string name="error_generic">Có lỗi xảy ra</string>
+
+    <!-- Main Menu & Placeholders -->
     <string name="menu_students">Sinh viên</string>
     <string name="menu_users">Quản lý người dùng</string>
     <string name="menu_profile">Tài khoản</string>
     <string name="menu_history">Lịch sử đăng nhập</string>
     <string name="menu_logout">Đăng xuất</string>
-
-    <!-- Placeholders -->
     <string name="placeholder_profile_title">Thông tin tài khoản</string>
     <string name="placeholder_username_format">Tên đăng nhập: %1$s</string>
     <string name="placeholder_role_format">Vai trò: %1$s</string>
     <string name="placeholder_user_mgmt_title">Quản lý người dùng</string>
     <string name="placeholder_admin_notice">Khu vực dành riêng cho Quản trị viên (Admin).</string>
-
-    <!-- Student & Certificate Module (Member 2) -->
-    <string name="student_id_format">MSSV: %1$s</string>
-    <string name="student_class_format">Lớp: %1$s</string>
-    <string name="student_dob_format">Ngày sinh: %1$s</string>
-    <string name="student_faculty_format">Khoa: %1$s</string>
-    <string name="cert_count_format">%1$d chứng chỉ</string>
-    <string name="cert_issuer_format">Nơi cấp: %1$s</string>
-    <string name="cert_date_format">Ngày cấp: %1$s</string>
-    <string name="student_list_title">Danh sách sinh viên</string>
-    <string name="student_list_subtitle">Quản lý hồ sơ và chứng chỉ sinh viên theo thời gian thực.</string>
-    <string name="search_student_hint">Tìm theo tên, MSSV, lớp&#8230;</string>
-    <string name="filter_all">Tất cả</string>
-    <string name="filter_it">CNTT</string>
-    <string name="filter_cs">Khoa học máy tính</string>
-    <string name="filter_se">Kỹ thuật phần mềm</string>
-    <string name="btn_add_student">Thêm sinh viên</string>
-    <string name="btn_import_csv">Nhập CSV</string>
-    <string name="btn_export_csv">Xuất CSV</string>
-    <string name="empty_students_message">Chưa có sinh viên nào phù hợp.</string>
-    <string name="dialog_add_student_title">Thêm sinh viên mới</string>
-    <string name="dialog_edit_student_title">Chỉnh sửa thông tin sinh viên</string>
-    <string name="label_student_id">Mã sinh viên (MSSV)</string>
-    <string name="label_student_name">Họ và tên sinh viên</string>
-    <string name="label_student_dob">Ngày sinh (YYYY-MM-DD)</string>
-    <string name="label_student_class">Lớp</string>
-    <string name="label_student_faculty">Khoa</string>
-    <string name="dialog_add_cert_title">Thêm chứng chỉ sinh viên</string>
-    <string name="label_cert_name">Tên chứng chỉ</string>
-    <string name="label_cert_issuer">Nơi cấp</string>
-    <string name="label_cert_date">Ngày cấp (YYYY-MM-DD)</string>
-    <string name="student_detail_title">Chi tiết sinh viên</string>
-    <string name="section_certificates">Danh sách chứng chỉ</string>
-    <string name="empty_certificates_message">Sinh viên chưa có chứng chỉ nào.</string>
-    <string name="btn_add_certificate">Thêm chứng chỉ</string>
-    <string name="confirm_delete_student_format">Bạn có chắc chắn muốn xóa sinh viên %1$s (%2$s) không?</string>
-    <string name="confirm_delete_cert_format">Bạn có chắc chắn muốn xóa chứng chỉ %1$s không?</string>
     <string name="m2_placeholder_notice">TODO(member-2): Phân hệ Sinh viên, Chứng chỉ &amp; CSV do Thành viên 2 phụ trách (đang dùng dữ liệu mẫu).</string>
-    <string name="csv_exported_toast">Đã xuất %1$d sinh viên ra tệp CSV thành công.</string>
-    <string name="csv_imported_toast">Đã nhập thành công %1$d sinh viên từ CSV.</string>
 </resources>

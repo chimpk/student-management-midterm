@@ -81,4 +81,19 @@ public class StudentModelAndCsvTest {
         assertTrue(StudentCsvHelper.importFromCsv("").isEmpty());
         assertTrue(StudentCsvHelper.importFromCsv("   \n\n  ").isEmpty());
     }
+
+    @Test
+    public void csvHelper_handlesEscapedCommasAndQuotesRfc4180() throws IOException {
+        String csv = "Mã SV,Họ và tên,Ngày sinh,Lớp,Khoa\n"
+                + "524H0099,\"Nguyễn, Văn \"\"A\"\"\",15/05/2003,24H50301,\"Khoa CNTT, ĐH Tôn Đức Thắng\"\n";
+
+        List<Student> imported = StudentCsvHelper.importFromCsv(csv);
+        assertEquals(1, imported.size());
+        Student s = imported.get(0);
+        assertEquals("524H0099", s.getStudentId());
+        assertEquals("Nguyễn, Văn \"A\"", s.getName());
+        assertEquals("2003-05-15", s.getDateOfBirth());
+        assertEquals("24H50301", s.getClassName());
+        assertEquals("Khoa CNTT, ĐH Tôn Đức Thắng", s.getFaculty());
+    }
 }

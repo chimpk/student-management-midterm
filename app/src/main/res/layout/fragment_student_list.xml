@@ -1,169 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayoutStudentList"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Top Header & Notice -->
-        <com.google.android.material.card.MaterialCardView
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarStudentList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="6dp"
-            app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="?attr/colorSurface">
+            android:background="@color/color_surface"
+            app:elevation="2dp">
 
-            <LinearLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbarStudentList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/student_list_title"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/m2_placeholder_notice"
-                    android:textSize="12sp"
-                    android:textColor="?attr/colorPrimary" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/title_students"
+                app:titleTextColor="@color/text_primary" />
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!-- Search Bar -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSearchStudent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="12dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp"
-            app:startIconDrawable="@android:drawable/ic_menu_search"
-            android:hint="@string/search_student_hint">
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:layout_marginTop="12dp"
+            android:hint="@string/search_hint"
+            app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+            app:boxCornerRadiusBottomStart="@dimen/radius_input"
+            app:boxCornerRadiusTopEnd="@dimen/radius_input"
+            app:boxCornerRadiusTopStart="@dimen/radius_input"
+            app:boxStrokeColor="@color/color_primary"
+            app:endIconMode="clear_text"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/text_secondary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_search_student"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_subtitle" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- CSV Action Bar -->
+        <!-- Horizontal Filter Chips -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:scrollbars="none">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupFaculties"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilterAll"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:checked="true"
+                    android:text="@string/filter_all"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    app:chipCornerRadius="@dimen/radius_pill" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilterIt"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/filter_it"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    app:chipCornerRadius="@dimen/radius_pill" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilterCs"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/filter_cs"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    app:chipCornerRadius="@dimen/radius_pill" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilterSe"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/filter_se"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    app:chipCornerRadius="@dimen/radius_pill" />
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <!-- Subheader Row: Student count format & Sort button (S07 / S13) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginHorizontal="@dimen/screen_margin"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="6dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_import_csv"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <TextView
+                android:id="@+id/tvStudentCountSort"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:text="@string/btn_import_csv"
-                android:textSize="12sp" />
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                tools:text="15 sinh viên · Tên A → Z Đã đồng bộ" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_export_csv"
+                android:id="@+id/btnSortSheet"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                android:text="@string/btn_export_csv"
-                android:textSize="12sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/min_touch_target"
+                android:text="@string/sort_sheet_title"
+                android:textColor="@color/color_primary"
+                android:textSize="12sp"
+                app:cornerRadius="@dimen/radius_input"
+                app:icon="@drawable/ic_sort"
+                app:iconSize="16dp"
+                app:iconTint="@color/color_primary"
+                app:strokeColor="@color/color_outline_variant" />
         </LinearLayout>
 
-        <!-- List / State Container -->
+        <!-- Offline Banner (S26) -->
+        <include
+            android:id="@+id/includeOfflineBanner"
+            layout="@layout/view_offline_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <!-- Legacy CSV Action Bar (hidden by default, accessible via Dashboard or Empty) -->
+        <LinearLayout
+            android:id="@+id/layoutLegacyCsv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <Button android:id="@+id/btn_import_csv" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            <Button android:id="@+id/btn_export_csv" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- Main Content Area -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
+            <!-- Loading Skeleton (S24) -->
+            <include
+                android:id="@+id/includeLoadingSkeleton"
+                layout="@layout/view_loading_skeleton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <!-- Empty State (S25) -->
+            <include
+                android:id="@+id/includeEmptyState"
+                layout="@layout/view_empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <!-- Error State -->
+            <include
+                android:id="@+id/includeErrorState"
+                layout="@layout/view_error_state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <!-- Ready State: RecyclerView (S07 / S12 / S29) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_students"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingTop="6dp"
-                android:paddingBottom="88dp" />
+                android:paddingBottom="80dp"
+                tools:listitem="@layout/item_student" />
 
-            <TextView
-                android:id="@+id/tv_empty_students"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/empty_students_message"
-                android:textSize="16sp"
-                android:textColor="?android:attr/textColorSecondary"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/layout_error_students"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="24dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/tv_error_students"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/error_load_users"
-                    android:textColor="?attr/colorError"
-                    android:textSize="15sp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_retry_students"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/btn_retry" />
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/progress_loading_students"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
         </FrameLayout>
-
     </LinearLayout>
 
+    <!-- FAB Add Student (S07) - GONE for Employee (S12) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_student"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:contentDescription="@string/btn_add_student"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:layout_margin="16dp"
+        android:contentDescription="@string/btn_add_student_inline"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/color_primary"
+        app:tint="@color/color_on_primary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

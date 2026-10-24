@@ -80,6 +80,12 @@ public class ProfileFragment extends Fragment {
             androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_login_history);
         });
 
+        binding.btnLogout.setOnClickListener(v -> {
+            if (getActivity() instanceof com.example.studentmgmt.MainActivity) {
+                ((com.example.studentmgmt.MainActivity) getActivity()).performLogout();
+            }
+        });
+
         viewModel.getCurrentUser().observe(getViewLifecycleOwner(), this::renderUserInfo);
         viewModel.getUploadState().observe(getViewLifecycleOwner(), this::renderUploadState);
         viewModel.getProfileLoadError().observe(getViewLifecycleOwner(), error -> {

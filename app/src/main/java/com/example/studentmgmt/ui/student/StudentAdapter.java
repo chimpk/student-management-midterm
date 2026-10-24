@@ -15,22 +15,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO(member-2): Student list adapter for Member 2.
+ * Student list adapter conforming to S07/S12 card design.
  */
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
 
     public interface OnStudentClickListener {
         void onStudentClick(Student student);
+
         void onStudentEdit(Student student);
+
         void onStudentDelete(Student student);
     }
 
     private final List<Student> students = new ArrayList<>();
     private final OnStudentClickListener listener;
-    private boolean canManageStudents;
+    private boolean isReadOnly = false;
+    private boolean canManageStudents = true;
 
     public StudentAdapter(OnStudentClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.isReadOnly = readOnly;
+        this.canManageStudents = !readOnly;
+        notifyDataSetChanged();
     }
 
     public void setStudents(List<Student> newStudents) {
@@ -43,6 +52,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     public void setCanManageStudents(boolean canManageStudents) {
         this.canManageStudents = canManageStudents;
+        this.isReadOnly = !canManageStudents;
         notifyDataSetChanged();
     }
 
@@ -74,26 +84,42 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         }
 
         public void bind(Student student) {
-            binding.tvStudentName.setText(student.getName());
-            binding.tvStudentId.setText(binding.getRoot().getContext().getString(R.string.student_id_format, student.getStudentId()));
-            binding.tvStudentClass.setText(binding.getRoot().getContext().getString(R.string.student_class_format, student.getClassName()));
-            binding.tvStudentFaculty.setText(student.getFaculty());
-            binding.chipCertCount.setText(binding.getRoot().getContext().getString(R.string.cert_count_format, student.getCertificateCount()));
-            int actionVisibility = canManageStudents ? View.VISIBLE : View.GONE;
-            binding.btnStudentEdit.setVisibility(actionVisibility);
-            binding.btnStudentDelete.setVisibility(actionVisibility);
+            String name = student.getName() != null ? student.getName() : "";
+            binding.tvStudentName.setText(name);
+
+            String initial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "S";
+            binding.tvAvatarLetter.setText(initial);
+
+            String faculty = student.getFaculty() != null ? student.getFaculty() : "";
+            String className = student.getClassName() != null ? student.getClassName() : "";
+            String subtitle = student.getStudentId() + (faculty.isEmpty() ? "" : " • " + faculty) + (className.isEmpty() ? "" : " • " + className);
+            binding.tvStudentId.setText(subtitle);
+
+            int certCount = student.getCertificateCount();
+            if (certCount > 0) {
+                binding.chipCertCount.setVisibility(View.VISIBLE);
+                binding.chipCertCount.setText(binding.getRoot().getContext().getString(R.string.cert_count_format, certCount));
+            } else {
+                binding.chipCertCount.setVisibility(View.GONE);
+            }
 
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) listener.onStudentClick(student);
             });
 
-            binding.btnStudentEdit.setOnClickListener(v -> {
-                if (listener != null) listener.onStudentEdit(student);
-            });
-
-            binding.btnStudentDelete.setOnClickListener(v -> {
-                if (listener != null) listener.onStudentDelete(student);
-            });
+            if (isReadOnly) {
+                binding.btnStudentEdit.setVisibility(View.GONE);
+                binding.btnStudentDelete.setVisibility(View.GONE);
+            } else {
+                binding.btnStudentEdit.setVisibility(View.VISIBLE);
+                binding.btnStudentDelete.setVisibility(View.VISIBLE);
+                binding.btnStudentEdit.setOnClickListener(v -> {
+                    if (listener != null) listener.onStudentEdit(student);
+                });
+                binding.btnStudentDelete.setOnClickListener(v -> {
+                    if (listener != null) listener.onStudentDelete(student);
+                });
+            }
         }
     }
 }

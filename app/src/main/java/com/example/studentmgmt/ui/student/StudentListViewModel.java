@@ -9,25 +9,40 @@ import com.example.studentmgmt.data.StudentRepositoryProvider;
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.UiState;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 /**
- * TODO(member-2): ViewModel for Student List, search, filter, and CRUD operations.
+ * ViewModel for Student List, search, filter, sort (S13), undo delete (S14), and CRUD operations.
  */
 public class StudentListViewModel extends ViewModel {
+
+    public enum SortCriteria {
+        NAME_ASC,
+        NAME_DESC,
+        MSSV_ASC,
+        BIRTH_ASC
+    }
 
     private final StudentRepository studentRepository;
     private final MutableLiveData<UiState<List<Student>>> studentListState = new MutableLiveData<>();
     private final MutableLiveData<String> actionErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> actionSuccessMessage = new MutableLiveData<>();
+    private final MutableLiveData<Student> lastDeletedStudentEvent = new MutableLiveData<>();
 
     private List<Student> cachedList = new ArrayList<>();
     private String currentSearchQuery = "";
     private String currentFacultyFilter = "";
+    private String currentClassFilter = "";
+    private SortCriteria currentSortCriteria = SortCriteria.NAME_ASC;
+
     private StudentRepository.ListenerRegistrationHandle listenerHandle;
     private int listenerGeneration = 0;
+    private Student lastDeletedStudent;
 
     public StudentListViewModel() {
         this(StudentRepositoryProvider.getInstance());
@@ -48,6 +63,10 @@ public class StudentListViewModel extends ViewModel {
 
     public LiveData<String> getActionSuccessMessage() {
         return actionSuccessMessage;
+    }
+
+    public LiveData<Student> getLastDeletedStudentEvent() {
+        return lastDeletedStudentEvent;
     }
 
     public void loadStudents() {
@@ -80,9 +99,37 @@ public class StudentListViewModel extends ViewModel {
         applyFilters();
     }
 
+    public String getSearchQuery() {
+        return currentSearchQuery;
+    }
+
     public void setFacultyFilter(String faculty) {
         this.currentFacultyFilter = faculty != null ? faculty.trim() : "";
         applyFilters();
+    }
+
+    public String getFacultyFilter() {
+        return currentFacultyFilter;
+    }
+
+    public void setClassFilter(String className) {
+        this.currentClassFilter = className != null ? className.trim() : "";
+        applyFilters();
+    }
+
+    public String getClassFilter() {
+        return currentClassFilter;
+    }
+
+    public void setSortCriteria(SortCriteria criteria) {
+        if (criteria != null) {
+            this.currentSortCriteria = criteria;
+            applyFilters();
+        }
+    }
+
+    public SortCriteria getSortCriteria() {
+        return currentSortCriteria;
     }
 
     private void applyFilters() {
@@ -103,15 +150,57 @@ public class StudentListViewModel extends ViewModel {
             boolean matchesFaculty = currentFacultyFilter.isEmpty()
                     || (s.getFaculty() != null && s.getFaculty().equalsIgnoreCase(currentFacultyFilter));
 
-            if (matchesSearch && matchesFaculty) {
+            boolean matchesClass = currentClassFilter.isEmpty()
+                    || (s.getClassName() != null && s.getClassName().equalsIgnoreCase(currentClassFilter));
+
+            if (matchesSearch && matchesFaculty && matchesClass) {
                 filtered.add(s);
             }
         }
+
+        // Apply Sorting (S13)
+        sortList(filtered, currentSortCriteria);
 
         if (filtered.isEmpty()) {
             studentListState.setValue(UiState.empty());
         } else {
             studentListState.setValue(UiState.content(filtered));
+        }
+    }
+
+    private void sortList(List<Student> list, SortCriteria criteria) {
+        final Collator collator = Collator.getInstance(new Locale("vi", "VN"));
+        collator.setStrength(Collator.PRIMARY);
+
+        switch (criteria) {
+            case NAME_ASC:
+                Collections.sort(list, (a, b) -> {
+                    String nameA = a.getName() != null ? a.getName() : "";
+                    String nameB = b.getName() != null ? b.getName() : "";
+                    return collator.compare(nameA, nameB);
+                });
+                break;
+            case NAME_DESC:
+                Collections.sort(list, (a, b) -> {
+                    String nameA = a.getName() != null ? a.getName() : "";
+                    String nameB = b.getName() != null ? b.getName() : "";
+                    return collator.compare(nameB, nameA);
+                });
+                break;
+            case MSSV_ASC:
+                Collections.sort(list, (a, b) -> {
+                    String idA = a.getStudentId() != null ? a.getStudentId() : "";
+                    String idB = b.getStudentId() != null ? b.getStudentId() : "";
+                    return idA.compareToIgnoreCase(idB);
+                });
+                break;
+            case BIRTH_ASC:
+                Collections.sort(list, (a, b) -> {
+                    String dobA = a.getDateOfBirth() != null ? a.getDateOfBirth() : "";
+                    String dobB = b.getDateOfBirth() != null ? b.getDateOfBirth() : "";
+                    return dobA.compareToIgnoreCase(dobB);
+                });
+                break;
         }
     }
 
@@ -144,10 +233,21 @@ public class StudentListViewModel extends ViewModel {
     }
 
     public void deleteStudent(String studentId) {
+        // Track student before deleting to support undo
+        for (Student s : cachedList) {
+            if (s.getStudentId().equals(studentId)) {
+                lastDeletedStudent = s;
+                break;
+            }
+        }
+
         studentRepository.deleteStudent(studentId, new StudentRepository.ActionCallback() {
             @Override
             public void onSuccess() {
                 actionSuccessMessage.setValue("Xóa sinh viên thành công.");
+                if (lastDeletedStudent != null) {
+                    lastDeletedStudentEvent.setValue(lastDeletedStudent);
+                }
             }
 
             @Override
@@ -157,6 +257,14 @@ public class StudentListViewModel extends ViewModel {
         });
     }
 
+    public void undoDelete() {
+        if (lastDeletedStudent != null) {
+            final Student toRestore = lastDeletedStudent;
+            lastDeletedStudent = null;
+            addStudent(toRestore);
+        }
+    }
+
     public void retry() {
         loadStudents();
     }
@@ -164,6 +272,7 @@ public class StudentListViewModel extends ViewModel {
     public void clearActionMessages() {
         actionErrorMessage.setValue(null);
         actionSuccessMessage.setValue(null);
+        lastDeletedStudentEvent.setValue(null);
     }
 
     public List<Student> getAllCachedStudents() {

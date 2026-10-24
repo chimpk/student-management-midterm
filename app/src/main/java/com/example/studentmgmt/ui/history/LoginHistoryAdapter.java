@@ -1,11 +1,13 @@
 package com.example.studentmgmt.ui.history;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.studentmgmt.R;
 import com.example.studentmgmt.databinding.ItemLoginHistoryBinding;
 import com.example.studentmgmt.model.LoginRecord;
 
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * RecyclerView adapter for displaying login history records.
+ * RecyclerView adapter for displaying login history records conforming to S11 / S34.
  */
 public class LoginHistoryAdapter extends RecyclerView.Adapter<LoginHistoryAdapter.ViewHolder> {
 
@@ -38,7 +40,7 @@ public class LoginHistoryAdapter extends RecyclerView.Adapter<LoginHistoryAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(records.get(position));
+        holder.bind(records.get(position), position);
     }
 
     @Override
@@ -54,15 +56,15 @@ public class LoginHistoryAdapter extends RecyclerView.Adapter<LoginHistoryAdapte
             this.binding = binding;
         }
 
-        void bind(LoginRecord record) {
-            binding.tvDeviceName.setText(itemView.getContext().getString(
-                    com.example.studentmgmt.R.string.history_device_format,
-                    record.getDevice() != null ? record.getDevice() : ""
-            ));
-            binding.tvLoginTime.setText(itemView.getContext().getString(
-                    com.example.studentmgmt.R.string.history_time_format,
-                    record.getFormattedDateTime() != null ? record.getFormattedDateTime() : ""
-            ));
+        void bind(LoginRecord record, int position) {
+            String device = record.getDevice() != null ? record.getDevice() : "Android Device";
+            binding.tvDeviceName.setText(device);
+
+            String time = record.getFormattedDateTime() != null ? record.getFormattedDateTime() : "";
+            binding.tvLoginTime.setText(time);
+
+            // Highlight latest as current session badge (S11)
+            binding.chipCurrentSession.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
         }
     }
 }

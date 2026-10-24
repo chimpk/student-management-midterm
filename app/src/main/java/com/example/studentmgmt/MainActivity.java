@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     private AppUser currentUser;
     private UserRepository.ListenerHandle sessionListenerHandle;
+    private boolean isLoggingOut = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +57,16 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, loginWarning, Toast.LENGTH_LONG).show();
         }
 
+        // Hide Activity-level ActionBar to prevent duplicate headers with Fragment MaterialToolbars
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         if (navHostFragment != null) {
             navController = navHostFragment.getNavController();
-            NavigationUI.setupActionBarWithNavController(this, navController);
+            setupBottomNavigation();
             setupDestinationAccessGuard();
         }
 
@@ -75,22 +82,43 @@ public class MainActivity extends AppCompatActivity {
         sessionListenerHandle = UserRepositoryProvider.getRepository().listenUser(currentUser.getUid(), new UserRepository.UserCallback() {
             @Override
             public void onUserLoaded(AppUser user) {
+                if (isLoggingOut || isFinishing() || isDestroyed()) return;
                 SessionSecurityPolicy.Evaluation eval = SessionSecurityPolicy.evaluateUserSnapshot(currentUser, user);
                 if (eval.shouldTerminate()) {
-                    Toast.makeText(MainActivity.this, eval.getReason(), Toast.LENGTH_LONG).show();
-                    redirectToLogin();
+                    boolean isLocked = user != null && (user.isLocked() || !user.isNormal());
+                    int type = isLocked
+                            ? com.example.studentmgmt.ui.auth.AuthTerminalActivity.TYPE_ACCOUNT_LOCKED
+                            : com.example.studentmgmt.ui.auth.AuthTerminalActivity.TYPE_SESSION_EXPIRED;
+                    redirectToTerminal(type);
                 }
             }
 
             @Override
             public void onError(SessionSecurityPolicy.SessionErrorType errorType, String errorMessage) {
+                if (isLoggingOut || isFinishing() || isDestroyed()) return;
+                // If user is intentionally logging out or unauthenticated, ignore permission error
+                if (!AuthRepositoryProvider.getRepository().isSignedIn()) {
+                    return;
+                }
                 SessionSecurityPolicy.Evaluation eval = SessionSecurityPolicy.evaluateError(errorType);
                 if (eval.shouldTerminate()) {
-                    Toast.makeText(MainActivity.this, eval.getReason(), Toast.LENGTH_LONG).show();
-                    redirectToLogin();
+                    boolean isLocked = (errorType == SessionSecurityPolicy.SessionErrorType.PERMISSION_DENIED);
+                    int type = isLocked
+                            ? com.example.studentmgmt.ui.auth.AuthTerminalActivity.TYPE_ACCOUNT_LOCKED
+                            : com.example.studentmgmt.ui.auth.AuthTerminalActivity.TYPE_SESSION_EXPIRED;
+                    redirectToTerminal(type);
                 }
             }
         });
+    }
+
+    private void redirectToTerminal(int terminalType) {
+        if (sessionListenerHandle != null) {
+            sessionListenerHandle.remove();
+            sessionListenerHandle = null;
+        }
+        startActivity(com.example.studentmgmt.ui.auth.AuthTerminalActivity.createIntent(this, terminalType));
+        finish();
     }
 
     @Override
@@ -102,15 +130,71 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupBottomNavigation() {
+        if (binding == null || binding.bottomNavView == null || navController == null) return;
+
+        binding.bottomNavView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_dashboard) {
+                if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.nav_dashboard) {
+                    return true;
+                }
+                if (!navController.popBackStack(R.id.nav_dashboard, false)) {
+                    navController.navigate(R.id.nav_dashboard);
+                }
+                return true;
+            } else if (itemId == R.id.nav_student_list) {
+                if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.nav_student_list) {
+                    return true;
+                }
+                navController.popBackStack(R.id.nav_dashboard, false);
+                navController.navigate(R.id.nav_student_list);
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.nav_profile) {
+                    return true;
+                }
+                navController.popBackStack(R.id.nav_dashboard, false);
+                navController.navigate(R.id.nav_profile);
+                return true;
+            }
+            return false;
+        });
+
+        binding.bottomNavView.setOnItemReselectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_dashboard) {
+                if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.nav_dashboard) {
+                    if (!navController.popBackStack(R.id.nav_dashboard, false)) {
+                        navController.navigate(R.id.nav_dashboard);
+                    }
+                }
+            }
+        });
+    }
+
     private void setupDestinationAccessGuard() {
         if (navController == null) return;
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int destId = destination.getId();
+
+            if (binding != null && binding.bottomNavView != null) {
+                MenuItem menuItem = binding.bottomNavView.getMenu().findItem(destId);
+                if (menuItem != null) {
+                    menuItem.setChecked(true);
+                }
+            }
+
             if (destId == R.id.nav_user_management) {
                 if (!RoleNavigationPolicy.canAccess(currentUser.getRole(), RoleNavigationPolicy.DEST_USER_MANAGEMENT)) {
                     Toast.makeText(this, MSG_UNAUTHORIZED, Toast.LENGTH_SHORT).show();
-                    controller.navigate(R.id.nav_student_list);
+                    controller.navigate(R.id.nav_dashboard);
+                }
+            } else if (destId == R.id.nav_import_export) {
+                if (currentUser.isEmployee()) {
+                    Toast.makeText(this, MSG_UNAUTHORIZED, Toast.LENGTH_SHORT).show();
+                    controller.navigate(R.id.nav_dashboard);
                 }
             }
         });
@@ -131,11 +215,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void redirectToLogin() {
+        isLoggingOut = true;
+        if (sessionListenerHandle != null) {
+            sessionListenerHandle.remove();
+            sessionListenerHandle = null;
+        }
         AuthRepositoryProvider.getRepository().signOut();
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    public void performLogout() {
+        redirectToLogin();
     }
 
     @Override

@@ -151,6 +151,38 @@ public class StudentDetailViewModel extends ViewModel {
         }
     }
 
+    public void updateStudent(Student student) {
+        studentRepository.updateStudent(student, new StudentRepository.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                studentData.setValue(student);
+                actionSuccessMessage.setValue("Cập nhật thông tin sinh viên thành công.");
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                actionErrorMessage.setValue(errorMessage);
+            }
+        });
+    }
+
+    public void deleteStudent(String studentId, Runnable onComplete) {
+        studentRepository.deleteStudent(studentId, new StudentRepository.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                actionSuccessMessage.setValue("Đã xóa sinh viên.");
+                if (onComplete != null) {
+                    onComplete.run();
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                actionErrorMessage.setValue(errorMessage);
+            }
+        });
+    }
+
     public void clearActionMessages() {
         actionErrorMessage.setValue(null);
         actionSuccessMessage.setValue(null);
