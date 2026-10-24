@@ -1,6 +1,7 @@
 package com.example.studentmgmt.ui.student;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
 
     private final List<Certificate> certificates = new ArrayList<>();
     private final OnCertificateDeleteListener deleteListener;
+    private boolean canDeleteCertificates;
 
     public CertificateAdapter(OnCertificateDeleteListener deleteListener) {
         this.deleteListener = deleteListener;
@@ -34,6 +36,11 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
         if (newCertificates != null) {
             certificates.addAll(newCertificates);
         }
+        notifyDataSetChanged();
+    }
+
+    public void setCanDeleteCertificates(boolean canDeleteCertificates) {
+        this.canDeleteCertificates = canDeleteCertificates;
         notifyDataSetChanged();
     }
 
@@ -68,6 +75,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
             binding.tvCertName.setText(cert.getCertName());
             binding.tvCertIssuer.setText(binding.getRoot().getContext().getString(R.string.cert_issuer_format, cert.getIssuedBy()));
             binding.tvCertDate.setText(binding.getRoot().getContext().getString(R.string.cert_date_format, cert.getIssueDate()));
+            binding.btnCertDelete.setVisibility(canDeleteCertificates ? View.VISIBLE : View.GONE);
 
             binding.btnCertDelete.setOnClickListener(v -> {
                 if (deleteListener != null) {

@@ -8,6 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -144,14 +146,30 @@ public final class FirestoreCertificateRepository implements CertificateReposito
             return "Tên, ngày cấp và đơn vị cấp chứng chỉ đều bắt buộc.";
         }
         String date = certificate.getIssueDate().trim();
-        if (!date.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")) {
-            return "Ngày cấp phải theo định dạng YYYY-MM-DD.";
+        String dateError = validateIssueDate(date);
+        if (dateError != null) {
+            return dateError;
         }
         if (certificate.getCertName().trim().length() < 2
                 || certificate.getCertName().trim().length() > 100
                 || certificate.getIssuedBy().trim().length() < 2
                 || certificate.getIssuedBy().trim().length() > 100) {
             return "Tên chứng chỉ và đơn vị cấp phải dài từ 2 đến 100 ký tự.";
+        }
+        return null;
+    }
+
+    private static String validateIssueDate(String value) {
+        if (value == null || !value.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")) {
+            return "Ngày cấp phải theo định dạng YYYY-MM-DD.";
+        }
+        try {
+            LocalDate issueDate = LocalDate.parse(value);
+            if (issueDate.isAfter(LocalDate.now())) {
+                return "Ngày cấp chứng chỉ không được ở tương lai.";
+            }
+        } catch (DateTimeParseException error) {
+            return "Ngày cấp chứng chỉ không hợp lệ.";
         }
         return null;
     }

@@ -1,6 +1,7 @@
 package com.example.studentmgmt.ui.student;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     private final List<Student> students = new ArrayList<>();
     private final OnStudentClickListener listener;
+    private boolean canManageStudents;
 
     public StudentAdapter(OnStudentClickListener listener) {
         this.listener = listener;
@@ -36,6 +38,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         if (newStudents != null) {
             students.addAll(newStudents);
         }
+        notifyDataSetChanged();
+    }
+
+    public void setCanManageStudents(boolean canManageStudents) {
+        this.canManageStudents = canManageStudents;
         notifyDataSetChanged();
     }
 
@@ -72,6 +79,9 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             binding.tvStudentClass.setText(binding.getRoot().getContext().getString(R.string.student_class_format, student.getClassName()));
             binding.tvStudentFaculty.setText(student.getFaculty());
             binding.chipCertCount.setText(binding.getRoot().getContext().getString(R.string.cert_count_format, student.getCertificateCount()));
+            int actionVisibility = canManageStudents ? View.VISIBLE : View.GONE;
+            binding.btnStudentEdit.setVisibility(actionVisibility);
+            binding.btnStudentDelete.setVisibility(actionVisibility);
 
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) listener.onStudentClick(student);
