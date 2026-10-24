@@ -26,6 +26,7 @@ import com.example.studentmgmt.model.AppUser;
 import android.content.Context;
 import com.example.studentmgmt.data.DefaultUsernameAuthResolver;
 import com.example.studentmgmt.utils.ValidationUtils;
+import com.example.studentmgmt.utils.VietnameseTextInputFormatter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -244,7 +245,7 @@ public class UserListFragment extends Fragment implements UserAdapter.OnUserActi
         dialogBinding.btnCancelUser.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnSaveUser.setOnClickListener(v -> {
             String name = dialogBinding.etUserName.getText() != null ?
-                    dialogBinding.etUserName.getText().toString().trim() : "";
+                    VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etUserName.getText().toString().trim()) : "";
             String ageStr = dialogBinding.etUserAge.getText() != null ?
                     dialogBinding.etUserAge.getText().toString().trim() : "";
             String phone = dialogBinding.etUserPhone.getText() != null ?
@@ -339,7 +340,7 @@ public class UserListFragment extends Fragment implements UserAdapter.OnUserActi
             String username = dialogBinding.etUserUsername.getText() != null ?
                     dialogBinding.etUserUsername.getText().toString().trim() : "";
             String name = dialogBinding.etUserName.getText() != null ?
-                    dialogBinding.etUserName.getText().toString().trim() : "";
+                    VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etUserName.getText().toString().trim()) : "";
             String ageStr = dialogBinding.etUserAge.getText() != null ?
                     dialogBinding.etUserAge.getText().toString().trim() : "";
             String phone = dialogBinding.etUserPhone.getText() != null ?

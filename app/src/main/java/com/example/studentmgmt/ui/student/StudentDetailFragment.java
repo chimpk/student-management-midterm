@@ -26,6 +26,7 @@ import com.example.studentmgmt.model.Certificate;
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.UiState;
 import com.example.studentmgmt.utils.ValidationUtils;
+import com.example.studentmgmt.utils.VietnameseTextInputFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,6 +49,7 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
     private Student currentStudent;
     private boolean isEmployee = false;
     private int cachedCertificateCount = 0;
+    private boolean canManageCertificates;
 
     public static StudentDetailFragment newInstance(String studentId) {
         StudentDetailFragment fragment = new StudentDetailFragment();
@@ -87,6 +89,7 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(StudentDetailViewModel.class);
+        canManageCertificates = currentUserCanManageStudents();
 
         AppUser currentUser = AuthRepositoryProvider.getRepository().getCurrentUser();
         isEmployee = currentUser != null && currentUser.isEmployee();
@@ -99,6 +102,7 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
             viewModel.loadStudent(studentId);
         }
 
+        binding.btnAddCertificate.setVisibility(canManageCertificates ? View.VISIBLE : View.GONE);
         binding.btnAddCertificate.setOnClickListener(v -> showAddCertificateDialog());
     }
 
@@ -129,7 +133,8 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
 
     private void setupRecyclerView() {
         certificateAdapter = new CertificateAdapter(this);
-        certificateAdapter.setReadOnly(isEmployee);
+        certificateAdapter.setCanDeleteCertificates(canManageCertificates);
+        certificateAdapter.setReadOnly(!canManageCertificates);
         binding.rvCertificates.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvCertificates.setAdapter(certificateAdapter);
 
@@ -228,6 +233,7 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
     }
 
     private void showAddCertificateDialog() {
+        if (!canManageCertificates) return;
         DialogCertificateAddBinding dialogBinding = DialogCertificateAddBinding.inflate(getLayoutInflater());
         dialogBinding.tvCertDialogTitle.setText(R.string.title_add_certificate);
 
@@ -243,8 +249,8 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
 
         dialogBinding.btnCancelCert.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnSaveCert.setOnClickListener(v -> {
-            String name = dialogBinding.etCertName.getText() != null ? dialogBinding.etCertName.getText().toString().trim() : "";
-            String issuer = dialogBinding.etCertIssuer.getText() != null ? dialogBinding.etCertIssuer.getText().toString().trim() : "";
+            String name = dialogBinding.etCertName.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etCertName.getText().toString().trim()) : "";
+            String issuer = dialogBinding.etCertIssuer.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etCertIssuer.getText().toString().trim()) : "";
             String date = dialogBinding.etCertDate.getText() != null ? dialogBinding.etCertDate.getText().toString().trim() : "";
 
             boolean hasError = false;
@@ -382,10 +388,10 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
 
     @Override
     public void onDeleteCertificate(Certificate certificate) {
+        if (!canManageCertificates) return;
         String sName = currentStudent != null ? currentStudent.getName() : "";
         String sId = currentStudent != null ? currentStudent.getStudentId() : studentId;
         String desc = getString(R.string.dialog_delete_certificate_desc_format, certificate.getCertName(), sName, sId);
-
         new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.dialog_delete_certificate_title)
                 .setMessage(desc)
@@ -480,6 +486,11 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
                 requireActivity().onBackPressed();
             }
         }
+    }
+
+    private boolean currentUserCanManageStudents() {
+        AppUser user = AuthRepositoryProvider.getRepository().getCurrentUser();
+        return user != null && user.isNormal() && (user.isAdmin() || user.isManager());
     }
 
     @Override

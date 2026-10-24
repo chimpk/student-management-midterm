@@ -21,13 +21,16 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     public interface OnStudentClickListener {
         void onStudentClick(Student student);
+
         void onStudentEdit(Student student);
+
         void onStudentDelete(Student student);
     }
 
     private final List<Student> students = new ArrayList<>();
     private final OnStudentClickListener listener;
     private boolean isReadOnly = false;
+    private boolean canManageStudents = true;
 
     public StudentAdapter(OnStudentClickListener listener) {
         this.listener = listener;
@@ -35,6 +38,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     public void setReadOnly(boolean readOnly) {
         this.isReadOnly = readOnly;
+        this.canManageStudents = !readOnly;
         notifyDataSetChanged();
     }
 
@@ -43,6 +47,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         if (newStudents != null) {
             students.addAll(newStudents);
         }
+        notifyDataSetChanged();
+    }
+
+    public void setCanManageStudents(boolean canManageStudents) {
+        this.canManageStudents = canManageStudents;
+        this.isReadOnly = !canManageStudents;
         notifyDataSetChanged();
     }
 

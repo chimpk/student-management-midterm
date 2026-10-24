@@ -26,7 +26,9 @@ import com.example.studentmgmt.model.AppUser;
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.UiState;
 import com.example.studentmgmt.utils.StudentCsvHelper;
+import com.example.studentmgmt.utils.StudentDataValidation;
 import com.example.studentmgmt.utils.ValidationUtils;
+import com.example.studentmgmt.utils.VietnameseTextInputFormatter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -44,6 +46,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     private StudentListViewModel viewModel;
     private StudentAdapter adapter;
     private boolean isEmployee = false;
+    private boolean canManageStudents;
 
     @Nullable
     @Override
@@ -56,6 +59,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(StudentListViewModel.class);
+        canManageStudents = currentUserCanManageStudents();
 
         AppUser currentUser = AuthRepositoryProvider.getRepository().getCurrentUser();
         isEmployee = currentUser != null && currentUser.isEmployee();
@@ -68,7 +72,8 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
 
     private void setupRecyclerView() {
         adapter = new StudentAdapter(this);
-        adapter.setReadOnly(isEmployee);
+        adapter.setCanManageStudents(canManageStudents);
+        adapter.setReadOnly(!canManageStudents);
         binding.rvStudents.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvStudents.setAdapter(adapter);
 
@@ -106,6 +111,8 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
             }
             return false;
         });
+
+        binding.fabAddStudent.setVisibility(canManageStudents ? View.VISIBLE : View.GONE);
 
         binding.etSearchStudent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -237,19 +244,18 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
 
     @Override
     public void onStudentEdit(Student student) {
-        if (!isEmployee) {
-            showEditStudentDialog(student);
-        }
+        if (!canManageStudents) return;
+        showEditStudentDialog(student);
     }
 
     @Override
     public void onStudentDelete(Student student) {
-        if (!isEmployee) {
-            showDeleteConfirmDialog(student);
-        }
+        if (!canManageStudents) return;
+        showDeleteConfirmDialog(student);
     }
 
     private void showAddStudentDialog() {
+        if (!canManageStudents) return;
         DialogStudentAddEditBinding dialogBinding = DialogStudentAddEditBinding.inflate(getLayoutInflater());
         dialogBinding.tvDialogTitle.setText(R.string.title_add_student);
         dialogBinding.tvDialogSubtitle.setText(R.string.subtitle_add_student);
@@ -264,35 +270,25 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
         dialogBinding.btnCancelStudent.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnSaveStudent.setOnClickListener(v -> {
             String id = dialogBinding.etStudentId.getText() != null ? dialogBinding.etStudentId.getText().toString().trim() : "";
-            String name = dialogBinding.etStudentName.getText() != null ? dialogBinding.etStudentName.getText().toString().trim() : "";
+            String name = dialogBinding.etStudentName.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentName.getText().toString().trim()) : "";
             String dob = dialogBinding.etStudentDob.getText() != null ? dialogBinding.etStudentDob.getText().toString().trim() : "";
             String className = dialogBinding.etStudentClass.getText() != null ? dialogBinding.etStudentClass.getText().toString().trim() : "";
-            String faculty = dialogBinding.etStudentFaculty.getText() != null ? dialogBinding.etStudentFaculty.getText().toString().trim() : "";
-            String email = dialogBinding.etStudentEmail.getText() != null ? dialogBinding.etStudentEmail.getText().toString().trim() : "";
+            String faculty = dialogBinding.etStudentFaculty.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentFaculty.getText().toString().trim()) : "";
+            String email = dialogBinding.etStudentEmail != null && dialogBinding.etStudentEmail.getText() != null ? dialogBinding.etStudentEmail.getText().toString().trim() : "";
 
-            boolean hasError = false;
-            if (id.isEmpty()) {
-                dialogBinding.tilStudentId.setError(getString(R.string.error_field_required));
-                hasError = true;
-            } else {
-                dialogBinding.tilStudentId.setError(null);
-            }
-
-            if (name.isEmpty()) {
-                dialogBinding.tilStudentName.setError(getString(R.string.error_field_required));
-                hasError = true;
-            } else {
-                dialogBinding.tilStudentName.setError(null);
+            String validationError = StudentDataValidation.validateStudent(
+                    id, name, dob, className, faculty);
+            if (validationError != null) {
+                Snackbar.make(dialogBinding.getRoot(), validationError, Snackbar.LENGTH_LONG).show();
+                return;
             }
 
             if (!email.isEmpty() && !ValidationUtils.isValidEmail(email)) {
                 dialogBinding.tilStudentEmail.setError(getString(R.string.error_invalid_email));
-                hasError = true;
+                return;
             } else {
                 dialogBinding.tilStudentEmail.setError(null);
             }
-
-            if (hasError) return;
 
             Student newStudent = new Student(id, name, dob, className, faculty);
             viewModel.addStudent(newStudent);
@@ -303,6 +299,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     }
 
     private void showEditStudentDialog(Student student) {
+        if (!canManageStudents) return;
         DialogStudentAddEditBinding dialogBinding = DialogStudentAddEditBinding.inflate(getLayoutInflater());
         dialogBinding.tvDialogTitle.setText(R.string.title_edit_student);
         dialogBinding.tvDialogSubtitle.setText(R.string.subtitle_edit_student);
@@ -325,28 +322,25 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
 
         dialogBinding.btnCancelStudent.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnSaveStudent.setOnClickListener(v -> {
-            String name = dialogBinding.etStudentName.getText() != null ? dialogBinding.etStudentName.getText().toString().trim() : "";
+            String name = dialogBinding.etStudentName.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentName.getText().toString().trim()) : "";
             String dob = dialogBinding.etStudentDob.getText() != null ? dialogBinding.etStudentDob.getText().toString().trim() : "";
             String className = dialogBinding.etStudentClass.getText() != null ? dialogBinding.etStudentClass.getText().toString().trim() : "";
-            String faculty = dialogBinding.etStudentFaculty.getText() != null ? dialogBinding.etStudentFaculty.getText().toString().trim() : "";
-            String email = dialogBinding.etStudentEmail.getText() != null ? dialogBinding.etStudentEmail.getText().toString().trim() : "";
+            String faculty = dialogBinding.etStudentFaculty.getText() != null ? VietnameseTextInputFormatter.capitalizeWords(dialogBinding.etStudentFaculty.getText().toString().trim()) : "";
+            String email = dialogBinding.etStudentEmail != null && dialogBinding.etStudentEmail.getText() != null ? dialogBinding.etStudentEmail.getText().toString().trim() : "";
 
-            boolean hasError = false;
-            if (name.isEmpty()) {
-                dialogBinding.tilStudentName.setError(getString(R.string.error_field_required));
-                hasError = true;
-            } else {
-                dialogBinding.tilStudentName.setError(null);
+            String validationError = StudentDataValidation.validateStudent(
+                    student.getStudentId(), name, dob, className, faculty);
+            if (validationError != null) {
+                Snackbar.make(dialogBinding.getRoot(), validationError, Snackbar.LENGTH_LONG).show();
+                return;
             }
 
             if (!email.isEmpty() && !ValidationUtils.isValidEmail(email)) {
                 dialogBinding.tilStudentEmail.setError(getString(R.string.error_invalid_email));
-                hasError = true;
+                return;
             } else {
                 dialogBinding.tilStudentEmail.setError(null);
             }
-
-            if (hasError) return;
 
             student.setName(name);
             student.setDateOfBirth(dob);
@@ -377,9 +371,9 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
     }
 
     private void showDeleteConfirmDialog(Student student) {
+        if (!canManageStudents) return;
         int certCount = student.getCertificateCount();
         String warningMsg = getString(R.string.dialog_delete_student_warning_format, student.getName(), certCount);
-
         new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.dialog_delete_student_title)
                 .setMessage(warningMsg)
@@ -402,6 +396,11 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, getString(R.string.title_import_export)));
         Toast.makeText(requireContext(), getString(R.string.csv_exported_toast, students.size()), Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean currentUserCanManageStudents() {
+        AppUser user = AuthRepositoryProvider.getRepository().getCurrentUser();
+        return user != null && user.isNormal() && (user.isAdmin() || user.isManager());
     }
 
     @Override

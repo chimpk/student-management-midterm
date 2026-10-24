@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
+    
     xmlns:android="http://schemas.android.com/apk/res/android"
+    
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_surface"
     android:fillViewport="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/screen_margin">
-
         <TextView
             android:id="@+id/tvDialogTitle"
             android:layout_width="wrap_content"
@@ -22,7 +23,6 @@
             android:text="@string/title_add_student"
             android:textColor="@color/text_primary"
             android:textSize="20sp" />
-
         <TextView
             android:id="@+id/tvDialogSubtitle"
             android:layout_width="wrap_content"
@@ -31,7 +31,6 @@
             android:text="@string/subtitle_add_student"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_size_subtitle" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +38,6 @@
             android:text="@string/form_required_note"
             android:textColor="@color/color_primary"
             android:textSize="12sp" />
-
         <!-- Field MSSV -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_student_id"
@@ -54,7 +52,6 @@
             app:boxCornerRadiusTopStart="@dimen/radius_input"
             app:startIconDrawable="@drawable/ic_school"
             app:startIconTint="@color/text_secondary">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_student_id"
                 android:layout_width="match_parent"
@@ -64,7 +61,6 @@
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_subtitle" />
         </com.google.android.material.textfield.TextInputLayout>
-
         <!-- Immutable MSSV note (S06 / S32) -->
         <TextView
             android:id="@+id/tvMssvImmutableNote"
@@ -76,7 +72,6 @@
             android:textSize="11sp"
             android:visibility="gone"
             tools:visibility="visible" />
-
         <!-- Field Name -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_student_name"
@@ -91,19 +86,17 @@
             app:boxCornerRadiusTopStart="@dimen/radius_input"
             app:startIconDrawable="@drawable/ic_person"
             app:startIconTint="@color/text_secondary">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_student_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName|textCapWords"
+                android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_subtitle" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Field Date of Birth (DatePicker S19) -->
-        <com.google.android.material.textfield.TextInputLayout
+            <!-- Field Date of Birth (DatePicker S19) -->
+            <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_student_dob"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -119,8 +112,7 @@
             app:endIconTint="@color/color_primary"
             app:startIconDrawable="@drawable/ic_calendar"
             app:startIconTint="@color/text_secondary">
-
-            <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_student_dob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,10 +122,9 @@
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_subtitle" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Field Class -->
-        <com.google.android.material.textfield.TextInputLayout
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Field Class -->
+            <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_student_class"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -146,8 +137,7 @@
             app:boxCornerRadiusTopStart="@dimen/radius_input"
             app:startIconDrawable="@drawable/ic_people"
             app:startIconTint="@color/text_secondary">
-
-            <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_student_class"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,10 +145,9 @@
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_subtitle" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Field Faculty -->
-        <com.google.android.material.textfield.TextInputLayout
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Field Faculty -->
+            <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_student_faculty"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -171,19 +160,17 @@
             app:boxCornerRadiusTopStart="@dimen/radius_input"
             app:startIconDrawable="@drawable/ic_school"
             app:startIconTint="@color/text_secondary">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_student_faculty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords"
+                android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_subtitle" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Field Email -->
-        <com.google.android.material.textfield.TextInputLayout
+                <!-- Field Email -->
+                <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_student_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -196,8 +183,7 @@
             app:boxCornerRadiusTopStart="@dimen/radius_input"
             app:startIconDrawable="@drawable/ic_email"
             app:startIconTint="@color/text_secondary">
-
-            <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_student_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,10 +191,9 @@
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_subtitle" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Status / Certificate Note -->
-        <TextView
+                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Status / Certificate Note -->
+                <TextView
             android:id="@+id/tvStudentStatusNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -216,16 +201,14 @@
             android:text="@string/note_new_student_status"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
-
-        <!-- Action Buttons -->
-        <LinearLayout
+                <!-- Action Buttons -->
+                <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="end"
             android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
+                    <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelStudent"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
@@ -233,8 +216,7 @@
                 android:layout_marginEnd="8dp"
                 android:text="@string/btn_cancel"
                 android:textColor="@color/text_secondary" />
-
-            <com.google.android.material.button.MaterialButton
+                    <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveStudent"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
@@ -243,7 +225,6 @@
                 android:textColor="@color/color_on_primary"
                 app:backgroundTint="@color/color_primary"
                 app:cornerRadius="@dimen/radius_input" />
-        </LinearLayout>
-
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>

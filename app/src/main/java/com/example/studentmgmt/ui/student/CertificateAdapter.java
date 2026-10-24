@@ -33,6 +33,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
     private final List<Certificate> certificates = new ArrayList<>();
     private final OnCertificateActionListener actionListener;
     private boolean isReadOnly = false;
+    private boolean canDeleteCertificates = true;
 
     public CertificateAdapter(OnCertificateActionListener actionListener) {
         this.actionListener = actionListener;
@@ -54,6 +55,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
 
     public void setReadOnly(boolean readOnly) {
         this.isReadOnly = readOnly;
+        this.canDeleteCertificates = !readOnly;
         notifyDataSetChanged();
     }
 
@@ -62,6 +64,12 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
         if (newCertificates != null) {
             certificates.addAll(newCertificates);
         }
+        notifyDataSetChanged();
+    }
+
+    public void setCanDeleteCertificates(boolean canDeleteCertificates) {
+        this.canDeleteCertificates = canDeleteCertificates;
+        this.isReadOnly = !canDeleteCertificates;
         notifyDataSetChanged();
     }
 
@@ -96,6 +104,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
             binding.tvCertName.setText(cert.getCertName());
             binding.tvCertIssuer.setText(binding.getRoot().getContext().getString(R.string.cert_issuer_format, cert.getIssuedBy()));
             binding.tvCertDate.setText(binding.getRoot().getContext().getString(R.string.cert_date_format, cert.getIssueDate()));
+            binding.btnCertDelete.setVisibility(canDeleteCertificates ? View.VISIBLE : View.GONE);
 
             if (isReadOnly) {
                 binding.layoutCertActions.setVisibility(View.GONE);

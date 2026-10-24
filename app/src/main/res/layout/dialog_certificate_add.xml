@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    
     xmlns:android="http://schemas.android.com/apk/res/android"
+    
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_surface"
     android:orientation="vertical"
     android:padding="@dimen/screen_margin">
-
     <TextView
         android:id="@+id/tvCertDialogTitle"
         android:layout_width="wrap_content"
@@ -17,7 +19,6 @@
         android:text="@string/title_add_certificate"
         android:textColor="@color/text_primary"
         android:textSize="20sp" />
-
     <TextView
         android:id="@+id/tvCertStudentBinding"
         android:layout_width="wrap_content"
@@ -26,7 +27,6 @@
         android:textColor="@color/color_primary"
         android:textSize="12sp"
         tools:text="Gắn với MSSV: 524H0001" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,6 @@
         android:text="@string/form_required_note"
         android:textColor="@color/text_secondary"
         android:textSize="12sp" />
-
     <!-- Tên chứng chỉ -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_cert_name"
@@ -49,19 +48,17 @@
         app:boxCornerRadiusTopStart="@dimen/radius_input"
         app:startIconDrawable="@drawable/ic_school"
         app:startIconTint="@color/text_secondary">
-
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_cert_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapWords"
+            android:inputType="text"
             android:maxLines="1"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_subtitle" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Đơn vị cấp -->
-    <com.google.android.material.textfield.TextInputLayout
+        <!-- Đơn vị cấp -->
+        <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_cert_issuer"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
@@ -74,19 +71,17 @@
         app:boxCornerRadiusTopStart="@dimen/radius_input"
         app:startIconDrawable="@drawable/ic_person"
         app:startIconTint="@color/text_secondary">
-
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_cert_issuer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapWords"
+            android:inputType="text"
             android:maxLines="1"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_subtitle" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Ngày cấp -->
-    <com.google.android.material.textfield.TextInputLayout
+            <!-- Ngày cấp -->
+            <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_cert_date"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
@@ -102,8 +97,7 @@
         app:endIconTint="@color/color_primary"
         app:startIconDrawable="@drawable/ic_calendar"
         app:startIconTint="@color/text_secondary">
-
-        <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_cert_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,17 +106,15 @@
             android:maxLines="1"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_subtitle" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Action buttons -->
-    <LinearLayout
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Action buttons -->
+            <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="end"
         android:orientation="horizontal">
-
-        <com.google.android.material.button.MaterialButton
+                <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel_cert"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
@@ -130,8 +122,7 @@
             android:layout_marginEnd="8dp"
             android:text="@string/btn_cancel"
             android:textColor="@color/text_secondary" />
-
-        <com.google.android.material.button.MaterialButton
+                <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save_cert"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
@@ -140,6 +131,5 @@
             android:textColor="@color/color_on_primary"
             app:backgroundTint="@color/color_primary"
             app:cornerRadius="@dimen/radius_input" />
-    </LinearLayout>
-
-</LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
