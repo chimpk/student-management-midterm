@@ -1,96 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/color_background">
 
-    <!-- Header bar -->
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLoginHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp">
+        android:background="@color/color_surface"
+        app:elevation="0dp">
 
-        <TextView
-            android:id="@+id/tv_history_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/history_title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarLoginHistory"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationContentDescription="@string/nav_back"
+            app:title="@string/title_login_history"
+            app:titleTextColor="@color/text_primary" />
 
-        <TextView
-            android:id="@+id/tv_history_subtitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="@string/history_subtitle"
-            android:textSize="13sp"
-            android:textColor="?android:attr/textColorSecondary" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingBottom="12dp">
+
+            <TextView
+                android:id="@+id/tv_history_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/history_title"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_history_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/history_subtitle"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Loading skeleton (S75) -->
+        <include
+            android:id="@+id/includeLoadingSkeleton"
+            layout="@layout/view_loading_skeleton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <!-- Empty state (S76) -->
+        <include
+            android:id="@+id/includeEmptyState"
+            layout="@layout/view_empty_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <!-- Error state (S77) -->
+        <include
+            android:id="@+id/includeErrorState"
+            layout="@layout/view_error_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <!-- RecyclerView (S11 / S34) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_history"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="4dp"
-            android:paddingBottom="16dp" />
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp"
+            tools:listitem="@layout/item_login_history" />
 
+        <!-- Legacy fallback views to maintain full backward compatibility -->
         <TextView
             android:id="@+id/tv_empty_history"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/empty_history_message"
-            android:textSize="15sp"
-            android:textColor="?android:attr/textColorSecondary"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/layout_error_history"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="24dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tv_error_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text="@string/error_generic"
-                android:textColor="?attr/colorError"
-                android:textSize="15sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_retry_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/btn_retry" />
+            <TextView android:id="@+id/tv_error_message" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            <Button android:id="@+id/btn_retry_history" android:layout_width="wrap_content" android:layout_height="wrap_content" />
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:visibility="gone" />
+
     </FrameLayout>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

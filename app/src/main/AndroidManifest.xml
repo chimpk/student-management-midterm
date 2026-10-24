@@ -30,6 +30,10 @@
         <activity
             android:name="com.example.studentmgmt.MainActivity"
             android:exported="false" />
+
+        <activity
+            android:name="com.example.studentmgmt.ui.auth.AuthTerminalActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

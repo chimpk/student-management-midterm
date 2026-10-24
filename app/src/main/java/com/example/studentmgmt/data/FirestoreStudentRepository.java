@@ -1,11 +1,15 @@
 package com.example.studentmgmt.data;
 
+import com.example.studentmgmt.model.AppUser;
 import com.example.studentmgmt.model.Student;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.WriteBatch;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,9 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** Firestore-backed read repository for the Sprint 1 student list and detail screens. */
+/** Firestore-backed repository for student management and certificate cascades. */
 public final class FirestoreStudentRepository implements StudentRepository {
 
+    private final FirebaseFirestore firestore;
     private final CollectionReference students;
 
     public FirestoreStudentRepository() {
@@ -26,6 +31,7 @@ public final class FirestoreStudentRepository implements StudentRepository {
         if (firestore == null) {
             throw new IllegalArgumentException("Firestore không được null.");
         }
+        this.firestore = firestore;
         this.students = firestore.collection("students");
     }
 
@@ -130,17 +136,132 @@ public final class FirestoreStudentRepository implements StudentRepository {
 
     @Override
     public void addStudent(Student student, ActionCallback callback) {
-        reportWriteUnavailable(callback);
+        if (!canWrite()) {
+            fail(callback, "Chỉ Admin hoặc Manager được quản lý sinh viên.");
+            return;
+        }
+        String validationError = validate(student);
+        if (validationError != null) {
+            fail(callback, validationError);
+            return;
+        }
+
+        String studentId = student.getStudentId().trim();
+        students.document(studentId).get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        fail(callback, "Sinh viên với MSSV " + studentId + " đã tồn tại.");
+                    } else {
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("studentId", studentId);
+                        data.put("name", student.getName().trim());
+                        data.put("dateOfBirth", student.getDateOfBirth().trim());
+                        data.put("className", student.getClassName().trim());
+                        data.put("faculty", student.getFaculty().trim());
+                        data.put("createdAt", FieldValue.serverTimestamp());
+
+                        students.document(studentId).set(data)
+                                .addOnSuccessListener(aVoid -> succeed(callback))
+                                .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+                    }
+                })
+                .addOnFailureListener(error -> fail(callback, errorMessage(error)));
     }
 
     @Override
     public void updateStudent(Student student, ActionCallback callback) {
-        reportWriteUnavailable(callback);
+        if (!canWrite()) {
+            fail(callback, "Chỉ Admin hoặc Manager được quản lý sinh viên.");
+            return;
+        }
+        String validationError = validate(student);
+        if (validationError != null) {
+            fail(callback, validationError);
+            return;
+        }
+
+        String studentId = student.getStudentId().trim();
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", student.getName().trim());
+        data.put("dateOfBirth", student.getDateOfBirth().trim());
+        data.put("className", student.getClassName().trim());
+        data.put("faculty", student.getFaculty().trim());
+
+        students.document(studentId).update(data)
+                .addOnSuccessListener(aVoid -> succeed(callback))
+                .addOnFailureListener(error -> fail(callback, errorMessage(error)));
     }
 
     @Override
     public void deleteStudent(String studentId, ActionCallback callback) {
-        reportWriteUnavailable(callback);
+        if (!canWrite()) {
+            fail(callback, "Chỉ Admin hoặc Manager được quản lý sinh viên.");
+            return;
+        }
+        if (studentId == null || studentId.trim().isEmpty()) {
+            fail(callback, "MSSV không hợp lệ.");
+            return;
+        }
+
+        final String cleanId = studentId.trim();
+        students.document(cleanId).collection("certificates").get()
+                .addOnSuccessListener(certsSnapshot -> {
+                    WriteBatch batch = firestore.batch();
+                    if (certsSnapshot != null) {
+                        for (DocumentSnapshot certDoc : certsSnapshot.getDocuments()) {
+                            batch.delete(certDoc.getReference());
+                        }
+                    }
+                    batch.delete(students.document(cleanId));
+                    batch.commit()
+                            .addOnSuccessListener(aVoid -> succeed(callback))
+                            .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+                })
+                .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+    }
+
+    private static String validate(Student student) {
+        if (student == null) {
+            return "Thông tin sinh viên không được để trống.";
+        }
+        String studentId = student.getStudentId();
+        if (studentId == null || studentId.trim().isEmpty() || studentId.trim().length() < 3 || studentId.trim().length() > 30) {
+            return "MSSV không hợp lệ (độ dài từ 3 đến 30 ký tự).";
+        }
+        String name = student.getName();
+        if (name == null || name.trim().length() < 2 || name.trim().length() > 100) {
+            return "Họ và tên sinh viên phải dài từ 2 đến 100 ký tự.";
+        }
+        String dob = student.getDateOfBirth();
+        if (dob == null || !dob.trim().matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")) {
+            return "Ngày sinh phải theo định dạng YYYY-MM-DD.";
+        }
+        String className = student.getClassName();
+        if (className == null || className.trim().isEmpty() || className.trim().length() > 50) {
+            return "Lớp sinh hoạt không hợp lệ.";
+        }
+        String faculty = student.getFaculty();
+        if (faculty == null || faculty.trim().isEmpty() || faculty.trim().length() > 100) {
+            return "Khoa không hợp lệ.";
+        }
+        return null;
+    }
+
+    private static boolean canWrite() {
+        AppUser user = AuthRepositoryProvider.getRepository().getCurrentUser();
+        return user != null && user.isNormal() && (user.isAdmin() || user.isManager());
+    }
+
+    private static void succeed(ActionCallback callback) {
+        if (callback != null) {
+            callback.onSuccess();
+        }
+    }
+
+    private static void fail(ActionCallback callback, String message) {
+        if (callback != null) {
+            callback.onError(message);
+        }
     }
 
     private static Student toStudent(DocumentSnapshot document) {
@@ -180,14 +301,13 @@ public final class FirestoreStudentRepository implements StudentRepository {
     }
 
     private static String errorMessage(Exception error) {
-        return error == null || error.getLocalizedMessage() == null
-                ? "Không thể tải dữ liệu sinh viên từ Firestore."
-                : error.getLocalizedMessage();
-    }
-
-    private static void reportWriteUnavailable(ActionCallback callback) {
-        if (callback != null) {
-            callback.onError("Thêm, sửa và xóa sinh viên sẽ được triển khai ở Sprint 2.");
+        if (error instanceof FirebaseFirestoreException
+                && ((FirebaseFirestoreException) error).getCode()
+                == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+            return "Bạn không có quyền thực hiện thao tác sinh viên.";
         }
+        return error == null || error.getLocalizedMessage() == null
+                ? "Không thể hoàn tất thao tác sinh viên trên Firestore."
+                : error.getLocalizedMessage();
     }
 }

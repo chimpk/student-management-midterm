@@ -1,117 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:layout_marginTop="6dp"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="6dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="?attr/colorControlNormal">
+    android:layout_marginHorizontal="@dimen/screen_margin"
+    android:layout_marginVertical="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/bg_card"
+    app:cardCornerRadius="@dimen/radius_card"
+    app:cardElevation="@dimen/card_elevation"
+    app:strokeColor="@color/color_outline_variant"
+    app:strokeWidth="@dimen/stroke_width">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="16dp">
 
+        <!-- Avatar chữ cái đầu (44x44dp, bo tròn, nền color_primary_container) -->
+        <FrameLayout
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@color/color_primary_container">
+
+            <TextView
+                android:id="@+id/tv_avatar_letter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/color_on_primary_container"
+                android:textSize="18sp"
+                tools:text="A" />
+        </FrameLayout>
+
+        <!-- Khối thông tin Họ tên, MSSV, Khoa, Lớp -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_student_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_name"
+                tools:text="Nguyễn Văn An" />
+
+            <TextView
+                android:id="@+id/tv_student_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                tools:text="524H0001 • CNTT • 24H50301" />
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_student_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Nguyễn Văn An"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <TextView
-                    android:id="@+id/tv_student_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="MSSV: 524H0001"
-                    android:textSize="13sp"
-                    android:textColor="?android:attr/textColorSecondary" />
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+                <!-- Keep legacy ids bound to prevent any adapter crash -->
+                <TextView android:id="@+id/tv_student_class" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <TextView android:id="@+id/tv_student_faculty" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <Button android:id="@+id/btn_student_edit" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <Button android:id="@+id/btn_student_delete" android:layout_width="wrap_content" android:layout_height="wrap_content" />
             </LinearLayout>
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cert_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="2 chứng chỉ"
-                android:textSize="11sp"
-                app:chipMinHeight="28dp" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="?attr/colorControlNormal" />
+        <!-- Chip chứng chỉ -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_cert_count"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginEnd="6dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:textColor="@color/color_primary"
+            android:textSize="11sp"
+            app:chipBackgroundColor="@color/bg_primary"
+            app:chipCornerRadius="@dimen/radius_pill"
+            app:chipStrokeColor="@color/color_outline_variant"
+            app:chipStrokeWidth="@dimen/stroke_width"
+            tools:text="2 chứng chỉ" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_student_class"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                tools:text="Lớp: 24H50301"
-                android:textSize="13sp"
-                android:textColor="?android:attr/textColorSecondary" />
-
-            <TextView
-                android:id="@+id/tv_student_faculty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="CNTT"
-                android:textSize="13sp"
-                android:textColor="?android:attr/textColorSecondary" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="8dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_student_edit"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_edit"
-                android:textSize="12sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_student_delete"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_delete"
-                android:textColor="?attr/colorError"
-                android:textSize="12sp" />
-        </LinearLayout>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_arrow_forward"
+            app:tint="@color/text_secondary" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

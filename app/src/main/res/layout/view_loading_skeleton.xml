@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutLoadingSkeleton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_margin"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <TextView
+        android:id="@+id/tvLoadingMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="@string/student_loading_text"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
+
+    <!-- Skeleton Card 1 -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/card_gap"
+        app:cardBackgroundColor="@color/shimmer_color"
+        app:cardCornerRadius="@dimen/radius_card"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <View
+                android:layout_width="140dp"
+                android:layout_height="16dp"
+                android:background="@color/shimmer_highlight" />
+            <View
+                android:layout_width="220dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/shimmer_highlight" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Skeleton Card 2 -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/card_gap"
+        app:cardBackgroundColor="@color/shimmer_color"
+        app:cardCornerRadius="@dimen/radius_card"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <View
+                android:layout_width="120dp"
+                android:layout_height="16dp"
+                android:background="@color/shimmer_highlight" />
+            <View
+                android:layout_width="180dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/shimmer_highlight" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Skeleton Card 3 -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/shimmer_color"
+        app:cardCornerRadius="@dimen/radius_card"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <View
+                android:layout_width="150dp"
+                android:layout_height="16dp"
+                android:background="@color/shimmer_highlight" />
+            <View
+                android:layout_width="200dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/shimmer_highlight" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

@@ -1,12 +1,14 @@
 package com.example.studentmgmt.ui.user;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.studentmgmt.R;
 import com.example.studentmgmt.databinding.ItemUserBinding;
 import com.example.studentmgmt.model.AppUser;
 
@@ -16,7 +18,7 @@ import java.util.Objects;
 
 /**
  * RecyclerView adapter for displaying the list of AppUsers in User Management.
- * Binds user properties and dispatches lock, edit, and delete user actions.
+ * Conforms to S10 / S33 card layout and self-protection logic.
  */
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
@@ -99,13 +101,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         void bind(AppUser user) {
-            binding.tvUserName.setText(user.getName());
+            String name = user.getName() != null ? user.getName() : "";
+            binding.tvUserName.setText(name);
+
+            String initial = !name.isEmpty() ? name.substring(0, 1).toUpperCase() : "U";
+            binding.tvAvatarLetter.setText(initial);
+
             binding.tvUserUsername.setText(itemView.getContext().getString(
-                    com.example.studentmgmt.R.string.username_display_format,
+                    R.string.username_display_format,
                     user.getUsername() != null ? user.getUsername() : ""
             ));
+
             binding.tvUserDetails.setText(itemView.getContext().getString(
-                    com.example.studentmgmt.R.string.user_details_format,
+                    R.string.user_details_format,
                     user.getAge(),
                     user.getPhone() != null ? user.getPhone() : ""
             ));
@@ -113,45 +121,56 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             // Role chip
             String roleText = user.getRole();
             if (AppUser.ROLE_ADMIN.equalsIgnoreCase(roleText)) {
-                roleText = itemView.getContext().getString(com.example.studentmgmt.R.string.role_admin);
+                roleText = itemView.getContext().getString(R.string.role_admin);
             } else if (AppUser.ROLE_MANAGER.equalsIgnoreCase(roleText)) {
-                roleText = itemView.getContext().getString(com.example.studentmgmt.R.string.role_manager);
+                roleText = itemView.getContext().getString(R.string.role_manager);
             } else if (AppUser.ROLE_EMPLOYEE.equalsIgnoreCase(roleText)) {
-                roleText = itemView.getContext().getString(com.example.studentmgmt.R.string.role_employee);
+                roleText = itemView.getContext().getString(R.string.role_employee);
             }
             binding.chipUserRole.setText(roleText);
 
             // Status chip
             boolean isLocked = user.isLocked();
             binding.chipUserStatus.setText(isLocked
-                    ? itemView.getContext().getString(com.example.studentmgmt.R.string.status_locked)
-                    : itemView.getContext().getString(com.example.studentmgmt.R.string.status_active));
+                    ? itemView.getContext().getString(R.string.status_locked_tag)
+                    : itemView.getContext().getString(R.string.status_active));
 
-            // Self-action protections: admin cannot lock or delete themselves
+            // Self-action protections: admin cannot lock, delete, or demote themselves (S10 / S44)
             boolean isSelf = currentUser != null && Objects.equals(currentUser.getUid(), user.getUid());
+            binding.tvUserYouTag.setVisibility(isSelf ? View.VISIBLE : View.GONE);
 
-            binding.btnLockUser.setText(isLocked
-                    ? itemView.getContext().getString(com.example.studentmgmt.R.string.btn_unlock)
-                    : itemView.getContext().getString(com.example.studentmgmt.R.string.btn_lock));
-            binding.btnLockUser.setEnabled(!isSelf);
-            binding.btnLockUser.setAlpha(isSelf ? 0.5f : 1.0f);
-            binding.btnLockUser.setOnClickListener(v -> {
-                if (listener != null && !isSelf) {
-                    listener.onToggleLock(user);
-                }
-            });
+            if (isSelf) {
+                binding.btnLockUser.setText(R.string.note_cannot_self_lock);
+                binding.btnLockUser.setEnabled(false);
+                binding.btnLockUser.setAlpha(0.5f);
+
+                binding.btnDeleteUser.setVisibility(View.GONE);
+            } else {
+                binding.btnLockUser.setEnabled(true);
+                binding.btnLockUser.setAlpha(1.0f);
+                binding.btnLockUser.setText(isLocked
+                        ? itemView.getContext().getString(R.string.btn_unlock_account)
+                        : itemView.getContext().getString(R.string.btn_lock_account));
+
+                binding.btnLockUser.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onToggleLock(user);
+                    }
+                });
+
+                binding.btnDeleteUser.setVisibility(View.VISIBLE);
+                binding.btnDeleteUser.setEnabled(true);
+                binding.btnDeleteUser.setAlpha(1.0f);
+                binding.btnDeleteUser.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onDeleteUser(user);
+                    }
+                });
+            }
 
             binding.btnEditUser.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onEditUser(user);
-                }
-            });
-
-            binding.btnDeleteUser.setEnabled(!isSelf);
-            binding.btnDeleteUser.setAlpha(isSelf ? 0.5f : 1.0f);
-            binding.btnDeleteUser.setOnClickListener(v -> {
-                if (listener != null && !isSelf) {
-                    listener.onDeleteUser(user);
                 }
             });
 

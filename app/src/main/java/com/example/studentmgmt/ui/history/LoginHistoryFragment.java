@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.studentmgmt.R;
@@ -21,7 +22,7 @@ import com.example.studentmgmt.model.AppUser;
 
 /**
  * Screen displaying the realtime list of login history records.
- * Enforces RBAC permissions: Admin can view any user, regular user only self.
+ * Conforms to S11, S34, S75-S77.
  */
 public class LoginHistoryFragment extends Fragment {
 
@@ -53,6 +54,14 @@ public class LoginHistoryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        binding.toolbarLoginHistory.setNavigationOnClickListener(v -> {
+            try {
+                Navigation.findNavController(v).navigateUp();
+            } catch (Exception e) {
+                requireActivity().onBackPressed();
+            }
+        });
 
         AppUser sessionUser = AuthRepositoryProvider.getRepository().getCurrentUser();
         String targetUid = null;
@@ -96,33 +105,39 @@ public class LoginHistoryFragment extends Fragment {
         binding.rvHistory.setAdapter(adapter);
 
         binding.btnRetryHistory.setOnClickListener(v -> viewModel.retry());
+        binding.includeErrorState.btnRetry.setOnClickListener(v -> viewModel.retry());
 
         viewModel.getHistoryState().observe(getViewLifecycleOwner(), state -> {
             if (binding == null || state == null) return;
             switch (state.getStatus()) {
                 case LOADING:
-                    binding.progressLoading.setVisibility(View.VISIBLE);
-                    binding.layoutErrorHistory.setVisibility(View.GONE);
-                    binding.tvEmptyHistory.setVisibility(View.GONE);
+                    binding.includeLoadingSkeleton.getRoot().setVisibility(View.VISIBLE);
+                    binding.includeEmptyState.getRoot().setVisibility(View.GONE);
+                    binding.includeErrorState.getRoot().setVisibility(View.GONE);
+                    binding.rvHistory.setVisibility(View.GONE);
                     break;
                 case CONTENT:
-                    binding.progressLoading.setVisibility(View.GONE);
-                    binding.layoutErrorHistory.setVisibility(View.GONE);
-                    binding.tvEmptyHistory.setVisibility(View.GONE);
+                    binding.includeLoadingSkeleton.getRoot().setVisibility(View.GONE);
+                    binding.includeEmptyState.getRoot().setVisibility(View.GONE);
+                    binding.includeErrorState.getRoot().setVisibility(View.GONE);
                     binding.rvHistory.setVisibility(View.VISIBLE);
                     adapter.setRecords(state.getData());
                     break;
                 case EMPTY:
-                    binding.progressLoading.setVisibility(View.GONE);
-                    binding.layoutErrorHistory.setVisibility(View.GONE);
-                    binding.tvEmptyHistory.setVisibility(View.VISIBLE);
+                    binding.includeLoadingSkeleton.getRoot().setVisibility(View.GONE);
+                    binding.includeEmptyState.getRoot().setVisibility(View.VISIBLE);
+                    binding.includeEmptyState.tvEmptyTitle.setText(R.string.login_history_empty_title);
+                    binding.includeEmptyState.tvEmptyDesc.setText(R.string.login_history_empty_desc);
+                    binding.includeEmptyState.layoutEmptyActions.setVisibility(View.GONE);
+                    binding.includeErrorState.getRoot().setVisibility(View.GONE);
                     binding.rvHistory.setVisibility(View.GONE);
                     break;
                 case ERROR:
-                    binding.progressLoading.setVisibility(View.GONE);
-                    binding.layoutErrorHistory.setVisibility(View.VISIBLE);
-                    binding.tvErrorMessage.setText(state.getErrorMessage());
-                    binding.tvEmptyHistory.setVisibility(View.GONE);
+                    binding.includeLoadingSkeleton.getRoot().setVisibility(View.GONE);
+                    binding.includeEmptyState.getRoot().setVisibility(View.GONE);
+                    binding.includeErrorState.getRoot().setVisibility(View.VISIBLE);
+                    binding.includeErrorState.tvErrorTitle.setText(R.string.login_history_error_title);
+                    binding.includeErrorState.tvErrorDesc.setText(state.getErrorMessage());
                     binding.rvHistory.setVisibility(View.GONE);
                     break;
             }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand colors from dark tokens (docs/design/tokens/colors-night.xml) -->
+    <color name="color_primary">#B6BFFF</color>
+    <color name="color_primary_variant">#8C99E0</color>
+    <color name="color_secondary">#6FD8C8</color>
+    <color name="color_secondary_variant">#48A999</color>
+
+    <!-- Surface and background -->
+    <color name="color_surface">#121318</color>
+    <color name="color_background">#121318</color>
+    <color name="color_on_surface">#F1F0F7</color>
+    <color name="color_surface_variant">#22232E</color>
+    <color name="color_on_surface_variant">#BFC1D2</color>
+    <color name="color_on_primary">#18204F</color>
+    <color name="color_on_secondary">#003731</color>
+
+    <!-- Containers -->
+    <color name="color_primary_container">#292F54</color>
+    <color name="color_on_primary_container">#B6BFFF</color>
+    <color name="color_secondary_container">#004D40</color>
+    <color name="color_on_secondary_container">#80CBC4</color>
+
+    <!-- Error & Outline -->
+    <color name="color_error">#CF6679</color>
+    <color name="color_on_error">#1E0A0E</color>
+    <color name="color_outline">#8C8E9F</color>
+    <color name="color_outline_variant">#2D2E38</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#F1F0F7</color>
+    <color name="text_secondary">#BFC1D2</color>
+    <color name="text_disabled">#616373</color>
+
+    <!-- Status -->
+    <color name="color_status_normal">#81C784</color>
+    <color name="color_status_locked">#EF9A9A</color>
+
+    <!-- Roles -->
+    <color name="color_role_admin">#E2B8FA</color>
+    <color name="color_role_manager">#A6CDFF</color>
+    <color name="color_role_employee">#C1D8E2</color>
+
+    <!-- Background tints -->
+    <color name="bg_card">#1B1C24</color>
+    <color name="bg_primary">#292F54</color>
+    <color name="bg_normal">#203927</color>
+    <color name="bg_locked">#48282C</color>
+    <color name="bg_offline">#482F1D</color>
+    <color name="border_offline">#8D5B28</color>
+    <color name="text_offline">#FFCC80</color>
+
+    <!-- Shimmer / Skeleton -->
+    <color name="shimmer_color">#242531</color>
+    <color name="shimmer_highlight">#323444</color>
+
+    <!-- Icon color mappings -->
+    <color name="ic_default">#BFC1D2</color>
+    <color name="ic_active">#B6BFFF</color>
+    <color name="ic_verified">#6FD8C8</color>
+    <color name="ic_locked">#EF9A9A</color>
+
+    <!-- Common basic colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Backward compatibility aliases -->
+    <color name="green_primary">#B6BFFF</color>
+    <color name="green_primary_dark">#8C99E0</color>
+    <color name="green_accent">#6FD8C8</color>
+</resources>

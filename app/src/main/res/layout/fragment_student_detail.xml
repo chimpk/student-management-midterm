@@ -1,144 +1,346 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/color_background">
 
-    <!-- Student Info Card -->
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarStudentDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="2dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="?attr/colorControlNormal">
+        android:background="@color/color_surface"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarStudentDetail"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationContentDescription="@string/nav_back"
+            app:title="@string/title_student_detail"
+            app:titleTextColor="@color/text_primary" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingBottom="40dp">
 
-            <TextView
-                android:id="@+id/tv_detail_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Nguyễn Văn An"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
-
-            <TextView
-                android:id="@+id/tv_detail_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                tools:text="MSSV: 524H0001"
-                android:textSize="14sp"
-                android:textColor="?attr/colorPrimary" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:background="?attr/colorControlNormal" />
-
+            <!-- Student Profile Header (S08) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/screen_margin"
+                android:paddingTop="16dp"
+                android:paddingBottom="12dp">
 
                 <TextView
-                    android:id="@+id/tv_detail_dob"
+                    android:id="@+id/tvDetailAvatarLetter"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/shape_avatar_circle"
+                    android:backgroundTint="@color/color_primary_container"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:textColor="@color/color_on_primary_container"
+                    android:textSize="24sp"
+                    tools:text="N" />
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    tools:text="Ngày sinh: 2003-01-15"
-                    android:textSize="13sp"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_detail_class"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Lớp: 24H50301"
-                    android:textSize="13sp"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    <TextView
+                        android:id="@+id/tv_detail_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        tools:text="Nguyễn Văn An" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        tools:text="MSSV: 524H0001" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipStudentStatus"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="4dp"
+                        android:clickable="false"
+                        android:text="@string/status_studying"
+                        android:textColor="@color/color_primary"
+                        android:textSize="11sp"
+                        app:chipBackgroundColor="@color/color_secondary_container"
+                        app:chipCornerRadius="@dimen/radius_pill" />
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_detail_faculty"
-                android:layout_width="wrap_content"
+            <!-- Student Info Card (S08) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                tools:text="Khoa: Công nghệ thông tin"
-                android:textSize="13sp"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:layout_marginHorizontal="@dimen/screen_margin"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/color_outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/screen_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/section_student_info"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="8dp"
+                        android:background="@color/color_outline_variant" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_faculty"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_faculty"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            tools:text="Công nghệ thông tin" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_class"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_class"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            tools:text="24H50301" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_dob"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_dob"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            tools:text="2003-01-15" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_email"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_email"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            tools:text="524h0001@student.tdtu.edu.vn" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Certificate Section Card (S08 / S46 / S47) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_margin"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/color_outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/screen_margin"
+                    android:paddingBottom="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/screen_margin">
+
+                        <TextView
+                            android:id="@+id/tvCertSectionTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/title_certificates"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp" />
+
+                        <!-- Read only chip for Employee (S47) -->
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipReadOnlyCert"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:clickable="false"
+                            android:text="@string/read_only_label"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp"
+                            android:visibility="gone"
+                            app:chipBackgroundColor="@color/color_secondary_container"
+                            app:chipCornerRadius="@dimen/radius_pill"
+                            tools:visibility="visible" />
+
+                        <!-- Add Certificate Button (S46) - Hidden for Employee (S47) -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_add_certificate"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/min_touch_target"
+                            android:text="@string/btn_add_certificate"
+                            android:textColor="@color/color_primary"
+                            android:textSize="12sp"
+                            app:icon="@drawable/ic_add"
+                            app:iconSize="16dp"
+                            app:iconTint="@color/color_primary" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="@dimen/screen_margin"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/color_outline_variant" />
+
+                    <!-- Certificate List States -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="140dp">
+
+                        <!-- Skeleton loading (S52) -->
+                        <include
+                            android:id="@+id/includeCertLoading"
+                            layout="@layout/view_loading_skeleton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone" />
+
+                        <!-- Empty state (S53) -->
+                        <include
+                            android:id="@+id/includeCertEmpty"
+                            layout="@layout/view_empty_state"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone" />
+
+                        <!-- Error state (S54) -->
+                        <include
+                            android:id="@+id/includeCertError"
+                            layout="@layout/view_error_state"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone" />
+
+                        <!-- Certificate List (S46 / S47) -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_certificates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/item_certificate" />
+                    </FrameLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.core.widget.NestedScrollView>
 
-    <!-- Certificate Section Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/section_certificates"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_certificate"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_add_certificate"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <!-- Certificate List / State Container -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_certificates"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:padding="8dp" />
-
-        <TextView
-            android:id="@+id/tv_empty_certificates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/empty_certificates_message"
-            android:textSize="15sp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:visibility="gone" />
-
-        <ProgressBar
-            android:id="@+id/progress_loading_certificates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-    </FrameLayout>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
