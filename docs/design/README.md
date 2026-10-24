@@ -1,6 +1,6 @@
 # Tài liệu Thiết kế & Hướng dẫn Kỹ thuật Giao diện (Design Specs)
 
-Tài liệu này tổng hợp toàn bộ đặc tả giao diện (UI/UX specs), hệ thống tokens thiết kế, quy ước đặt tên và ma trận trạng thái được trích xuất trực tiếp từ tài liệu PDF thiết kế bàn giao (`docs/Untitled.pdf`).
+Tài liệu này tổng hợp toàn bộ đặc tả giao diện (UI/UX specs), hệ thống tokens thiết kế, quy ước đặt tên và ma trận trạng thái từ hai tài liệu bàn giao `docs/Untitled.pdf` và `docs/Untitled (1).pdf`.
 
 ---
 
@@ -8,7 +8,7 @@ Tài liệu này tổng hợp toàn bộ đặc tả giao diện (UI/UX specs), 
 
 Để tiếp cận và triển khai giao diện chuẩn xác nhất, khuyến nghị đọc các tài liệu theo thứ tự sau:
 
-1. **[README.md](file:///d:/Study/mobile/MidTerm/docs/design/README.md):** Tổng quan, quy ước đặt tên, bảng mục lục 36 màn hình và danh sách quyết định thiết kế `TODO(design)`.
+1. **[README.md](file:///d:/Study/mobile/MidTerm/docs/design/README.md):** Tổng quan, quy ước đặt tên, bảng mục lục 81 màn hình/trạng thái và danh sách quyết định thiết kế `TODO(design)`.
 2. **[branding.md](file:///d:/Study/mobile/MidTerm/docs/design/branding.md):** Nhận diện thương hiệu tạm thời (Placeholder), vùng slot logo/tên và danh mục kiểm tra khi thay đổi nhận diện thương hiệu chính thức.
 3. **[tokens/](file:///d:/Study/mobile/MidTerm/docs/design/tokens/):**
    - [colors.xml](file:///d:/Study/mobile/MidTerm/docs/design/tokens/colors.xml) & [colors-night.xml](file:///d:/Study/mobile/MidTerm/docs/design/tokens/colors-night.xml): Hệ thống token màu sắc hai chế độ Sáng / Tối.
@@ -20,7 +20,7 @@ Tài liệu này tổng hợp toàn bộ đặc tả giao diện (UI/UX specs), 
 7. **[rbac-visibility.md](file:///d:/Study/mobile/MidTerm/docs/design/rbac-visibility.md):** Bảng ma trận phân quyền hiển thị theo vai trò (Admin, Manager, Employee).
 8. **[a11y.md](file:///d:/Study/mobile/MidTerm/docs/design/a11y.md):** Hướng dẫn trợ năng (Accessibility: TalkBack, `contentDescription`, `fontScale`, Touch Targets).
 9. **[gap-analysis.md](file:///d:/Study/mobile/MidTerm/docs/design/gap-analysis.md):** Bảng đối soát giữa mockup PDF và hiện trạng mã nguồn / schema hệ thống.
-10. **[screens/](file:///d:/Study/mobile/MidTerm/docs/design/screens/):** Chi tiết đặc tả 36 màn hình (S01 đến S36) theo cấu trúc 7 mục quy chuẩn cùng màn đề xuất bổ sung [Sxx-settings-effects](file:///d:/Study/mobile/MidTerm/docs/design/screens/Sxx-settings-effects.md).
+10. **[screens/](file:///d:/Study/mobile/MidTerm/docs/design/screens/):** Chi tiết đặc tả 81 màn hình/trạng thái (S01 đến S81) theo cấu trúc 7 mục quy chuẩn cùng màn đề xuất bổ sung [Sxx-settings-effects](file:///d:/Study/mobile/MidTerm/docs/design/screens/Sxx-settings-effects.md).
 11. **[motion-tokens.md](file:///d:/Study/mobile/MidTerm/docs/design/motion-tokens.md):** Hệ thống tokens thời lượng, easing, spring, stagger và haptic dùng chung.
 12. **[motion-policy.md](file:///d:/Study/mobile/MidTerm/docs/design/motion-policy.md):** Chính sách điều phối chuyển động duy nhất (MotionPolicy, logic thuần túy, 8 tổ hợp chân trị).
 13. **[motion-effects.md](file:///d:/Study/mobile/MidTerm/docs/design/motion-effects.md):** Đặc tả chi tiết các hiệu ứng chuyển động Gói A (luôn bật) và Gói B (tùy chọn Cài đặt).
@@ -44,7 +44,9 @@ Tài liệu này tổng hợp toàn bộ đặc tả giao diện (UI/UX specs), 
 
 ---
 
-## 3. Bảng danh mục toàn bộ màn hình thiết kế (36 màn)
+## 3. Bảng danh mục toàn bộ màn hình thiết kế (81 màn/trạng thái)
+
+> `Untitled (1).pdf` chứa lại 36 frame đã có trong S01–S36 và bổ sung 45 frame khác biệt. Catalog chỉ tạo S37–S81 cho các frame mới, không nhân đôi màn cũ. Xem [ghi chú đối chiếu nguồn](source-handoff-untitled-1.md).
 
 | ID | Tên màn hình | Trang PDF | Phân nhóm | Chủ sở hữu | Ảnh tham chiếu | File đặc tả |
 |:---|:---|:---:|:---|:---:|:---|:---|
@@ -74,7 +76,7 @@ Tài liệu này tổng hợp toàn bộ đặc tả giao diện (UI/UX specs), 
 | **S24** | Sinh viên - Shimmer Loading (Light) | Trang 24 | Quản lý sinh viên | Thành viên 2 | `reference/S24-student-list-loading-shimmer-light.png` | [S24](file:///d:/Study/mobile/MidTerm/docs/design/screens/S24-student-list-loading-shimmer-light.md) |
 | **S25** | Sinh viên - Danh sách trống Empty (Light) | Trang 25 | Quản lý sinh viên | Thành viên 2 | `reference/S25-student-list-empty-state-light.png` | [S25](file:///d:/Study/mobile/MidTerm/docs/design/screens/S25-student-list-empty-state-light.md) |
 | **S26** | Sinh viên - Banner ngoại tuyến (Light) | Trang 26 | Ngoại tuyến | Thành viên 2 | `reference/S26-student-list-offline-banner-light.png` | [S26](file:///d:/Study/mobile/MidTerm/docs/design/screens/S26-student-list-offline-banner-light.md) |
-| **S27** | Đăng nhập - Chế độ tối (Dark) | Trang 27 | Xác thực | Thành viên 1 | `reference/S27-login-default-dark.png` | [S27](file:///d:/Study/mobile/MidTerm/docs/design/screens/S27-login-default-dark.png) |
+| **S27** | Đăng nhập - Chế độ tối (Dark) | Trang 27 | Xác thực | Thành viên 1 | `reference/S27-login-default-dark.png` | [S27](file:///d:/Study/mobile/MidTerm/docs/design/screens/S27-login-default-dark.md) |
 | **S28** | Dashboard - Admin Chế độ tối (Dark) | Trang 28 | Điều hướng chính | Thành viên 1 | `reference/S28-dashboard-admin-dark.png` | [S28](file:///d:/Study/mobile/MidTerm/docs/design/screens/S28-dashboard-admin-dark.md) |
 | **S29** | Sinh viên - Danh sách Admin Dark | Trang 29 | Quản lý sinh viên | Thành viên 2 | `reference/S29-student-list-admin-dark.png` | [S29](file:///d:/Study/mobile/MidTerm/docs/design/screens/S29-student-list-admin-dark.md) |
 | **S30** | Sinh viên - Chi tiết Admin Dark | Trang 30 | Quản lý sinh viên | Thành viên 2 | `reference/S30-student-detail-admin-dark.png` | [S30](file:///d:/Study/mobile/MidTerm/docs/design/screens/S30-student-detail-admin-dark.md) |
@@ -84,6 +86,51 @@ Tài liệu này tổng hợp toàn bộ đặc tả giao diện (UI/UX specs), 
 | **S34** | Lịch sử đăng nhập - Dark | Trang 34 | Quản trị người dùng | Thành viên 1 | `reference/S34-login-history-user-dark.png` | [S34](file:///d:/Study/mobile/MidTerm/docs/design/screens/S34-login-history-user-dark.md) |
 | **S35** | Hồ sơ cá nhân - Admin Dark | Trang 35 | Hồ sơ & Bảo mật | Thành viên 1 | `reference/S35-profile-admin-dark.png` | [S35](file:///d:/Study/mobile/MidTerm/docs/design/screens/S35-profile-admin-dark.md) |
 | **S36** | Import / Export CSV - Dark | Trang 36 | Dữ liệu CSV | Thành viên 2 | `reference/S36-import-export-default-dark.png` | [S36](file:///d:/Study/mobile/MidTerm/docs/design/screens/S36-import-export-default-dark.md) |
+| **S37** | Dashboard - Manager (Light) | PDF mới trang 12 | Điều hướng chính | Thành viên 1 | `reference/S37-dashboard-manager-light.png` | [S37](screens/S37-dashboard-manager-light.md) |
+| **S38** | Dashboard - Manager (Dark) | PDF mới trang 13 | Điều hướng chính | Thành viên 1 | `reference/S38-dashboard-manager-dark.png` | [S38](screens/S38-dashboard-manager-dark.md) |
+| **S39** | Dashboard - Employee (Dark) | PDF mới trang 14 | Điều hướng chính | Thành viên 1 | `reference/S39-dashboard-employee-dark.png` | [S39](screens/S39-dashboard-employee-dark.md) |
+| **S40** | Người dùng - Thêm mới (Light) | PDF mới trang 20 | Quản trị người dùng | Thành viên 1 | `reference/S40-user-add-default-light.png` | [S40](screens/S40-user-add-default-light.md) |
+| **S41** | Người dùng - Sửa đổi (Light) | PDF mới trang 21 | Quản trị người dùng | Thành viên 1 | `reference/S41-user-edit-default-light.png` | [S41](screens/S41-user-edit-default-light.md) |
+| **S42** | Người dùng - Lỗi nhập liệu (Light) | PDF mới trang 22 | Quản trị người dùng | Thành viên 1 | `reference/S42-user-add-validation-errors-light.png` | [S42](screens/S42-user-add-validation-errors-light.md) |
+| **S43** | Người dùng - Đang lưu (Light) | PDF mới trang 27 | Quản trị người dùng | Thành viên 1 | `reference/S43-user-edit-saving-light.png` | [S43](screens/S43-user-edit-saving-light.md) |
+| **S44** | Người dùng - Bảo vệ tài khoản hiện tại (Light) | PDF mới trang 28 | Quản trị người dùng | Thành viên 1 | `reference/S44-user-edit-self-protection-light.png` | [S44](screens/S44-user-edit-self-protection-light.md) |
+| **S45** | Người dùng - Dialog xóa (Light) | PDF mới trang 29 | Quản trị người dùng | Thành viên 1 | `reference/S45-user-delete-dialog-light.png` | [S45](screens/S45-user-delete-dialog-light.md) |
+| **S46** | Chứng chỉ - Danh sách Admin (Light) | PDF mới trang 30 | Quản lý chứng chỉ | Thành viên 2 | `reference/S46-certificate-list-admin-light.png` | [S46](screens/S46-certificate-list-admin-light.md) |
+| **S47** | Chứng chỉ - Danh sách chỉ đọc (Light) | PDF mới trang 31 | Quản lý chứng chỉ | Thành viên 2 | `reference/S47-certificate-list-employee-light.png` | [S47](screens/S47-certificate-list-employee-light.md) |
+| **S48** | Chứng chỉ - Thêm mới (Light) | PDF mới trang 32 | Quản lý chứng chỉ | Thành viên 2 | `reference/S48-certificate-add-default-light.png` | [S48](screens/S48-certificate-add-default-light.md) |
+| **S49** | Chứng chỉ - Sửa đổi (Light) | PDF mới trang 35 | Quản lý chứng chỉ | Thành viên 2 | `reference/S49-certificate-edit-default-light.png` | [S49](screens/S49-certificate-edit-default-light.md) |
+| **S50** | Chứng chỉ - Lỗi ngày cấp (Light) | PDF mới trang 36 | Quản lý chứng chỉ | Thành viên 2 | `reference/S50-certificate-add-validation-errors-light.png` | [S50](screens/S50-certificate-add-validation-errors-light.md) |
+| **S51** | Chứng chỉ - Dialog xóa (Light) | PDF mới trang 37 | Quản lý chứng chỉ | Thành viên 2 | `reference/S51-certificate-delete-dialog-light.png` | [S51](screens/S51-certificate-delete-dialog-light.md) |
+| **S52** | Chứng chỉ - Đang tải (Light) | PDF mới trang 38 | Quản lý chứng chỉ | Thành viên 2 | `reference/S52-certificate-list-loading-light.png` | [S52](screens/S52-certificate-list-loading-light.md) |
+| **S53** | Chứng chỉ - Danh sách trống (Light) | PDF mới trang 39 | Quản lý chứng chỉ | Thành viên 2 | `reference/S53-certificate-list-empty-light.png` | [S53](screens/S53-certificate-list-empty-light.md) |
+| **S54** | Chứng chỉ - Lỗi tải dữ liệu (Light) | PDF mới trang 40 | Quản lý chứng chỉ | Thành viên 2 | `reference/S54-certificate-list-error-light.png` | [S54](screens/S54-certificate-list-error-light.md) |
+| **S55** | Import chứng chỉ - Mặc định (Light) | PDF mới trang 43 | Dữ liệu CSV | Thành viên 2 | `reference/S55-certificate-import-default-light.png` | [S55](screens/S55-certificate-import-default-light.md) |
+| **S56** | Import chứng chỉ - Mặc định (Dark) | PDF mới trang 44 | Dữ liệu CSV | Thành viên 2 | `reference/S56-certificate-import-default-dark.png` | [S56](screens/S56-certificate-import-default-dark.md) |
+| **S57** | Import chứng chỉ - Đang xử lý (Light) | PDF mới trang 45 | Dữ liệu CSV | Thành viên 2 | `reference/S57-certificate-import-processing-light.png` | [S57](screens/S57-certificate-import-processing-light.md) |
+| **S58** | Import chứng chỉ - Đang xử lý (Dark) | PDF mới trang 46 | Dữ liệu CSV | Thành viên 2 | `reference/S58-certificate-import-processing-dark.png` | [S58](screens/S58-certificate-import-processing-dark.md) |
+| **S59** | Import chứng chỉ - Kết quả (Light) | PDF mới trang 47 | Dữ liệu CSV | Thành viên 2 | `reference/S59-certificate-import-result-light.png` | [S59](screens/S59-certificate-import-result-light.md) |
+| **S60** | Import chứng chỉ - Kết quả (Dark) | PDF mới trang 48 | Dữ liệu CSV | Thành viên 2 | `reference/S60-certificate-import-result-dark.png` | [S60](screens/S60-certificate-import-result-dark.md) |
+| **S61** | Import chứng chỉ - Sai định dạng (Light) | PDF mới trang 51 | Dữ liệu CSV | Thành viên 2 | `reference/S61-certificate-import-invalid-format-light.png` | [S61](screens/S61-certificate-import-invalid-format-light.md) |
+| **S62** | Import chứng chỉ - Sai định dạng (Dark) | PDF mới trang 52 | Dữ liệu CSV | Thành viên 2 | `reference/S62-certificate-import-invalid-format-dark.png` | [S62](screens/S62-certificate-import-invalid-format-dark.md) |
+| **S63** | Import chứng chỉ - Tệp quá lớn (Light) | PDF mới trang 53 | Dữ liệu CSV | Thành viên 2 | `reference/S63-certificate-import-too-large-light.png` | [S63](screens/S63-certificate-import-too-large-light.md) |
+| **S64** | Import chứng chỉ - Tệp quá lớn (Dark) | PDF mới trang 54 | Dữ liệu CSV | Thành viên 2 | `reference/S64-certificate-import-too-large-dark.png` | [S64](screens/S64-certificate-import-too-large-dark.md) |
+| **S65** | Import chứng chỉ - Không tìm thấy MSSV (Light) | PDF mới trang 55 | Dữ liệu CSV | Thành viên 2 | `reference/S65-certificate-import-missing-student-light.png` | [S65](screens/S65-certificate-import-missing-student-light.md) |
+| **S66** | Import chứng chỉ - Không tìm thấy MSSV (Dark) | PDF mới trang 56 | Dữ liệu CSV | Thành viên 2 | `reference/S66-certificate-import-missing-student-dark.png` | [S66](screens/S66-certificate-import-missing-student-dark.md) |
+| **S67** | Export chứng chỉ (Light) | PDF mới trang 59 | Dữ liệu CSV | Thành viên 2 | `reference/S67-certificate-export-light.png` | [S67](screens/S67-certificate-export-light.md) |
+| **S68** | Export chứng chỉ (Dark) | PDF mới trang 60 | Dữ liệu CSV | Thành viên 2 | `reference/S68-certificate-export-dark.png` | [S68](screens/S68-certificate-export-dark.md) |
+| **S69** | Import chứng chỉ - Lỗi máy chủ (Light) | PDF mới trang 61 | Dữ liệu CSV | Thành viên 2 | `reference/S69-certificate-import-server-error-light.png` | [S69](screens/S69-certificate-import-server-error-light.md) |
+| **S70** | Import chứng chỉ - Lỗi máy chủ (Dark) | PDF mới trang 62 | Dữ liệu CSV | Thành viên 2 | `reference/S70-certificate-import-server-error-dark.png` | [S70](screens/S70-certificate-import-server-error-dark.md) |
+| **S71** | Người dùng - Đang tải danh sách (Light) | PDF mới trang 63 | Quản trị người dùng | Thành viên 1 | `reference/S71-user-list-loading-light.png` | [S71](screens/S71-user-list-loading-light.md) |
+| **S72** | Người dùng - Danh sách trống (Light) | PDF mới trang 64 | Quản trị người dùng | Thành viên 1 | `reference/S72-user-list-empty-light.png` | [S72](screens/S72-user-list-empty-light.md) |
+| **S73** | Người dùng - Lỗi tải dữ liệu (Light) | PDF mới trang 67 | Quản trị người dùng | Thành viên 1 | `reference/S73-user-list-error-light.png` | [S73](screens/S73-user-list-error-light.md) |
+| **S74** | Người dùng - Ngoại tuyến (Light) | PDF mới trang 68 | Quản trị người dùng | Thành viên 1 | `reference/S74-user-list-offline-light.png` | [S74](screens/S74-user-list-offline-light.md) |
+| **S75** | Lịch sử đăng nhập - Đang tải (Light) | PDF mới trang 69 | Quản trị người dùng | Thành viên 1 | `reference/S75-login-history-loading-light.png` | [S75](screens/S75-login-history-loading-light.md) |
+| **S76** | Lịch sử đăng nhập - Trống (Light) | PDF mới trang 70 | Quản trị người dùng | Thành viên 1 | `reference/S76-login-history-empty-light.png` | [S76](screens/S76-login-history-empty-light.md) |
+| **S77** | Lịch sử đăng nhập - Lỗi tải (Light) | PDF mới trang 71 | Quản trị người dùng | Thành viên 1 | `reference/S77-login-history-error-light.png` | [S77](screens/S77-login-history-error-light.md) |
+| **S78** | Hồ sơ - Đang cập nhật (Light) | PDF mới trang 72 | Hồ sơ & Bảo mật | Thành viên 1 | `reference/S78-profile-loading-light.png` | [S78](screens/S78-profile-loading-light.md) |
+| **S79** | Hồ sơ - Lỗi và dữ liệu lưu (Light) | PDF mới trang 75 | Hồ sơ & Bảo mật | Thành viên 1 | `reference/S79-profile-error-cached-light.png` | [S79](screens/S79-profile-error-cached-light.md) |
+| **S80** | Phiên đăng nhập hết hạn (Light) | PDF mới trang 76 | Xác thực | Thành viên 1 | `reference/S80-session-expired-light.png` | [S80](screens/S80-session-expired-light.md) |
+| **S81** | Tài khoản bị khóa (Light) | PDF mới trang 77 | Xác thực | Thành viên 1 | `reference/S81-account-locked-light.png` | [S81](screens/S81-account-locked-light.md) |
 | **Sxx** | Cài đặt hiệu ứng (Đề xuất) | Bổ sung | Cài đặt & Trợ năng | Thành viên 1 | `Không có ảnh PDF` | [Sxx](file:///d:/Study/mobile/MidTerm/docs/design/screens/Sxx-settings-effects.md) |
 
 ---
@@ -98,12 +145,10 @@ Các mục sau đây là chi tiết kỹ thuật hoặc luồng hành vi mà b�
 4. `TODO(design-back-behavior)`: **Hành vi nút Back phần cứng/hệ thống:** 
    - Từ màn Chi tiết sinh viên quay lại Danh sách: Giữ nguyên trạng thái cuộn, bộ lọc và từ khóa tìm kiếm hay đặt lại về đầu?
    - Tại màn Trang chủ (Dashboard): Nhấn nút Back thoát app luôn hay hiển thị thông báo "Nhấn lần nữa để thoát"?
-5. `TODO(design-role-manager-screens)`: **Giao diện riêng cho vai trò Manager:** Bản thiết kế PDF chỉ có mockup Dashboard Admin và Dashboard Employee. Cần quyết định vai trò Manager sẽ dùng chung giao diện Dashboard Admin (ẩn thẻ Người dùng) hay có màn hình riêng.
-6. `TODO(design-dark-employee-dashboard)`: **Màn hình Dark mode cho Dashboard Employee:** PDF thiếu trang Dark mode riêng cho Dashboard Employee (trang 9); hiện đang giả định kế thừa token Dark mode như trang 28.
-7. `TODO(design-csv-error-share)`: **Định dạng báo cáo chia sẻ lỗi CSV:** Nút `@string/btn_share_error_report` trên màn S23 sẽ chia sẻ văn bản thô (Plain text qua Intent Android) hay tạo tệp tin đính kèm `.txt`/`.csv`.
-8. `TODO(design-motion-b-default)`: **Giá trị mặc định của Gói B (USER quyết định):** Khi người dùng cài mới ứng dụng, công tắc "Hiệu ứng nâng cao" (Gói B) mặc định là BẬT hay TẮT? (Khuyến nghị: **BẬT** để mang lại trải nghiệm tối ưu khi máy cho phép).
-9. `TODO(design-motion-storage)`: **Kho lưu trữ công tắc Cài đặt hiệu ứng:** Đề xuất sử dụng `SharedPreferences` hoặc Jetpack `DataStore` (Khuyến nghị: `SharedPreferences` để đọc đồng bộ tức thì lúc Application Start, tránh giật chớp trạng thái UI).
-10. `TODO(design-settings-location)`: **Vị trí bố trí màn hình Cài đặt hiệu ứng:** Tích hợp trực tiếp thành một khối Card trong màn Hồ sơ cá nhân (S17/S35) hay tạo màn hình con riêng mở từ icon bánh răng AppBar? (Khuyến nghị: Tích hợp trực tiếp trong Hồ sơ cá nhân).
-11. `TODO(design-spring-dependency)`: **Duyệt Dependency cho Spring Animation:** Dự án hiện chưa có thư viện `androidx.dynamicanimation`. Cần quyết định bổ sung dependency này hay sử dụng phương án thay thế `OvershootInterpolator` có sẵn trong SDK tiêu chuẩn (Khuyến nghị: Dùng `OvershootInterpolator`).
+5. `TODO(design-csv-error-share)`: **Định dạng báo cáo chia sẻ lỗi CSV:** Nút `@string/btn_share_error_report` trên màn S23/S59/S60 sẽ chia sẻ văn bản thô hay tạo tệp đính kèm `.txt`/`.csv`.
+6. `TODO(design-motion-b-default)`: **Giá trị mặc định của Gói B:** Khi cài mới, công tắc "Hiệu ứng nâng cao" mặc định BẬT hay TẮT?
+7. `TODO(design-motion-storage)`: **Kho lưu trữ công tắc:** Chốt `SharedPreferences` hoặc Jetpack `DataStore`.
+8. `TODO(design-settings-location)`: **Vị trí màn Cài đặt hiệu ứng:** Tích hợp trong Hồ sơ hay tạo màn con riêng.
+9. `TODO(design-spring-dependency)`: **Spring Animation:** Bổ sung `androidx.dynamicanimation` hay dùng `OvershootInterpolator`.
 
 > **Phụ thuộc implementation, không phải quyết định thiết kế:** Frame Add User suy ra chỉ được coi là hoàn chỉnh khi đã nối backend/Cloud Function dùng Admin SDK để tạo cả Firebase Auth và `users/{uid}`. Client không tự tạo Auth và không yêu cầu Admin nhập UID.

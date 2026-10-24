@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Design tokens: Dimensions & Spacing (Nguồn: PDF trang 37) -->
+<!-- Design tokens: Dimensions & Spacing (Nguồn: Untitled.pdf trang 37; đối chiếu Untitled (1).pdf trang 82) -->
 <resources>
     <!-- Grid & Margins -->
     <dimen name="grid_unit">8dp</dimen>

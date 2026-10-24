@@ -1,6 +1,6 @@
 # Ma trận trạng thái giao diện (State Matrix)
 
-Tài liệu này tổng hợp toàn bộ các trạng thái giao diện (UI states) được xác định trực tiếp từ tài liệu PDF thiết kế bàn giao (Nguồn: PDF trang 1–37).
+Tài liệu này tổng hợp toàn bộ trạng thái giao diện từ `docs/Untitled.pdf` và `docs/Untitled (1).pdf`.
 
 ---
 
@@ -76,3 +76,30 @@ Các trạng thái được biểu diễn trong thiết kế gồm:
 - **Bật (Enabled - ON):** Công tắc ở vị trí Checked (nền `@color/color_primary`), toàn bộ hiệu ứng Gói B (FX-05 → FX-11) được kích hoạt chạy song song với Gói A.
 - **Tắt (Enabled - OFF):** Công tắc ở vị trí Unchecked (nền `@color/color_surface_variant`), toàn bộ hiệu ứng Gói B chuyển sang phương án tĩnh tức thì.
 - **Vô hiệu hóa do hệ thống (Disabled by System):** Khi hệ thống bật chế độ "Giảm hiệu ứng động" (`ANIMATOR_DURATION_SCALE == 0`), công tắc tự động mờ đi (disabled, màu `@color/text_disabled`), không cho phép gạt và hiển thị dòng chú thích `@string/settings_effects_disabled_system_note`. Toàn bộ Gói A và Gói B lùi về phương án tĩnh.
+
+---
+
+## 4. Trạng thái bổ sung từ `Untitled (1).pdf`
+
+| Phân hệ | Default / Ready | Loading / Progress | Empty | Validation / Domain Error | Network / Offline | Dialog / Terminal | Dark |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| Dashboard Manager | S37 | - | - | - | - | - | S38 |
+| Dashboard Employee | S09 | - | - | - | - | - | S39 |
+| Form người dùng | S40, S41, S44 | S43 | - | S42 | - | - | - |
+| Danh sách người dùng | S10 | S71 | S72 | - | S73, S74 | S21, S45 | S33 |
+| Danh sách chứng chỉ | S46, S47 | S52 | S53 | - | S54 | S51 | Kế thừa token Dark |
+| Form chứng chỉ | S48, S49 | - | - | S50 | - | - | Kế thừa token Dark |
+| Import chứng chỉ | S55 | S57 | - | S61, S63, S65 | S69 | - | S56, S58, S62, S64, S66, S70 |
+| Kết quả import | S59 | - | - | Hiển thị lỗi theo từng dòng trong S59 | - | - | S60 |
+| Export chứng chỉ | S67 | - | - | - | - | - | S68 |
+| Lịch sử đăng nhập | S11 | S75 | S76 | - | S77 | - | S34 |
+| Hồ sơ | S17 | S78 | - | - | S79 | - | S35 |
+| Xác thực sau đăng nhập | - | - | - | - | - | S80 hết phiên, S81 bị khóa | - |
+
+### 4.1. Quy tắc chuyển trạng thái bổ sung
+
+- **Form:** Validate khi rời ô; giữ giá trị đã nhập; disabled nút Lưu khi còn lỗi hoặc đang gửi.
+- **Retry:** Giữ nguyên người dùng/sinh viên/tệp đang thao tác; chặn request trùng.
+- **Offline:** Dữ liệu cache phải có nhãn và thời điểm lưu; các thao tác ghi chuyển sang chỉ đọc.
+- **Terminal auth:** S80/S81 xóa khả năng quay lại route bảo vệ và chỉ cho về Login.
+- **Dark:** State và hierarchy giữ nguyên bản Light tương ứng; chỉ thay token theme, không tạo logic khác.
