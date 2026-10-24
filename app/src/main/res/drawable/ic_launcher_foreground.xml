@@ -12,8 +12,9 @@
         </vector>
     </item>
     <item
-        android:width="64dp"
-        android:height="64dp"
+        android:width="72dp"
+        android:height="72dp"
         android:gravity="center"
-        android:drawable="@drawable/ic_unidata_symbol" />
+        android:drawable="@drawable/ic_unidata_app_icon" />
 </layer-list>
+
