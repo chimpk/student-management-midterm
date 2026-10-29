@@ -10,6 +10,7 @@ import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.UiState;
 
 import java.text.Collator;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -139,13 +140,14 @@ public class StudentListViewModel extends ViewModel {
         }
 
         List<Student> filtered = new ArrayList<>();
-        String queryLower = currentSearchQuery.toLowerCase(Locale.ROOT);
+        String normalizedQuery = normalizeForSearch(currentSearchQuery);
 
         for (Student s : cachedList) {
-            boolean matchesSearch = queryLower.isEmpty()
-                    || (s.getName() != null && s.getName().toLowerCase(Locale.ROOT).contains(queryLower))
-                    || (s.getStudentId() != null && s.getStudentId().toLowerCase(Locale.ROOT).contains(queryLower))
-                    || (s.getClassName() != null && s.getClassName().toLowerCase(Locale.ROOT).contains(queryLower));
+            boolean matchesSearch = normalizedQuery.isEmpty()
+                    || normalizeForSearch(s.getName()).contains(normalizedQuery)
+                    || normalizeForSearch(s.getStudentId()).contains(normalizedQuery)
+                    || normalizeForSearch(s.getClassName()).contains(normalizedQuery)
+                    || normalizeForSearch(s.getFaculty()).contains(normalizedQuery);
 
             boolean matchesFaculty = currentFacultyFilter.isEmpty()
                     || (s.getFaculty() != null && s.getFaculty().equalsIgnoreCase(currentFacultyFilter));
@@ -166,6 +168,16 @@ public class StudentListViewModel extends ViewModel {
         } else {
             studentListState.setValue(UiState.content(filtered));
         }
+    }
+
+    /** Removes Vietnamese tone marks and maps đ/Đ to d so search works with or without accents. */
+    private static String normalizeForSearch(String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        String lowerCase = value.toLowerCase(Locale.ROOT).replace('đ', 'd');
+        return Normalizer.normalize(lowerCase, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "");
     }
 
     private void sortList(List<Student> list, SortCriteria criteria) {
