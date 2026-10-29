@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,31 +78,59 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupRbacVisibility() {
+        int cardMargin = getResources().getDimensionPixelSize(R.dimen.card_gap) / 2;
+
         if (currentUser.isAdmin()) {
-            // S04 / S28
+            // S04 / S28: 2x2 grid (Students, Users, Import/Export, Profile)
             binding.cardStatsBanner.setVisibility(View.VISIBLE);
             binding.cardEmployeeSearch.setVisibility(View.GONE);
             binding.cardStudents.setVisibility(View.VISIBLE);
             binding.cardUsers.setVisibility(View.VISIBLE);
             binding.cardImportExport.setVisibility(View.VISIBLE);
             binding.cardProfile.setVisibility(View.VISIBLE);
+
+            setCardGridParams(binding.cardStudents, 0, 1, 0, cardMargin, cardMargin);
+            setCardGridParams(binding.cardUsers, 0, 1, cardMargin, 0, cardMargin);
+            setCardGridParams(binding.cardImportExport, 1, 1, 0, cardMargin, cardMargin);
+            setCardGridParams(binding.cardProfile, 1, 1, cardMargin, 0, cardMargin);
         } else if (currentUser.isManager()) {
-            // S37 / S38: Manager has Students, Import/Export, Profile; Users is GONE
+            // S37 / S38: Row 1 has Students & Import/Export (2 cols), Row 2 has Profile (full 2 cols)
             binding.cardStatsBanner.setVisibility(View.VISIBLE);
             binding.cardEmployeeSearch.setVisibility(View.GONE);
             binding.cardStudents.setVisibility(View.VISIBLE);
             binding.cardUsers.setVisibility(View.GONE);
             binding.cardImportExport.setVisibility(View.VISIBLE);
             binding.cardProfile.setVisibility(View.VISIBLE);
+
+            setCardGridParams(binding.cardStudents, 0, 1, 0, cardMargin, cardMargin);
+            setCardGridParams(binding.cardImportExport, 0, 1, cardMargin, 0, cardMargin);
+            setCardGridParams(binding.cardProfile, 1, 2, 0, 0, cardMargin);
         } else {
-            // S09 / S39: Employee has search card + Profile; Users and Import/Export are GONE
+            // S09 / S39: Employee has search card + 2-col row with Students & Profile; Users & Import/Export are GONE
             binding.cardStatsBanner.setVisibility(View.GONE);
             binding.cardEmployeeSearch.setVisibility(View.VISIBLE);
             binding.cardStudents.setVisibility(View.VISIBLE);
             binding.cardUsers.setVisibility(View.GONE);
             binding.cardImportExport.setVisibility(View.GONE);
             binding.cardProfile.setVisibility(View.VISIBLE);
+
+            setCardGridParams(binding.cardStudents, 0, 1, 0, cardMargin, cardMargin);
+            setCardGridParams(binding.cardProfile, 0, 1, cardMargin, 0, cardMargin);
         }
+    }
+
+    private void setCardGridParams(View card, int row, int colSpan, int marginStart, int marginEnd, int marginBottom) {
+        GridLayout.LayoutParams params = (GridLayout.LayoutParams) card.getLayoutParams();
+        if (params == null) {
+            params = new GridLayout.LayoutParams();
+        }
+        params.rowSpec = GridLayout.spec(row);
+        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, colSpan, 1f);
+        params.width = 0;
+        params.setMarginStart(marginStart);
+        params.setMarginEnd(marginEnd);
+        params.bottomMargin = marginBottom;
+        card.setLayoutParams(params);
     }
 
     private void setupCardListeners() {

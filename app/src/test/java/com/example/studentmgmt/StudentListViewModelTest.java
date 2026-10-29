@@ -65,12 +65,15 @@ public class StudentListViewModelTest {
 
     @Test
     public void searchFilter_filtersByNameAndMSSV() {
-        // Search by name "An"
+        // Search by name "An" (normalized case-insensitive without accents)
         viewModel.setSearchQuery("An");
         UiState<List<Student>> state = viewModel.getStudentListState().getValue();
         assertTrue(state.isContent());
         for (Student s : state.getData()) {
-            assertTrue(s.getName().contains("An") || s.getStudentId().contains("An"));
+            String norm = java.text.Normalizer.normalize(s.getName().toLowerCase().replace('đ', 'd'), java.text.Normalizer.Form.NFD).replaceAll("\\p{M}+", "");
+            String normId = s.getStudentId().toLowerCase();
+            String normClass = s.getClassName().toLowerCase();
+            assertTrue(norm.contains("an") || normId.contains("an") || normClass.contains("an"));
         }
 
         // Search by MSSV "524H0001"

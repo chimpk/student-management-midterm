@@ -146,8 +146,7 @@ public class StudentListViewModel extends ViewModel {
             boolean matchesSearch = normalizedQuery.isEmpty()
                     || normalizeForSearch(s.getName()).contains(normalizedQuery)
                     || normalizeForSearch(s.getStudentId()).contains(normalizedQuery)
-                    || normalizeForSearch(s.getClassName()).contains(normalizedQuery)
-                    || normalizeForSearch(s.getFaculty()).contains(normalizedQuery);
+                    || normalizeForSearch(s.getClassName()).contains(normalizedQuery);
 
             boolean matchesFaculty = currentFacultyFilter.isEmpty()
                     || (s.getFaculty() != null && s.getFaculty().equalsIgnoreCase(currentFacultyFilter));
