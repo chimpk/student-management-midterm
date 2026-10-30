@@ -131,8 +131,9 @@ service cloud.firestore {
           && request.resource.data.createdAt == resource.data.createdAt)
         || (isActiveUser()
           && request.auth.uid == userId
+          && validUser(userId)
           && request.resource.data.diff(resource.data)
-              .affectedKeys().hasOnly(['avatarUrl'])
+              .affectedKeys().hasOnly(['name', 'age', 'phone', 'avatarUrl'])
           && (!('avatarUrl' in request.resource.data)
             || (request.resource.data.avatarUrl is string
               && request.resource.data.avatarUrl.size() <= 2048)));

@@ -40,6 +40,9 @@ public interface ProfileRepository {
      */
     void updateAvatarUrl(String uid, String downloadUrl, UpdateCallback callback);
 
+    /** Updates the signed-in user's editable personal fields. */
+    void updateProfile(String uid, String name, int age, String phone, UpdateCallback callback);
+
     /**
      * Listens to realtime changes in the user document.
      */

@@ -2,6 +2,7 @@ package com.example.studentmgmt.ui.profile;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,7 +21,10 @@ import com.bumptech.glide.Glide;
 import com.example.studentmgmt.R;
 import com.example.studentmgmt.data.AuthRepositoryProvider;
 import com.example.studentmgmt.databinding.FragmentProfileBinding;
+import com.example.studentmgmt.databinding.DialogProfileEditBinding;
 import com.example.studentmgmt.model.AppUser;
+import com.example.studentmgmt.model.UiState;
+import com.example.studentmgmt.utils.VietnameseTextInputFormatter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -33,6 +38,8 @@ public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     private ProfileViewModel viewModel;
     private ActivityResultLauncher<String> imagePickerLauncher;
+    private AlertDialog editProfileDialog;
+    private DialogProfileEditBinding editProfileBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +83,7 @@ public class ProfileFragment extends Fragment {
         });
 
         binding.btnRetryUpdate.setOnClickListener(v -> viewModel.retryFirestoreUpdate());
+        binding.btnEditProfile.setOnClickListener(v -> showEditProfileDialog());
         binding.btnViewLoginHistory.setOnClickListener(v -> {
             androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_login_history);
         });
@@ -88,6 +96,7 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getCurrentUser().observe(getViewLifecycleOwner(), this::renderUserInfo);
         viewModel.getUploadState().observe(getViewLifecycleOwner(), this::renderUploadState);
+        viewModel.getProfileUpdateState().observe(getViewLifecycleOwner(), this::renderProfileUpdateState);
         viewModel.getProfileLoadError().observe(getViewLifecycleOwner(), error -> {
             if (error != null && !error.isEmpty()) {
                 com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), error, com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
@@ -96,6 +105,86 @@ public class ProfileFragment extends Fragment {
                 viewModel.clearProfileLoadError();
             }
         });
+    }
+
+    private void showEditProfileDialog() {
+        AppUser user = viewModel.getCurrentUser().getValue();
+        if (user == null || editProfileDialog != null) return;
+        viewModel.clearProfileUpdateState();
+
+        editProfileBinding = DialogProfileEditBinding.inflate(getLayoutInflater());
+        editProfileBinding.etProfileName.setText(user.getName());
+        editProfileBinding.etProfileAge.setText(String.valueOf(user.getAge()));
+        editProfileBinding.etProfilePhone.setText(user.getPhone());
+
+        editProfileDialog = new AlertDialog.Builder(requireContext())
+                .setView(editProfileBinding.getRoot())
+                .create();
+        editProfileDialog.setOnDismissListener(ignored -> {
+            editProfileDialog = null;
+            editProfileBinding = null;
+            viewModel.clearProfileUpdateState();
+        });
+        editProfileBinding.btnCancelProfile.setOnClickListener(v -> editProfileDialog.dismiss());
+        editProfileBinding.btnSaveProfile.setOnClickListener(v -> submitProfileEdit());
+        editProfileDialog.show();
+    }
+
+    private void submitProfileEdit() {
+        if (editProfileBinding == null) return;
+        String name = editProfileBinding.etProfileName.getText() == null ? ""
+                : VietnameseTextInputFormatter.capitalizeWords(
+                        editProfileBinding.etProfileName.getText().toString().trim());
+        String ageText = editProfileBinding.etProfileAge.getText() == null ? ""
+                : editProfileBinding.etProfileAge.getText().toString().trim();
+        String phone = editProfileBinding.etProfilePhone.getText() == null ? ""
+                : editProfileBinding.etProfilePhone.getText().toString().trim();
+
+        boolean invalid = false;
+        if (name.length() < 2 || name.length() > 100) {
+            editProfileBinding.tilProfileName.setError(getString(R.string.error_name_length));
+            invalid = true;
+        } else {
+            editProfileBinding.tilProfileName.setError(null);
+        }
+
+        int age = 0;
+        try {
+            age = Integer.parseInt(ageText);
+        } catch (NumberFormatException ignored) {
+            invalid = true;
+        }
+        if (age < 18 || age > 60) {
+            editProfileBinding.tilProfileAge.setError(getString(R.string.error_age_invalid));
+            invalid = true;
+        } else {
+            editProfileBinding.tilProfileAge.setError(null);
+        }
+
+        if (TextUtils.isEmpty(phone) || !phone.matches("^0[0-9]{9}$")) {
+            editProfileBinding.tilProfilePhone.setError(getString(R.string.error_phone_invalid));
+            invalid = true;
+        } else {
+            editProfileBinding.tilProfilePhone.setError(null);
+        }
+        if (!invalid) viewModel.updateProfile(name, age, phone);
+    }
+
+    private void renderProfileUpdateState(UiState<AppUser> state) {
+        if (state == null || editProfileBinding == null) return;
+        boolean saving = state.isLoading();
+        editProfileBinding.btnSaveProfile.setEnabled(!saving);
+        editProfileBinding.btnSaveProfile.setText(saving ? R.string.btn_saving : R.string.btn_save);
+        editProfileBinding.btnCancelProfile.setEnabled(!saving);
+
+        if (state.isContent()) {
+            editProfileDialog.dismiss();
+            Toast.makeText(requireContext(), R.string.toast_profile_update_success, Toast.LENGTH_SHORT).show();
+        } else if (state.isError()) {
+            com.google.android.material.snackbar.Snackbar.make(
+                    editProfileBinding.getRoot(), state.getErrorMessage(),
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
+        }
     }
 
     private void renderUserInfo(AppUser user) {
@@ -239,6 +328,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (editProfileDialog != null) editProfileDialog.dismiss();
         binding = null;
     }
 }

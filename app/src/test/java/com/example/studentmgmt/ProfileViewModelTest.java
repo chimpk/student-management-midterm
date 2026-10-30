@@ -13,6 +13,7 @@ import com.example.studentmgmt.data.AuthCallback;
 import com.example.studentmgmt.data.AuthRepository;
 import com.example.studentmgmt.data.ProfileRepository;
 import com.example.studentmgmt.model.AppUser;
+import com.example.studentmgmt.model.UiState;
 import com.example.studentmgmt.ui.profile.AvatarUploadPolicy;
 import com.example.studentmgmt.ui.profile.ProfileViewModel;
 
@@ -215,6 +216,56 @@ public class ProfileViewModelTest {
     }
 
     @Test
+    public void updateProfile_validFields_updatesRepositoryAndCurrentUser() {
+        viewModel.start(currentUser);
+
+        viewModel.updateProfile("Nguyễn Văn B", 30, "0912345678");
+
+        assertEquals(1, fakeProfileRepository.profileUpdateCalls);
+        assertEquals("user-123", fakeProfileRepository.updatedUid);
+        assertEquals("Nguyễn Văn B", viewModel.getCurrentUser().getValue().getName());
+        assertEquals(30, viewModel.getCurrentUser().getValue().getAge());
+        assertEquals("0912345678", viewModel.getCurrentUser().getValue().getPhone());
+        UiState<AppUser> state = viewModel.getProfileUpdateState().getValue();
+        assertNotNull(state);
+        assertTrue(state.isContent());
+    }
+
+    @Test
+    public void updateProfile_invalidFields_doesNotCallRepository() {
+        viewModel.start(currentUser);
+
+        viewModel.updateProfile("A", 17, "123");
+
+        assertEquals(0, fakeProfileRepository.profileUpdateCalls);
+        assertTrue(viewModel.getProfileUpdateState().getValue().isError());
+    }
+
+    @Test
+    public void updateProfile_differentSessionUid_isRejected() {
+        fakeAuthRepository.setCurrentUser(new AppUser(
+                "other-uid", "other", null, "Other User", 30, "0911223344",
+                AppUser.STATUS_NORMAL, AppUser.ROLE_EMPLOYEE, null));
+        viewModel.start(currentUser);
+
+        viewModel.updateProfile("Nguyễn Văn B", 30, "0912345678");
+
+        assertEquals(0, fakeProfileRepository.profileUpdateCalls);
+        assertTrue(viewModel.getProfileUpdateState().getValue().isError());
+    }
+
+    @Test
+    public void updateProfile_repositoryError_preservesCurrentUserAndReportsError() {
+        fakeProfileRepository.shouldProfileUpdateFail = true;
+        viewModel.start(currentUser);
+
+        viewModel.updateProfile("Nguyễn Văn B", 30, "0912345678");
+
+        assertEquals("Nguyễn Văn A", viewModel.getCurrentUser().getValue().getName());
+        assertTrue(viewModel.getProfileUpdateState().getValue().isError());
+    }
+
+    @Test
     public void onCleared_cleansUpListener() {
         viewModel.start(currentUser);
         assertFalse(fakeProfileRepository.listenerRemoved);
@@ -231,6 +282,9 @@ public class ProfileViewModelTest {
         boolean shouldUpdateFail = false;
         String updateFailureMessage = "Update error";
         boolean listenerRemoved = false;
+        boolean shouldProfileUpdateFail = false;
+        int profileUpdateCalls = 0;
+        String updatedUid;
 
         @Override
         public void uploadAvatar(String uid, byte[] data, String mimeType, UploadCallback callback) {
@@ -248,6 +302,17 @@ public class ProfileViewModelTest {
         public void updateAvatarUrl(String uid, String downloadUrl, UpdateCallback callback) {
             if (shouldUpdateFail) {
                 callback.onError(updateFailureMessage);
+            } else {
+                callback.onSuccess();
+            }
+        }
+
+        @Override
+        public void updateProfile(String uid, String name, int age, String phone, UpdateCallback callback) {
+            profileUpdateCalls++;
+            updatedUid = uid;
+            if (shouldProfileUpdateFail) {
+                callback.onError("Không thể cập nhật hồ sơ.");
             } else {
                 callback.onSuccess();
             }

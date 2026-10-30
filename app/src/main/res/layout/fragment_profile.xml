@@ -312,13 +312,27 @@
                             tools:text="0901234567" />
                     </LinearLayout>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_edit_profile"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/min_touch_target"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/btn_edit_profile"
+                        android:textColor="@color/color_primary"
+                        app:cornerRadius="@dimen/radius_input"
+                        app:icon="@drawable/ic_edit"
+                        app:iconSize="18dp"
+                        app:iconTint="@color/color_primary"
+                        app:strokeColor="@color/color_outline_variant" />
+
                     <!-- View Login History Button -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_view_login_history"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/min_touch_target"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="12dp"
                         android:text="@string/btn_view_login_history"
                         android:textColor="@color/color_primary"
                         android:textSize="13sp"

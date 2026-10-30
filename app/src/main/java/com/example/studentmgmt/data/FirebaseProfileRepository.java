@@ -13,7 +13,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Concrete implementation of ProfileRepository.
@@ -170,6 +172,31 @@ public class FirebaseProfileRepository implements ProfileRepository {
                 .addOnFailureListener(e -> {
                     callback.onError(AvatarUploadPolicy.ERROR_FIRESTORE_UPDATE_FAILED + " (" + e.getMessage() + ")");
                 });
+    }
+
+    @Override
+    public void updateProfile(String uid, String name, int age, String phone, UpdateCallback callback) {
+        if (callback == null) return;
+        String cleanName = name == null ? "" : name.trim();
+        String cleanPhone = phone == null ? "" : phone.trim();
+        if (uid == null || uid.trim().isEmpty() || cleanName.length() < 2 || cleanName.length() > 100
+                || age < 18 || age > 60 || !cleanPhone.matches("^0[0-9]{9}$")) {
+            callback.onError("Thông tin tài khoản không hợp lệ.");
+            return;
+        }
+        if (firestore == null) {
+            callback.onError("Firestore service không khả dụng.");
+            return;
+        }
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("name", cleanName);
+        updates.put("age", age);
+        updates.put("phone", cleanPhone);
+        firestore.collection("users").document(uid).update(updates)
+                .addOnSuccessListener(ignored -> callback.onSuccess())
+                .addOnFailureListener(error -> callback.onError(
+                        "Không thể cập nhật thông tin tài khoản: " + error.getMessage()));
     }
 
     @Override

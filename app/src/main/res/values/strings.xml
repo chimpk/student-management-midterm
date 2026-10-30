@@ -231,6 +231,13 @@
     <string name="upload_progress_format">Đang tải ảnh lên&#8230; %1$d%%</string>
     <string name="status_updating_profile">Đang cập nhật hồ sơ người dùng&#8230;</string>
     <string name="toast_avatar_success">Cập nhật ảnh đại diện thành công</string>
+    <string name="btn_edit_profile">Chỉnh sửa thông tin</string>
+    <string name="title_edit_profile">Chỉnh sửa thông tin tài khoản</string>
+    <string name="profile_edit_subtitle">Bạn có thể cập nhật họ tên, tuổi và số điện thoại.</string>
+    <string name="toast_profile_update_success">Cập nhật thông tin thành công</string>
+    <string name="error_name_length">Họ tên phải từ 2 đến 100 ký tự.</string>
+    <string name="error_age_invalid">Vui lòng nhập tuổi hợp lệ từ 18 đến 60.</string>
+    <string name="error_phone_invalid">Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0.</string>
     <string name="error_read_image_format">Không thể đọc tệp ảnh đã chọn: %1$s</string>
 
     <!-- Import / Export (PDF trang 18, 23, 36) -->

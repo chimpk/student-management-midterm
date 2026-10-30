@@ -513,6 +513,11 @@ public class UiStateAndOfflinePolicyTest {
         public void updateAvatarUrl(String uid, String avatarUrl, UpdateCallback callback) {
             if (callback != null) callback.onSuccess();
         }
+
+        @Override
+        public void updateProfile(String uid, String name, int age, String phone, UpdateCallback callback) {
+            if (callback != null) callback.onSuccess();
+        }
     }
 
     static class FakeAuthRepo implements AuthRepository {

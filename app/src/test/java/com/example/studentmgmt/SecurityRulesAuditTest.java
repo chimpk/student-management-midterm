@@ -78,9 +78,10 @@ public class SecurityRulesAuditTest {
 
     @Test
     public void firestoreRules_selfProfileUpdateWhitelistEnforced() {
-        // Regular user self update is strictly limited to avatarUrl with length <= 2048
-        assertTrue("Self profile update must enforce affectedKeys().hasOnly(['avatarUrl'])",
-                firestoreRules.contains("affectedKeys().hasOnly(['avatarUrl'])"));
+        assertTrue("Self profile update must allow only personal fields and avatarUrl",
+                firestoreRules.contains("affectedKeys().hasOnly(['name', 'age', 'phone', 'avatarUrl'])"));
+        assertTrue("Self profile update must satisfy the complete user schema",
+                firestoreRules.contains("request.auth.uid == userId\n          && validUser(userId)"));
         assertTrue("Self profile update must bound avatarUrl length to <= 2048",
                 firestoreRules.contains("request.resource.data.avatarUrl.size() <= 2048"));
     }

@@ -9,6 +9,8 @@ import com.example.studentmgmt.data.AuthRepositoryProvider;
 import com.example.studentmgmt.data.ProfileRepository;
 import com.example.studentmgmt.data.ProfileRepositoryProvider;
 import com.example.studentmgmt.model.AppUser;
+import com.example.studentmgmt.model.UiState;
+import com.example.studentmgmt.ui.user.UserManagementPolicy;
 
 /**
  * ViewModel managing User Profile state, avatar picking, upload progress,
@@ -22,6 +24,7 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<AppUser> currentUser = new MutableLiveData<>();
     private final MutableLiveData<AvatarUploadPolicy.UploadUiState> uploadState = new MutableLiveData<>();
     private final MutableLiveData<String> profileLoadError = new MutableLiveData<>(null);
+    private final MutableLiveData<UiState<AppUser>> profileUpdateState = new MutableLiveData<>();
 
     private ProfileRepository.ListenerHandle profileListenerHandle;
     private long profileListenerGeneration = 0;
@@ -47,8 +50,16 @@ public class ProfileViewModel extends ViewModel {
         return profileLoadError;
     }
 
+    public LiveData<UiState<AppUser>> getProfileUpdateState() {
+        return profileUpdateState;
+    }
+
     public void clearProfileLoadError() {
         profileLoadError.setValue(null);
+    }
+
+    public void clearProfileUpdateState() {
+        profileUpdateState.setValue(null);
     }
 
     public void start(AppUser initialUser) {
@@ -99,6 +110,45 @@ public class ProfileViewModel extends ViewModel {
         if (user != null) {
             start(user);
         }
+    }
+
+    public void updateProfile(String name, int age, String phone) {
+        UiState<AppUser> activeState = profileUpdateState.getValue();
+        if (activeState != null && activeState.isLoading()) return;
+
+        AppUser user = currentUser.getValue();
+        AppUser sessionUser = authRepository != null ? authRepository.getCurrentUser() : null;
+        if (user == null || sessionUser == null || !user.getUid().equals(sessionUser.getUid())) {
+            profileUpdateState.setValue(UiState.error("Bạn không có quyền cập nhật tài khoản này."));
+            return;
+        }
+
+        String cleanName = name == null ? "" : name.trim();
+        String cleanPhone = phone == null ? "" : phone.trim();
+        String validationError = UserManagementPolicy.validateUserProfile(
+                cleanName, age, cleanPhone, user.getRole());
+        if (validationError != null) {
+            profileUpdateState.setValue(UiState.error(validationError));
+            return;
+        }
+
+        profileUpdateState.setValue(UiState.loading());
+        profileRepository.updateProfile(user.getUid(), cleanName, age, cleanPhone,
+                new ProfileRepository.UpdateCallback() {
+                    @Override
+                    public void onSuccess() {
+                        AppUser updated = new AppUser(
+                                user.getUid(), user.getUsername(), user.getEmail(), cleanName, age,
+                                cleanPhone, user.getStatus(), user.getRole(), user.getAvatarUrl());
+                        currentUser.postValue(updated);
+                        profileUpdateState.postValue(UiState.content(updated));
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        profileUpdateState.postValue(UiState.error(errorMessage));
+                    }
+                });
     }
 
     public void uploadAvatar(byte[] data, String mimeType) {

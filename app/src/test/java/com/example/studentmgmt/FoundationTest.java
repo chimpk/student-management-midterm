@@ -123,4 +123,18 @@ public class FoundationTest {
         assertTrue("Student toolbar must hide User Management for Manager and Employee",
                 code.contains("RoleNavigationPolicy.shouldShowMenuItem"));
     }
+
+    @Test
+    public void profileScreen_exposesAValidatedPersonalInfoEditDialog() throws IOException {
+        File profileLayout = new File(projectRoot, "app/src/main/res/layout/fragment_profile.xml");
+        File editDialog = new File(projectRoot, "app/src/main/res/layout/dialog_profile_edit.xml");
+        File profileFragment = new File(projectRoot,
+                "app/src/main/java/com/example/studentmgmt/ui/profile/ProfileFragment.java");
+
+        String layout = new String(Files.readAllBytes(profileLayout.toPath()), StandardCharsets.UTF_8);
+        String fragment = new String(Files.readAllBytes(profileFragment.toPath()), StandardCharsets.UTF_8);
+        assertTrue("Profile must expose an edit action", layout.contains("@+id/btn_edit_profile"));
+        assertTrue("Profile edit dialog layout must exist", editDialog.isFile());
+        assertTrue("Profile edit action must open the dialog", fragment.contains("showEditProfileDialog"));
+    }
 }

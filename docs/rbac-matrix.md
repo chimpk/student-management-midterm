@@ -8,7 +8,7 @@
 |---|---|
 | **Admin** | Quản lý tài khoản, lịch sử đăng nhập, sinh viên, chứng chỉ và nhập/xuất dữ liệu. |
 | **Manager** | Quản lý sinh viên, chứng chỉ và nhập/xuất dữ liệu; không quản lý tài khoản. |
-| **Employee** | Chỉ xem sinh viên và chứng chỉ; được đổi avatar và xem lịch sử đăng nhập của chính mình. |
+| **Employee** | Chỉ xem sinh viên và chứng chỉ; được sửa họ tên, tuổi, số điện thoại, đổi avatar và xem lịch sử đăng nhập của chính mình. |
 
 Admin đầu tiên phải được cấp bằng Firebase Console hoặc Admin SDK/Cloud Functions. Sau khi đăng nhập, Admin được yêu cầu backend tin cậy tạo tài khoản khác từ màn Quản lý người dùng; client không tự bootstrap Admin, không tự nâng quyền và không trực tiếp giữ Admin SDK credential.
 
@@ -26,13 +26,14 @@ Admin đầu tiên phải được cấp bằng Firebase Console hoặc Admin SD
 | Tạo, sửa, khóa hoặc xóa người dùng | Có | Không | Không |
 | Xem lịch sử đăng nhập của người khác | Có | Không | Không |
 | Xem lịch sử đăng nhập của chính mình | Có | Có | Có |
+| Sửa họ tên, tuổi, số điện thoại của chính mình | Có | Có | Có |
 | Đổi avatar của chính mình | Có | Có | Có |
 
 ## 3. Ma trận Firestore
 
 | Đường dẫn | Đọc | Tạo | Cập nhật | Xóa |
 |---|---|---|---|---|
-| `users/{uid}` | Chính chủ hoặc Admin | Admin | Admin; chính chủ chỉ được đổi `avatarUrl` | Admin |
+| `users/{uid}` | Chính chủ hoặc Admin | Admin | Admin; chính chủ chỉ được đổi `name`, `age`, `phone`, `avatarUrl` | Admin |
 | `users/{uid}/loginHistory/{logId}` | Chính chủ hoặc Admin | Chính chủ | Không (append-only) | Không (append-only) |
 | `students/{studentId}` | Mọi người đã đăng nhập | Admin, Manager | Admin, Manager | Admin, Manager |
 | `students/{studentId}/certificates/{certId}` | Mọi người đã đăng nhập | Admin, Manager | Admin, Manager | Admin, Manager |

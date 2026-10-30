@@ -38,6 +38,7 @@
 | FR-ACC-02 | Đổi ảnh đại diện | Tất cả | Chọn ảnh từ thư viện, lưu lên Firebase Storage, cập nhật `avatarUrl` trong Firestore. |
 | FR-ACC-03 | Xem lịch sử đăng nhập của chính mình | Tất cả | Danh sách thời gian đăng nhập, mới nhất trước. *(Mở rộng thêm so với đề.)* |
 | FR-ACC-04 | Cấp Admin ban đầu và tài khoản demo | Người quản trị dự án, Admin | Admin đầu tiên được cấp sẵn trong môi trường tin cậy theo đề. Sau đó Manager/Employee phải do Admin tạo qua giao diện và backend tin cậy. Chỉ khi backend chưa sẵn sàng mới cấp thủ công cho demo, phải gắn nhãn `MANUALLY PROVISIONED` và không tính là nghiệm thu chức năng Admin tạo tài khoản. |
+| FR-ACC-05 | Sửa thông tin tài khoản của chính mình | Tất cả | Chỉ cho sửa họ tên, tuổi và số điện thoại; username, email đăng nhập, vai trò, trạng thái, UID và thời điểm tạo không đổi. |
 
 ### 3.2 Quản lý người dùng
 
