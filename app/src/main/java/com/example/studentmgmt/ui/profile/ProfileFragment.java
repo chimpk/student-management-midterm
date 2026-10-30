@@ -114,7 +114,7 @@ public class ProfileFragment extends Fragment {
 
         editProfileBinding = DialogProfileEditBinding.inflate(getLayoutInflater());
         editProfileBinding.etProfileName.setText(user.getName());
-        editProfileBinding.etProfileAge.setText(String.valueOf(user.getAge()));
+        editProfileBinding.etProfileAge.setText(user.getAge() > 0 ? String.valueOf(user.getAge()) : "");
         editProfileBinding.etProfilePhone.setText(user.getPhone());
 
         editProfileDialog = new AlertDialog.Builder(requireContext())
