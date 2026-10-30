@@ -37,8 +37,8 @@ public class SecurityRulesAuditTest {
         assertTrue("firestore.rules must exist", fRulesFile.exists());
         assertTrue("storage.rules must exist", sRulesFile.exists());
 
-        firestoreRules = new String(Files.readAllBytes(fRulesFile.toPath()), StandardCharsets.UTF_8);
-        storageRules = new String(Files.readAllBytes(sRulesFile.toPath()), StandardCharsets.UTF_8);
+        firestoreRules = new String(Files.readAllBytes(fRulesFile.toPath()), StandardCharsets.UTF_8).replace("\r\n", "\n");
+        storageRules = new String(Files.readAllBytes(sRulesFile.toPath()), StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
 
     @Test
