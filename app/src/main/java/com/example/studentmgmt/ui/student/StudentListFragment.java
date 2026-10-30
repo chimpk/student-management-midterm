@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.example.studentmgmt.databinding.FragmentStudentListBinding;
 import com.example.studentmgmt.model.AppUser;
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.UiState;
+import com.example.studentmgmt.ui.navigation.RoleNavigationPolicy;
 import com.example.studentmgmt.utils.StudentCsvHelper;
 import com.example.studentmgmt.utils.StudentDataValidation;
 import com.example.studentmgmt.utils.ValidationUtils;
@@ -65,7 +67,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
         isEmployee = currentUser != null && currentUser.isEmployee();
 
         setupRecyclerView();
-        setupSearchAndActions();
+        setupSearchAndActions(currentUser);
         setupFilterChips();
         observeViewModel();
     }
@@ -81,8 +83,7 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
 
         if (isEmployee) {
             binding.fabAddStudent.setVisibility(View.GONE);
-            binding.includeEmptyState.btnEmptyAdd.setVisibility(View.GONE);
-            binding.includeEmptyState.btnEmptyImport.setVisibility(View.GONE);
+            binding.includeEmptyState.layoutEmptyActions.setVisibility(View.GONE);
         } else {
             binding.fabAddStudent.setVisibility(View.VISIBLE);
             binding.includeEmptyState.btnEmptyAdd.setOnClickListener(v -> showAddStudentDialog());
@@ -91,8 +92,11 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
         }
     }
 
-    private void setupSearchAndActions() {
+    private void setupSearchAndActions(AppUser currentUser) {
         binding.toolbarStudentList.inflateMenu(R.menu.main_menu);
+        MenuItem usersItem = binding.toolbarStudentList.getMenu().findItem(R.id.action_users);
+        usersItem.setVisible(RoleNavigationPolicy.shouldShowMenuItem(
+                currentUser == null ? null : currentUser.getRole(), RoleNavigationPolicy.MENU_USERS));
         binding.toolbarStudentList.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_logout) {
                 if (getActivity() instanceof com.example.studentmgmt.MainActivity) {

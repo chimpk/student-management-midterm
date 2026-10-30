@@ -141,8 +141,7 @@ public class StudentDetailFragment extends DialogFragment implements Certificate
         if (isEmployee) {
             binding.chipReadOnlyCert.setVisibility(View.VISIBLE);
             binding.btnAddCertificate.setVisibility(View.GONE);
-            binding.includeCertEmpty.btnEmptyAdd.setVisibility(View.GONE);
-            binding.includeCertEmpty.btnEmptyImport.setVisibility(View.GONE);
+            binding.includeCertEmpty.layoutEmptyActions.setVisibility(View.GONE);
         } else {
             binding.chipReadOnlyCert.setVisibility(View.GONE);
             binding.btnAddCertificate.setVisibility(View.VISIBLE);

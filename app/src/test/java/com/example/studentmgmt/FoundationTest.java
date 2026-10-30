@@ -85,4 +85,42 @@ public class FoundationTest {
         assertFalse("MainActivity should not enable setDisplayHomeAsUpEnabled(true) at root",
                 code.contains("setDisplayHomeAsUpEnabled(true)"));
     }
+
+    @Test
+    public void dashboardRoleLayouts_doNotUseAutoColumnsForVisibleCards() throws IOException {
+        File dashboardFile = new File(projectRoot,
+                "app/src/main/java/com/example/studentmgmt/ui/dashboard/DashboardFragment.java");
+        assertTrue("DashboardFragment.java must exist", dashboardFile.exists());
+
+        String code = new String(Files.readAllBytes(dashboardFile.toPath()), StandardCharsets.UTF_8);
+        assertFalse("Role-specific dashboard cards need explicit columns so hidden cards leave no gaps",
+                code.contains("GridLayout.spec(GridLayout.UNDEFINED"));
+    }
+
+    @Test
+    public void employeeEmptyStates_hideTheActionContainerSoItsMarginCollapses() throws IOException {
+        File studentListFile = new File(projectRoot,
+                "app/src/main/java/com/example/studentmgmt/ui/student/StudentListFragment.java");
+        File studentDetailFile = new File(projectRoot,
+                "app/src/main/java/com/example/studentmgmt/ui/student/StudentDetailFragment.java");
+
+        String studentListCode = new String(Files.readAllBytes(studentListFile.toPath()), StandardCharsets.UTF_8);
+        String studentDetailCode = new String(Files.readAllBytes(studentDetailFile.toPath()), StandardCharsets.UTF_8);
+        String collapseActions = "layoutEmptyActions.setVisibility(View.GONE)";
+
+        assertTrue("Employee student empty state must collapse the whole action row",
+                studentListCode.contains(collapseActions));
+        assertTrue("Employee certificate empty state must collapse the whole action row",
+                studentDetailCode.contains(collapseActions));
+    }
+
+    @Test
+    public void studentListToolbar_appliesRolePolicyBeforeShowingUserManagement() throws IOException {
+        File studentListFile = new File(projectRoot,
+                "app/src/main/java/com/example/studentmgmt/ui/student/StudentListFragment.java");
+        String code = new String(Files.readAllBytes(studentListFile.toPath()), StandardCharsets.UTF_8);
+
+        assertTrue("Student toolbar must hide User Management for Manager and Employee",
+                code.contains("RoleNavigationPolicy.shouldShowMenuItem"));
+    }
 }

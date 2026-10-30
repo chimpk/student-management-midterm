@@ -3,6 +3,7 @@ package com.example.studentmgmt.ui.dashboard;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 
@@ -78,10 +79,13 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupRbacVisibility() {
-        int cardMargin = getResources().getDimensionPixelSize(R.dimen.card_gap) / 2;
+        int cardGap = getResources().getDimensionPixelSize(R.dimen.card_gap);
+        int cardMargin = cardGap / 2;
+
+        binding.layoutFunctionGrid.setColumnCount(2);
 
         if (currentUser.isAdmin()) {
-            // S04 / S28: 2x2 grid (Students, Users, Import/Export, Profile)
+            // S04 / S28: Clean 2x2 grid (Row 0: Students, Users | Row 1: Import/Export, Profile)
             binding.cardStatsBanner.setVisibility(View.VISIBLE);
             binding.cardEmployeeSearch.setVisibility(View.GONE);
             binding.cardStudents.setVisibility(View.VISIBLE);
@@ -89,12 +93,12 @@ public class DashboardFragment extends Fragment {
             binding.cardImportExport.setVisibility(View.VISIBLE);
             binding.cardProfile.setVisibility(View.VISIBLE);
 
-            setCardGridParams(binding.cardStudents, 0, 1, 0, cardMargin, cardMargin);
-            setCardGridParams(binding.cardUsers, 0, 1, cardMargin, 0, cardMargin);
-            setCardGridParams(binding.cardImportExport, 1, 1, 0, cardMargin, cardMargin);
-            setCardGridParams(binding.cardProfile, 1, 1, cardMargin, 0, cardMargin);
+            setCardGridParams(binding.cardStudents, 0, 0, 1, 0, cardMargin, cardGap);
+            setCardGridParams(binding.cardUsers, 0, 1, 1, cardMargin, 0, cardGap);
+            setCardGridParams(binding.cardImportExport, 1, 0, 1, 0, cardMargin, cardGap);
+            setCardGridParams(binding.cardProfile, 1, 1, 1, cardMargin, 0, cardGap);
         } else if (currentUser.isManager()) {
-            // S37 / S38: Row 1 has Students & Import/Export (2 cols), Row 2 has Profile (full 2 cols)
+            // S37 / S38: Row 0 has Students (col 0) & Import/Export (col 1), Row 1 has Profile (col 0, span 2)
             binding.cardStatsBanner.setVisibility(View.VISIBLE);
             binding.cardEmployeeSearch.setVisibility(View.GONE);
             binding.cardStudents.setVisibility(View.VISIBLE);
@@ -102,11 +106,11 @@ public class DashboardFragment extends Fragment {
             binding.cardImportExport.setVisibility(View.VISIBLE);
             binding.cardProfile.setVisibility(View.VISIBLE);
 
-            setCardGridParams(binding.cardStudents, 0, 1, 0, cardMargin, cardMargin);
-            setCardGridParams(binding.cardImportExport, 0, 1, cardMargin, 0, cardMargin);
-            setCardGridParams(binding.cardProfile, 1, 2, 0, 0, cardMargin);
+            setCardGridParams(binding.cardStudents, 0, 0, 1, 0, cardMargin, cardGap);
+            setCardGridParams(binding.cardImportExport, 0, 1, 1, cardMargin, 0, cardGap);
+            setCardGridParams(binding.cardProfile, 1, 0, 2, 0, 0, cardGap);
         } else {
-            // S09 / S39: Employee has search card + 2-col row with Students & Profile; Users & Import/Export are GONE
+            // S09 / S39: Employee has search card banner + Row 0 with Students (col 0) & Profile (col 1)
             binding.cardStatsBanner.setVisibility(View.GONE);
             binding.cardEmployeeSearch.setVisibility(View.VISIBLE);
             binding.cardStudents.setVisibility(View.VISIBLE);
@@ -114,19 +118,22 @@ public class DashboardFragment extends Fragment {
             binding.cardImportExport.setVisibility(View.GONE);
             binding.cardProfile.setVisibility(View.VISIBLE);
 
-            setCardGridParams(binding.cardStudents, 0, 1, 0, cardMargin, cardMargin);
-            setCardGridParams(binding.cardProfile, 0, 1, cardMargin, 0, cardMargin);
+            setCardGridParams(binding.cardStudents, 0, 0, 1, 0, cardMargin, cardGap);
+            setCardGridParams(binding.cardProfile, 0, 1, 1, cardMargin, 0, cardGap);
         }
     }
 
-    private void setCardGridParams(View card, int row, int colSpan, int marginStart, int marginEnd, int marginBottom) {
+    private void setCardGridParams(View card, int row, int column, int colSpan,
+                                   int marginStart, int marginEnd, int marginBottom) {
         GridLayout.LayoutParams params = (GridLayout.LayoutParams) card.getLayoutParams();
         if (params == null) {
             params = new GridLayout.LayoutParams();
         }
-        params.rowSpec = GridLayout.spec(row);
-        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, colSpan, 1f);
+        params.rowSpec = GridLayout.spec(row, 1, GridLayout.FILL);
+        params.columnSpec = GridLayout.spec(column, colSpan, GridLayout.FILL, 1f);
         params.width = 0;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.setGravity(Gravity.FILL);
         params.setMarginStart(marginStart);
         params.setMarginEnd(marginEnd);
         params.bottomMargin = marginBottom;
