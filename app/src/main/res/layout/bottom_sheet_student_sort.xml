@@ -58,10 +58,10 @@
             android:textSize="15sp" />
 
         <RadioButton
-            android:id="@+id/rbSortMssvAsc"
+            android:id="@+id/rbSortClassAsc"
             android:layout_width="match_parent"
             android:layout_height="@dimen/min_touch_target"
-            android:text="@string/sort_mssv_asc"
+            android:text="@string/sort_class_asc"
             android:textColor="@color/text_primary"
             android:textSize="15sp" />
 

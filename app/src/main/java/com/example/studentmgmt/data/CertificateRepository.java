@@ -28,6 +28,9 @@ public interface CertificateRepository {
      */
     ListenerRegistrationHandle listenCertificates(String studentId, CertificateListCallback callback);
 
+    /** Loads a one-time certificate snapshot, for example when exporting all certificates. */
+    void getCertificates(String studentId, CertificateListCallback callback);
+
     /**
      * Adds a certificate for the given student.
      */

@@ -80,7 +80,7 @@
     <string name="sort_sheet_desc">Chọn thứ tự hiển thị trong danh sách</string>
     <string name="sort_name_asc">Tên A → Z (mặc định)</string>
     <string name="sort_name_desc">Tên Z → A</string>
-    <string name="sort_mssv_asc">MSSV tăng dần</string>
+    <string name="sort_class_asc">Lớp tăng dần</string>
     <string name="sort_birth_asc">Ngày sinh cũ nhất</string>
     <string name="btn_apply_sort">Áp dụng</string>
     <string name="snackbar_deleted_student_format">Đã xóa %s</string>
