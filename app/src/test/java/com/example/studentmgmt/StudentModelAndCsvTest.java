@@ -74,8 +74,10 @@ public class StudentModelAndCsvTest {
 
     @Test
     public void csvHelper_handlesEmptyAndNullGracefully() throws IOException {
-        assertEquals(StudentCsvHelper.CSV_HEADER + "\n", StudentCsvHelper.exportToCsv(null));
-        assertEquals(StudentCsvHelper.CSV_HEADER + "\n", StudentCsvHelper.exportToCsv(new ArrayList<>()));
+        assertEquals(StudentCsvHelper.UTF8_BOM + StudentCsvHelper.CSV_HEADER + "\n",
+                StudentCsvHelper.exportToCsv(null));
+        assertEquals(StudentCsvHelper.UTF8_BOM + StudentCsvHelper.CSV_HEADER + "\n",
+                StudentCsvHelper.exportToCsv(new ArrayList<>()));
 
         assertTrue(StudentCsvHelper.importFromCsv(null).isEmpty());
         assertTrue(StudentCsvHelper.importFromCsv("").isEmpty());

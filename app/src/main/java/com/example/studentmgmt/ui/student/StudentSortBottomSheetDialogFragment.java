@@ -53,8 +53,8 @@ public class StudentSortBottomSheetDialogFragment extends BottomSheetDialogFragm
             case NAME_DESC:
                 binding.rbSortNameDesc.setChecked(true);
                 break;
-            case MSSV_ASC:
-                binding.rbSortMssvAsc.setChecked(true);
+            case CLASS_ASC:
+                binding.rbSortClassAsc.setChecked(true);
                 break;
             case BIRTH_ASC:
                 binding.rbSortBirthAsc.setChecked(true);
@@ -67,8 +67,8 @@ public class StudentSortBottomSheetDialogFragment extends BottomSheetDialogFragm
 
             if (checkedId == R.id.rbSortNameDesc) {
                 selected = StudentListViewModel.SortCriteria.NAME_DESC;
-            } else if (checkedId == R.id.rbSortMssvAsc) {
-                selected = StudentListViewModel.SortCriteria.MSSV_ASC;
+            } else if (checkedId == R.id.rbSortClassAsc) {
+                selected = StudentListViewModel.SortCriteria.CLASS_ASC;
             } else if (checkedId == R.id.rbSortBirthAsc) {
                 selected = StudentListViewModel.SortCriteria.BIRTH_ASC;
             }

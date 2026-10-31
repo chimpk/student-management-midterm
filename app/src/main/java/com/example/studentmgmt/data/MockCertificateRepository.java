@@ -56,6 +56,16 @@ public class MockCertificateRepository implements CertificateRepository {
     }
 
     @Override
+    public void getCertificates(String studentId, CertificateListCallback callback) {
+        if (studentId == null || studentId.trim().isEmpty() || callback == null) {
+            if (callback != null) callback.onError("MSSV không hợp lệ.");
+            return;
+        }
+        List<Certificate> list = certMap.get(studentId.trim());
+        callback.onSuccess(list == null ? new ArrayList<>() : new ArrayList<>(list));
+    }
+
+    @Override
     public void addCertificate(String studentId, Certificate certificate, ActionCallback callback) {
         if (studentId == null || certificate == null) {
             if (callback != null) callback.onError("Dữ liệu chứng chỉ không hợp lệ.");

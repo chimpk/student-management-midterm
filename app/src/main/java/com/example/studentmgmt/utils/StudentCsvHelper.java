@@ -1,6 +1,7 @@
 package com.example.studentmgmt.utils;
 
 import com.example.studentmgmt.model.Student;
+import com.example.studentmgmt.model.Certificate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * RFC 4180 compliant CSV helper for Student and Certificate import/export.
@@ -17,6 +19,8 @@ import java.util.Locale;
 public final class StudentCsvHelper {
 
     public static final String CSV_HEADER = "Mã SV,Họ và tên,Ngày sinh,Lớp,Khoa";
+    public static final String CERTIFICATE_CSV_HEADER = "mssv,ten_chung_chi,ngay_cap,don_vi_cap";
+    public static final String UTF8_BOM = "\uFEFF";
 
     private StudentCsvHelper() {}
 
@@ -25,7 +29,7 @@ public final class StudentCsvHelper {
      */
     public static String exportToCsv(List<Student> students) {
         StringBuilder sb = new StringBuilder();
-        sb.append(CSV_HEADER).append("\n");
+        sb.append(UTF8_BOM).append(CSV_HEADER).append("\n");
         if (students != null) {
             for (Student s : students) {
                 sb.append(escapeCsvField(s.getStudentId())).append(",")
@@ -36,6 +40,35 @@ public final class StudentCsvHelper {
             }
         }
         return sb.toString();
+    }
+
+    /** Exports every certificate with its owning student ID for an Excel-friendly CSV file. */
+    public static String exportCertificatesToCsv(List<Student> students,
+                                                 Map<String, List<Certificate>> certificatesByStudent) {
+        StringBuilder csv = new StringBuilder(UTF8_BOM).append(CERTIFICATE_CSV_HEADER).append("\n");
+        if (students == null || certificatesByStudent == null) {
+            return csv.toString();
+        }
+
+        for (Student student : students) {
+            if (student == null || student.getStudentId() == null) {
+                continue;
+            }
+            List<Certificate> certificates = certificatesByStudent.get(student.getStudentId());
+            if (certificates == null) {
+                continue;
+            }
+            for (Certificate certificate : certificates) {
+                if (certificate == null) {
+                    continue;
+                }
+                csv.append(escapeCsvField(student.getStudentId())).append(',')
+                        .append(escapeCsvField(certificate.getCertName())).append(',')
+                        .append(escapeCsvField(certificate.getIssueDate())).append(',')
+                        .append(escapeCsvField(certificate.getIssuedBy())).append('\n');
+            }
+        }
+        return csv.toString();
     }
 
     /**

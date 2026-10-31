@@ -221,8 +221,8 @@ public class StudentListFragment extends Fragment implements StudentAdapter.OnSt
             case NAME_DESC:
                 sortLabel = getString(R.string.sort_name_desc);
                 break;
-            case MSSV_ASC:
-                sortLabel = getString(R.string.sort_mssv_asc);
+            case CLASS_ASC:
+                sortLabel = getString(R.string.sort_class_asc);
                 break;
             case BIRTH_ASC:
                 sortLabel = getString(R.string.sort_birth_asc);

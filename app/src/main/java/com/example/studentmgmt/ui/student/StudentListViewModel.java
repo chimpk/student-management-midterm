@@ -25,7 +25,7 @@ public class StudentListViewModel extends ViewModel {
     public enum SortCriteria {
         NAME_ASC,
         NAME_DESC,
-        MSSV_ASC,
+        CLASS_ASC,
         BIRTH_ASC
     }
 
@@ -198,11 +198,11 @@ public class StudentListViewModel extends ViewModel {
                     return collator.compare(nameB, nameA);
                 });
                 break;
-            case MSSV_ASC:
+            case CLASS_ASC:
                 Collections.sort(list, (a, b) -> {
-                    String idA = a.getStudentId() != null ? a.getStudentId() : "";
-                    String idB = b.getStudentId() != null ? b.getStudentId() : "";
-                    return idA.compareToIgnoreCase(idB);
+                    String classA = a.getClassName() != null ? a.getClassName() : "";
+                    String classB = b.getClassName() != null ? b.getClassName() : "";
+                    return classA.compareToIgnoreCase(classB);
                 });
                 break;
             case BIRTH_ASC:

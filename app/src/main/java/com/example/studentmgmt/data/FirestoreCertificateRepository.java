@@ -83,6 +83,47 @@ public final class FirestoreCertificateRepository implements CertificateReposito
     }
 
     @Override
+    public void getCertificates(String studentId, CertificateListCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        if (isBlank(studentId)) {
+            callback.onError("MSSV không hợp lệ.");
+            return;
+        }
+
+        certificates(studentId.trim()).get()
+                .addOnSuccessListener(snapshot -> {
+                    List<Certificate> result = new ArrayList<>();
+                    for (DocumentSnapshot document : snapshot.getDocuments()) {
+                        Object nameValue = document.get("certName");
+                        Object issueDateValue = document.get("issueDate");
+                        Object issuedByValue = document.get("issuedBy");
+                        if (!(nameValue instanceof String)
+                                || !(issueDateValue instanceof String)
+                                || !(issuedByValue instanceof String)) {
+                            callback.onError("Dữ liệu chứng chỉ sai kiểu trường: "
+                                    + document.getId());
+                            return;
+                        }
+                        String name = (String) nameValue;
+                        String issueDate = (String) issueDateValue;
+                        String issuedBy = (String) issuedByValue;
+                        if (isBlank(name) || isBlank(issueDate) || isBlank(issuedBy)) {
+                            callback.onError("Dữ liệu chứng chỉ thiếu trường bắt buộc: "
+                                    + document.getId());
+                            return;
+                        }
+                        result.add(new Certificate(document.getId(), name, issueDate, issuedBy));
+                    }
+                    Collections.sort(result, (left, right) ->
+                            right.getIssueDate().compareTo(left.getIssueDate()));
+                    callback.onSuccess(result);
+                })
+                .addOnFailureListener(error -> callback.onError(errorMessage(error)));
+    }
+
+    @Override
     public void addCertificate(String studentId, Certificate certificate, ActionCallback callback) {
         if (!canWrite()) {
             fail(callback, "Chỉ Admin hoặc Manager được quản lý chứng chỉ.");

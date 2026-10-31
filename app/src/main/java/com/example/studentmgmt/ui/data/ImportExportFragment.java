@@ -38,13 +38,17 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImportExportFragment extends Fragment {
@@ -143,7 +147,8 @@ public class ImportExportFragment extends Fragment {
                 }
                 if (binding != null) {
                     binding.chipStudentExportSpec.setText(getString(R.string.io_export_spec_format, cachedStudents.size()));
-                    binding.chipCertExportSpec.setText(getString(R.string.export_certificate_spec_format, cachedStudents.size() * 2));
+                    binding.chipCertExportSpec.setText(getString(
+                            R.string.export_certificate_spec_format, getCachedCertificateCount()));
                 }
             }
 
@@ -295,6 +300,16 @@ public class ImportExportFragment extends Fragment {
                 exportAllCertificates();
             }
         });
+    }
+
+    private int getCachedCertificateCount() {
+        int count = 0;
+        for (Student student : cachedStudents) {
+            if (student != null) {
+                count += Math.max(0, student.getCertificateCount());
+            }
+        }
+        return count;
     }
 
     private void handleCertFilePicked(@NonNull Uri uri) {
@@ -582,30 +597,101 @@ public class ImportExportFragment extends Fragment {
     }
 
     private void exportAllCertificates() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getString(R.string.certificate_csv_columns)).append("\n");
+        loadCertificateCsv(new CertificateCsvCallback() {
+            @Override
+            public void onSuccess(String csv) {
+                if (!isAdded()) return;
+                shareText(csv);
+                Toast.makeText(requireContext(), "Đã chuẩn bị CSV chứng chỉ.", Toast.LENGTH_SHORT).show();
+            }
 
-        if (cachedStudents.isEmpty()) {
-            Toast.makeText(requireContext(), "Không có dữ liệu sinh viên để xuất chứng chỉ.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        shareText(sb.toString());
-        Toast.makeText(requireContext(), R.string.btn_export_csv, Toast.LENGTH_SHORT).show();
-    }
-
-    private void exportCertificatesToUri(Uri uri) {
-        ioExecutor.execute(() -> {
-            StringBuilder sb = new StringBuilder();
-            sb.append(getString(R.string.certificate_csv_columns)).append("\n");
-            // If cachedStudents exist, write template/existing records
-            writeCsvToUri(uri, sb.toString(), "chứng chỉ");
+            @Override
+            public void onError(String message) {
+                showCertificateExportError(message);
+            }
         });
     }
 
+    private void exportCertificatesToUri(Uri uri) {
+        loadCertificateCsv(new CertificateCsvCallback() {
+            @Override
+            public void onSuccess(String csv) {
+                if (isAdded()) {
+                    writeCsvToUri(uri, csv, "chứng chỉ");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                showCertificateExportError(message);
+            }
+        });
+    }
+
+    private interface CertificateCsvCallback {
+        void onSuccess(String csv);
+        void onError(String message);
+    }
+
+    private void loadCertificateCsv(CertificateCsvCallback callback) {
+        List<Student> students = new ArrayList<>(cachedStudents);
+        if (students.isEmpty()) {
+            callback.onSuccess(StudentCsvHelper.exportCertificatesToCsv(
+                    students, Collections.emptyMap()));
+            return;
+        }
+
+        Map<String, List<Certificate>> certificatesByStudent = new ConcurrentHashMap<>();
+        AtomicInteger remaining = new AtomicInteger(students.size());
+        AtomicBoolean completed = new AtomicBoolean(false);
+
+        for (Student student : students) {
+            if (student == null || student.getStudentId() == null
+                    || student.getStudentId().trim().isEmpty()) {
+                if (completed.compareAndSet(false, true)) {
+                    callback.onError("Không thể xuất vì có sinh viên thiếu MSSV.");
+                }
+                return;
+            }
+
+            String studentId = student.getStudentId().trim();
+            certificateRepository.getCertificates(studentId,
+                    new CertificateRepository.CertificateListCallback() {
+                        @Override
+                        public void onSuccess(List<Certificate> certificates) {
+                            if (completed.get()) return;
+                            certificatesByStudent.put(studentId,
+                                    certificates == null ? new ArrayList<>() : new ArrayList<>(certificates));
+                            if (remaining.decrementAndGet() == 0
+                                    && completed.compareAndSet(false, true)) {
+                                String csv = StudentCsvHelper.exportCertificatesToCsv(
+                                        students, certificatesByStudent);
+                                callback.onSuccess(csv);
+                            }
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            if (completed.compareAndSet(false, true)) {
+                                callback.onError("Không thể tải chứng chỉ của MSSV "
+                                        + studentId + ": " + errorMessage);
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void showCertificateExportError(String message) {
+        if (isAdded()) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void writeCsvToUri(Uri uri, String content, String label) {
+        if (!isAdded()) return;
+        android.content.ContentResolver contentResolver = requireContext().getContentResolver();
         ioExecutor.execute(() -> {
-            try (OutputStream os = requireContext().getContentResolver().openOutputStream(uri)) {
+            try (OutputStream os = contentResolver.openOutputStream(uri)) {
                 if (os != null) {
                     os.write(content.getBytes(StandardCharsets.UTF_8));
                     os.flush();
