@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Giới thiệu tổng quan
+## 1. Giới thiệu tổng quan.
 
 Dự án môn học hướng tới một ứng dụng Android quản lý thông tin sinh viên bằng **Cloud Firestore** và **Cloud Storage for Firebase**. Thiết kế đích sử dụng MVVM, đồng bộ thời gian thực, làm việc ngoại tuyến và ba vai trò **Admin, Manager, Employee**.
 
