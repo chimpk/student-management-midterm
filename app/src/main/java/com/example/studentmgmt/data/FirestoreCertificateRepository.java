@@ -3,6 +3,7 @@ package com.example.studentmgmt.data;
 import com.example.studentmgmt.model.AppUser;
 import com.example.studentmgmt.model.Certificate;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -15,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /** Firestore implementation for students/{studentId}/certificates. */
 public final class FirestoreCertificateRepository implements CertificateRepository {
@@ -135,9 +138,26 @@ public final class FirestoreCertificateRepository implements CertificateReposito
             return;
         }
 
-        certificates(studentId.trim()).document().set(toFields(certificate))
-                .addOnSuccessListener(ignored -> succeed(callback))
-                .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+        CollectionReference collection = certificates(studentId.trim());
+        collection.get().addOnSuccessListener(snapshot -> {
+            for (DocumentSnapshot document : snapshot.getDocuments()) {
+                if (hasSameCertificateValues(document, certificate)) {
+                    fail(callback, "Đã có chứng chỉ này.");
+                    return;
+                }
+            }
+            DocumentReference certificateRef = collection.document(
+                    stableCertificateDocumentId(certificate));
+            firestore.runTransaction(transaction -> {
+                if (transaction.get(certificateRef).exists()) {
+                    throw new FirebaseFirestoreException("Đã có chứng chỉ này.",
+                            FirebaseFirestoreException.Code.ALREADY_EXISTS);
+                }
+                transaction.set(certificateRef, toFields(certificate));
+                return null;
+            }).addOnSuccessListener(ignored -> succeed(callback))
+                    .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+        }).addOnFailureListener(error -> fail(callback, errorMessage(error)));
     }
 
     @Override
@@ -223,6 +243,25 @@ public final class FirestoreCertificateRepository implements CertificateReposito
         return fields;
     }
 
+    private static boolean hasSameCertificateValues(DocumentSnapshot document,
+                                                    Certificate certificate) {
+        return equalTrimmed(document.get("certName"), certificate.getCertName())
+                && equalTrimmed(document.get("issueDate"), certificate.getIssueDate())
+                && equalTrimmed(document.get("issuedBy"), certificate.getIssuedBy());
+    }
+
+    private static boolean equalTrimmed(Object storedValue, String newValue) {
+        return storedValue instanceof String && newValue != null
+                && ((String) storedValue).trim().equals(newValue.trim());
+    }
+
+    private static String stableCertificateDocumentId(Certificate certificate) {
+        String key = certificate.getCertName().trim() + "\u0000"
+                + certificate.getIssueDate().trim() + "\u0000"
+                + certificate.getIssuedBy().trim();
+        return UUID.nameUUIDFromBytes(key.getBytes(StandardCharsets.UTF_8)).toString();
+    }
+
     private static boolean canWrite() {
         AppUser user = AuthRepositoryProvider.getRepository().getCurrentUser();
         return user != null && user.isNormal() && (user.isAdmin() || user.isManager());
@@ -237,6 +276,11 @@ public final class FirestoreCertificateRepository implements CertificateReposito
                 && ((FirebaseFirestoreException) error).getCode()
                 == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
             return "Bạn không có quyền đọc hoặc ghi chứng chỉ.";
+        }
+        if (error instanceof FirebaseFirestoreException
+                && ((FirebaseFirestoreException) error).getCode()
+                == FirebaseFirestoreException.Code.ALREADY_EXISTS) {
+            return "Đã có chứng chỉ này.";
         }
         return error == null || error.getLocalizedMessage() == null
                 ? "Không thể hoàn tất thao tác chứng chỉ trên Firestore."

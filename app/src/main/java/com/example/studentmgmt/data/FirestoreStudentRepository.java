@@ -13,6 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,6 +176,113 @@ public final class FirestoreStudentRepository implements StudentRepository {
             return null;
         }).addOnSuccessListener(ignored -> succeed(callback))
                 .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+    }
+
+    @Override
+    public void addStudents(List<Student> importedStudents, BatchAddCallback callback) {
+        if (callback == null) return;
+        if (!canWrite()) {
+            callback.onError("Chỉ Admin hoặc Manager được nhập sinh viên.");
+            return;
+        }
+        if (importedStudents == null) {
+            callback.onError("Danh sách sinh viên không hợp lệ.");
+            return;
+        }
+
+        List<Student> copy = new ArrayList<>(importedStudents);
+        for (int index = 0; index < copy.size(); index++) {
+            String validationError = validate(copy.get(index));
+            if (validationError != null) {
+                callback.onError("Bản ghi " + (index + 1) + ": " + validationError);
+                return;
+            }
+        }
+        addStudentBatchChunk(copy, 0, 0, new ArrayList<>(), callback);
+    }
+
+    private void addStudentBatchChunk(List<Student> importedStudents, int start,
+                                      int addedSoFar, List<String> errors,
+                                      BatchAddCallback callback) {
+        if (start >= importedStudents.size()) {
+            callback.onSuccess(addedSoFar, errors);
+            return;
+        }
+
+        int end = Math.min(start + MAX_BATCH_WRITES, importedStudents.size());
+        List<Student> chunk = new ArrayList<>(importedStudents.subList(start, end));
+        List<DocumentReference> references = new ArrayList<>();
+        List<Task<DocumentSnapshot>> reads = new ArrayList<>();
+        for (Student student : chunk) {
+            DocumentReference reference = students.document(student.getStudentId().trim());
+            references.add(reference);
+            reads.add(reference.get());
+        }
+
+        Tasks.whenAllComplete(reads).addOnSuccessListener(completedReads -> {
+            Set<String> existingIds = new HashSet<>();
+            WriteBatch batch = firestore.batch();
+            int writeCount = 0;
+            for (int index = 0; index < completedReads.size(); index++) {
+                Task<?> read = completedReads.get(index);
+                if (!read.isSuccessful()) {
+                    String reason = errorMessage(read.getException());
+                    List<String> chunkErrors = new ArrayList<>(errors);
+                    for (Student student : chunk) {
+                        chunkErrors.add("MSSV " + student.getStudentId()
+                                + ": Không kiểm tra được MSSV tồn tại. " + reason);
+                    }
+                    addStudentBatchChunk(importedStudents, end, addedSoFar,
+                            chunkErrors, callback);
+                    return;
+                }
+
+                DocumentSnapshot snapshot = (DocumentSnapshot) read.getResult();
+                Student student = chunk.get(index);
+                if (snapshot.exists()) {
+                    existingIds.add(student.getStudentId().trim());
+                } else {
+                    batch.set(references.get(index), studentFields(student, true));
+                    writeCount++;
+                }
+            }
+
+            List<String> chunkErrors = new ArrayList<>(errors);
+            for (String existingId : existingIds) {
+                chunkErrors.add("MSSV " + existingId + " đã tồn tại trong hệ thống.");
+            }
+            if (writeCount == 0) {
+                addStudentBatchChunk(importedStudents, end, addedSoFar,
+                        chunkErrors, callback);
+                return;
+            }
+
+            int expectedAdded = writeCount;
+            batch.commit().addOnSuccessListener(ignored ->
+                    addStudentBatchChunk(importedStudents, end,
+                            addedSoFar + expectedAdded, chunkErrors, callback))
+                    .addOnFailureListener(error -> {
+                        List<String> failedChunkErrors = new ArrayList<>(chunkErrors);
+                        String reason = errorMessage(error);
+                        for (Student student : chunk) {
+                            if (!existingIds.contains(student.getStudentId().trim())) {
+                                failedChunkErrors.add("MSSV " + student.getStudentId()
+                                        + ": " + reason);
+                            }
+                        }
+                        addStudentBatchChunk(importedStudents, end, addedSoFar,
+                                failedChunkErrors, callback);
+                    });
+        }).addOnFailureListener(error -> {
+            List<String> chunkErrors = new ArrayList<>(errors);
+            String reason = errorMessage(error);
+            for (Student student : chunk) {
+                chunkErrors.add("MSSV " + student.getStudentId()
+                        + ": Không kiểm tra được MSSV tồn tại. " + reason);
+            }
+            addStudentBatchChunk(importedStudents, end, addedSoFar,
+                    chunkErrors, callback);
+        });
     }
 
     @Override

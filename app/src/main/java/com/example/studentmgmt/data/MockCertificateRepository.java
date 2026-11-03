@@ -72,14 +72,34 @@ public class MockCertificateRepository implements CertificateRepository {
             return;
         }
 
-        if (certificate.getCertId() == null || certificate.getCertId().trim().isEmpty()) {
-            certificate.setCertId("cert_" + System.currentTimeMillis());
+        List<Certificate> list = certMap.computeIfAbsent(studentId.trim(), k -> new CopyOnWriteArrayList<>());
+        synchronized (list) {
+            for (Certificate existing : list) {
+                if (sameCertificateValues(existing, certificate)) {
+                    if (callback != null) callback.onError("Đã có chứng chỉ này.");
+                    return;
+                }
+            }
+
+            if (certificate.getCertId() == null || certificate.getCertId().trim().isEmpty()) {
+                certificate.setCertId("cert_" + System.currentTimeMillis());
+            }
+            list.add(certificate);
         }
 
-        List<Certificate> list = certMap.computeIfAbsent(studentId, k -> new CopyOnWriteArrayList<>());
-        list.add(certificate);
         notifyListeners(studentId);
         if (callback != null) callback.onSuccess();
+    }
+
+    private static boolean sameCertificateValues(Certificate left, Certificate right) {
+        return left != null && right != null
+                && equalsTrimmed(left.getCertName(), right.getCertName())
+                && equalsTrimmed(left.getIssueDate(), right.getIssueDate())
+                && equalsTrimmed(left.getIssuedBy(), right.getIssuedBy());
+    }
+
+    private static boolean equalsTrimmed(String left, String right) {
+        return left != null && right != null && left.trim().equals(right.trim());
     }
 
     @Override

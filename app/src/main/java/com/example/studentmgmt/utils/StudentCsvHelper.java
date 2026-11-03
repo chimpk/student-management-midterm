@@ -2,6 +2,7 @@ package com.example.studentmgmt.utils;
 
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.model.Certificate;
+import com.example.studentmgmt.utils.StudentDataValidation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,12 +12,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * RFC 4180 compliant CSV helper for Student and Certificate import/export.
  * Supports escaping, quotes, commas within fields, UTF-8 BOM, and standard date normalization.
  */
 public final class StudentCsvHelper {
+
+    public static final class StudentImportResult {
+        private final List<Student> students;
+        private final List<String> errors;
+        private final int dataRowCount;
+        private final Map<String, Integer> sourceRowsByStudentId;
+
+        StudentImportResult(List<Student> students, List<String> errors, int dataRowCount,
+                            Map<String, Integer> sourceRowsByStudentId) {
+            this.students = students;
+            this.errors = errors;
+            this.dataRowCount = dataRowCount;
+            this.sourceRowsByStudentId = sourceRowsByStudentId;
+        }
+
+        public List<Student> getStudents() { return students; }
+        public List<String> getErrors() { return errors; }
+        public int getDataRowCount() { return dataRowCount; }
+        public Map<String, Integer> getSourceRowsByStudentId() { return sourceRowsByStudentId; }
+    }
 
     public static final String CSV_HEADER = "Mã SV,Họ và tên,Ngày sinh,Lớp,Khoa";
     public static final String CERTIFICATE_CSV_HEADER = "mssv,ten_chung_chi,ngay_cap,don_vi_cap";
@@ -106,6 +130,58 @@ public final class StudentCsvHelper {
             }
         }
         return result;
+    }
+
+    /** Parses and validates student CSV rows while retaining source row numbers in errors. */
+    public static StudentImportResult parseStudentImport(String csvContent) throws IOException {
+        List<Student> students = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+        if (csvContent == null || csvContent.trim().isEmpty()) {
+            return new StudentImportResult(students, errors, 0, new HashMap<>());
+        }
+
+        List<List<String>> rows = parseCsvRows(new StringReader(csvContent));
+        Set<String> seenIds = new HashSet<>();
+        Map<String, Integer> sourceRows = new HashMap<>();
+        int dataRows = 0;
+        int rowNumber = 0;
+        boolean firstNonEmptyRow = true;
+        for (List<String> row : rows) {
+            rowNumber++;
+            if (row.isEmpty()) continue;
+            String first = row.get(0).trim();
+            if (firstNonEmptyRow) {
+                firstNonEmptyRow = false;
+                String header = first.replace("\uFEFF", "").toLowerCase(Locale.ROOT);
+                if (header.equals("mã sv") || header.equals("mssv") || header.equals("studentid")) {
+                    continue;
+                }
+            }
+            dataRows++;
+            if (row.size() < 5) {
+                errors.add("Dòng " + rowNumber + ": cần đủ 5 cột MSSV, họ tên, ngày sinh, lớp, khoa.");
+                continue;
+            }
+
+            String id = unescapeCsvField(row.get(0)).toUpperCase(Locale.ROOT);
+            String name = unescapeCsvField(row.get(1));
+            String dob = normalizeDate(unescapeCsvField(row.get(2)));
+            String className = unescapeCsvField(row.get(3)).toUpperCase(Locale.ROOT);
+            String faculty = unescapeCsvField(row.get(4));
+            String validationError = StudentDataValidation.validateStudent(
+                    id, name, dob, className, faculty);
+            if (validationError != null) {
+                errors.add("Dòng " + rowNumber + ": " + validationError);
+                continue;
+            }
+            if (!seenIds.add(id)) {
+                errors.add("Dòng " + rowNumber + ": MSSV " + id + " bị lặp trong tệp.");
+                continue;
+            }
+            students.add(new Student(id, name, dob, className, faculty));
+            sourceRows.put(id, rowNumber);
+        }
+        return new StudentImportResult(students, errors, dataRows, sourceRows);
     }
 
     /**

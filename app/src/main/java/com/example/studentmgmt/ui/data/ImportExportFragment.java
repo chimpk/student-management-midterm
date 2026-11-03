@@ -30,6 +30,7 @@ import com.example.studentmgmt.model.AppUser;
 import com.example.studentmgmt.model.Certificate;
 import com.example.studentmgmt.model.Student;
 import com.example.studentmgmt.utils.StudentCsvHelper;
+import com.example.studentmgmt.utils.ValidationUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -50,6 +51,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.time.LocalDate;
 
 public class ImportExportFragment extends Fragment {
 
@@ -59,7 +61,6 @@ public class ImportExportFragment extends Fragment {
     private StudentRepository.ListenerRegistrationHandle studentListenerHandle;
 
     private final List<Student> cachedStudents = new ArrayList<>();
-    private final Set<String> knownStudentIds = new HashSet<>();
 
     // Selected certificate file state
     private Uri selectedCertFileUri;
@@ -136,14 +137,8 @@ public class ImportExportFragment extends Fragment {
             @Override
             public void onSuccess(List<Student> students) {
                 cachedStudents.clear();
-                knownStudentIds.clear();
                 if (students != null) {
                     cachedStudents.addAll(students);
-                    for (Student s : students) {
-                        if (s.getStudentId() != null) {
-                            knownStudentIds.add(s.getStudentId().trim().toUpperCase(Locale.US));
-                        }
-                    }
                 }
                 if (binding != null) {
                     binding.chipStudentExportSpec.setText(getString(R.string.io_export_spec_format, cachedStudents.size()));
@@ -408,12 +403,15 @@ public class ImportExportFragment extends Fragment {
         binding.progressCertImport.setProgress(5);
         binding.tvCertProgressText.setText(getString(R.string.import_progress_format, 0, 10));
 
-        ioExecutor.execute(this::parseAndImportCertificates);
+        Uri importUri = selectedCertFileUri;
+        android.content.ContentResolver contentResolver = requireContext().getContentResolver();
+        ioExecutor.execute(() -> parseAndImportCertificates(importUri, contentResolver));
     }
 
-    private void parseAndImportCertificates() {
+    private void parseAndImportCertificates(Uri importUri,
+                                            android.content.ContentResolver contentResolver) {
         List<List<String>> rawRows;
-        try (InputStream is = requireContext().getContentResolver().openInputStream(selectedCertFileUri);
+        try (InputStream is = contentResolver.openInputStream(importUri);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             rawRows = StudentCsvHelper.parseCsvRows(reader);
         } catch (Exception e) {
@@ -435,15 +433,16 @@ public class ImportExportFragment extends Fragment {
             return;
         }
 
-        // Filter header row if present
+        // Filter the optional header row; exported CSV uses the same four-column order.
         List<List<String>> dataRows = new ArrayList<>();
-        boolean isFirst = true;
-        for (List<String> row : rawRows) {
+        int firstDataRowNumber = 1;
+        for (int rowIndex = 0; rowIndex < rawRows.size(); rowIndex++) {
+            List<String> row = rawRows.get(rowIndex);
             if (row.isEmpty()) continue;
-            if (isFirst) {
-                isFirst = false;
-                String first = row.get(0);
-                if (first != null && (first.contains("Mã SV") || first.contains("StudentId") || first.contains("MSSV"))) {
+            if (dataRows.isEmpty()) {
+                String first = row.get(0).trim().toLowerCase(Locale.ROOT);
+                if (first.equals("mã sv") || first.equals("mssv") || first.equals("studentid")) {
+                    firstDataRowNumber = rowIndex + 2;
                     continue;
                 }
             }
@@ -463,22 +462,19 @@ public class ImportExportFragment extends Fragment {
         int total = dataRows.size();
         final AtomicInteger success = new AtomicInteger(0);
         final AtomicInteger failed = new AtomicInteger(0);
-        final AtomicInteger pendingWrites = new AtomicInteger(0);
+        final AtomicInteger completedRows = new AtomicInteger(0);
         final StringBuilder errorLog = new StringBuilder();
-
-        SimpleDateFormat stdSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        Date now = new Date();
-
-        int lineNum = 2;
-        List<Runnable> pendingOperations = new ArrayList<>();
+        AtomicInteger lineNumber = new AtomicInteger(firstDataRowNumber);
+        Set<String> seenCertificateValues = new HashSet<>();
 
         for (List<String> row : dataRows) {
+            int currentLine = lineNumber.getAndIncrement();
             if (row.size() < 4) {
                 failed.incrementAndGet();
                 synchronized (errorLog) {
-                    errorLog.append("• Dòng ").append(lineNum).append(" · Không đủ 4 cột thông tin chứng chỉ\n");
+                    errorLog.append("• Dòng ").append(currentLine).append(" · Không đủ 4 cột thông tin chứng chỉ\n");
                 }
-                lineNum++;
+                finishCertificateImportRow(total, success, failed, completedRows, errorLog);
                 continue;
             }
 
@@ -487,55 +483,65 @@ public class ImportExportFragment extends Fragment {
             String rawDate = row.get(2).trim();
             String issuer = row.get(3).trim();
 
-            if (mssv.isEmpty() || certName.isEmpty() || issuer.isEmpty()) {
+            if (!ValidationUtils.isValidStudentId(mssv)) {
                 failed.incrementAndGet();
                 synchronized (errorLog) {
-                    errorLog.append("• Dòng ").append(lineNum).append(" · Thông tin chứng chỉ bị trống trường bắt buộc\n");
+                    errorLog.append("• Dòng ").append(currentLine).append(" · MSSV không đúng định dạng TDTU: ").append(mssv).append("\n");
                 }
-                lineNum++;
+                finishCertificateImportRow(total, success, failed, completedRows, errorLog);
+                continue;
+            }
+            if (certName.length() < 2 || certName.length() > 100
+                    || issuer.length() < 2 || issuer.length() > 100) {
+                failed.incrementAndGet();
+                synchronized (errorLog) {
+                    errorLog.append("• Dòng ").append(currentLine).append(" · Tên chứng chỉ/đơn vị cấp phải từ 2 đến 100 ký tự.\n");
+                }
+                finishCertificateImportRow(total, success, failed, completedRows, errorLog);
                 continue;
             }
 
-            // Validate MSSV exists in system
-            if (!knownStudentIds.isEmpty() && !knownStudentIds.contains(mssv)) {
-                failed.incrementAndGet();
-                synchronized (errorLog) {
-                    errorLog.append("• Dòng ").append(lineNum).append(" · MSSV ").append(mssv).append(" không có trong hệ thống\n");
-                }
-                lineNum++;
-                continue;
-            }
-
-            // Normalize and validate date
             String stdDate = StudentCsvHelper.normalizeDate(rawDate);
             try {
-                Date d = stdSdf.parse(stdDate);
-                if (d != null && d.after(now)) {
+                LocalDate parsedDate = LocalDate.parse(stdDate);
+                if (parsedDate.isAfter(LocalDate.now())) {
                     failed.incrementAndGet();
                     synchronized (errorLog) {
-                        errorLog.append("• Dòng ").append(lineNum).append(" · Ngày cấp không được ở tương lai: ").append(stdDate).append("\n");
+                        errorLog.append("• Dòng ").append(currentLine).append(" · Ngày cấp không được ở tương lai: ").append(stdDate).append("\n");
                     }
-                    lineNum++;
+                    finishCertificateImportRow(total, success, failed, completedRows, errorLog);
                     continue;
                 }
             } catch (Exception e) {
                 failed.incrementAndGet();
                 synchronized (errorLog) {
-                    errorLog.append("• Dòng ").append(lineNum).append(" · Định dạng ngày không hợp lệ: ").append(rawDate).append("\n");
+                    errorLog.append("• Dòng ").append(currentLine).append(" · Định dạng ngày không hợp lệ: ").append(rawDate).append("\n");
                 }
-                lineNum++;
+                finishCertificateImportRow(total, success, failed, completedRows, errorLog);
                 continue;
             }
 
-            final int currentLine = lineNum;
-            pendingWrites.incrementAndGet();
-            pendingOperations.add(() -> {
-                Certificate cert = new Certificate(null, certName, stdDate, issuer);
-                certificateRepository.addCertificate(mssv, cert, new CertificateRepository.ActionCallback() {
+            String duplicateKey = mssv + "\u0000" + certName + "\u0000" + stdDate + "\u0000" + issuer;
+            if (!seenCertificateValues.add(duplicateKey)) {
+                failed.incrementAndGet();
+                synchronized (errorLog) {
+                    errorLog.append("• Dòng ").append(currentLine)
+                            .append(" · Đã có chứng chỉ này trong tệp nhập.\n");
+                }
+                finishCertificateImportRow(total, success, failed, completedRows, errorLog);
+                continue;
+            }
+
+            final String normalizedDate = stdDate;
+            studentRepository.getStudent(mssv, new StudentRepository.SingleStudentCallback() {
+                @Override
+                public void onSuccess(Student student) {
+                    Certificate cert = new Certificate(null, certName, normalizedDate, issuer);
+                    certificateRepository.addCertificate(mssv, cert, new CertificateRepository.ActionCallback() {
                     @Override
                     public void onSuccess() {
                         success.incrementAndGet();
-                        checkImportCompletion(total, success.get(), failed.get(), pendingWrites.decrementAndGet(), errorLog);
+                        finishCertificateImportRow(total, success, failed, completedRows, errorLog);
                     }
 
                     @Override
@@ -544,34 +550,34 @@ public class ImportExportFragment extends Fragment {
                         synchronized (errorLog) {
                             errorLog.append("• Dòng ").append(currentLine).append(" · ").append(errorMessage).append("\n");
                         }
-                        checkImportCompletion(total, success.get(), failed.get(), pendingWrites.decrementAndGet(), errorLog);
+                        finishCertificateImportRow(total, success, failed, completedRows, errorLog);
                     }
                 });
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    failed.incrementAndGet();
+                    synchronized (errorLog) {
+                        errorLog.append("• Dòng ").append(currentLine).append(" · MSSV ")
+                                .append(mssv).append(" không có trong hệ thống. ")
+                                .append(errorMessage).append("\n");
+                    }
+                    finishCertificateImportRow(total, success, failed, completedRows, errorLog);
+                }
             });
-
-            lineNum++;
         }
-
-        if (pendingOperations.isEmpty()) {
-            renderImportResult(total, success.get(), failed.get(), errorLog);
-            return;
-        }
-
-        // Execute all valid certificate operations
-        mainHandler.post(() -> {
-            for (Runnable op : pendingOperations) {
-                op.run();
-            }
-        });
     }
 
-    private void checkImportCompletion(int total, int success, int failed, int remainingWrites, StringBuilder errorLog) {
-        if (remainingWrites <= 0) {
-            mainHandler.post(() -> renderImportResult(total, success, failed, errorLog));
+    private void finishCertificateImportRow(int total, AtomicInteger success,
+                                            AtomicInteger failed, AtomicInteger completed,
+                                            StringBuilder errorLog) {
+        int finished = completed.incrementAndGet();
+        if (finished >= total) {
+            mainHandler.post(() -> renderImportResult(total, success.get(), failed.get(), errorLog));
         } else {
             mainHandler.post(() -> {
                 if (!isAdded() || binding == null) return;
-                int finished = success + failed;
                 int progress = total > 0 ? (int) ((finished / (float) total) * 100) : 100;
                 binding.progressCertImport.setProgress(progress);
                 binding.tvCertProgressText.setText(getString(R.string.import_progress_format, finished, total));
@@ -712,68 +718,89 @@ public class ImportExportFragment extends Fragment {
     }
 
     private void importStudentCsvFromUri(Uri uri) {
+        android.content.ContentResolver contentResolver = requireContext().getContentResolver();
         ioExecutor.execute(() -> {
-            List<Student> imported;
-            try (InputStream is = requireContext().getContentResolver().openInputStream(uri);
+            StudentCsvHelper.StudentImportResult parsed;
+            try (InputStream is = contentResolver.openInputStream(uri);
                  BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
                     sb.append(line).append("\n");
                 }
-                imported = StudentCsvHelper.importFromCsv(sb.toString());
+                parsed = StudentCsvHelper.parseStudentImport(sb.toString());
             } catch (Exception e) {
                 mainHandler.post(() -> {
-                    if (getContext() != null) {
+                    if (isAdded() && binding != null) {
                         Toast.makeText(requireContext(), "Lỗi đọc tệp CSV: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 return;
             }
 
-            if (imported.isEmpty()) {
-                mainHandler.post(() -> {
-                    if (getContext() != null) {
-                        Toast.makeText(requireContext(), "Tệp không chứa bản ghi sinh viên hợp lệ.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            if (parsed.getDataRowCount() == 0) {
+                showStudentImportResult(0, 0, parsed.getErrors());
                 return;
             }
 
-            final int total = imported.size();
-            final AtomicInteger success = new AtomicInteger(0);
-            final AtomicInteger failed = new AtomicInteger(0);
-            final AtomicInteger remaining = new AtomicInteger(total);
-
-            for (Student s : imported) {
-                studentRepository.addStudent(s, new StudentRepository.ActionCallback() {
-                    @Override
-                    public void onSuccess() {
-                        success.incrementAndGet();
-                        checkStudentImportCompletion(total, success.get(), failed.get(), remaining.decrementAndGet());
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        failed.incrementAndGet();
-                        checkStudentImportCompletion(total, success.get(), failed.get(), remaining.decrementAndGet());
-                    }
-                });
+            if (parsed.getStudents().isEmpty()) {
+                showStudentImportResult(parsed.getDataRowCount(), 0, parsed.getErrors());
+                return;
             }
+
+            studentRepository.addStudents(parsed.getStudents(), new StudentRepository.BatchAddCallback() {
+                @Override
+                public void onSuccess(int addedCount, List<String> repositoryErrors) {
+                    List<String> errors = new ArrayList<>(parsed.getErrors());
+                    if (repositoryErrors != null) {
+                        for (String error : repositoryErrors) {
+                            errors.add(withStudentCsvRowNumber(error,
+                                    parsed.getSourceRowsByStudentId()));
+                        }
+                    }
+                    showStudentImportResult(parsed.getDataRowCount(), addedCount, errors);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    List<String> errors = new ArrayList<>(parsed.getErrors());
+                    errors.add(errorMessage);
+                    showStudentImportResult(parsed.getDataRowCount(), 0, errors);
+                }
+            });
         });
     }
 
-    private void checkStudentImportCompletion(int total, int success, int failed, int remaining) {
-        if (remaining <= 0) {
-            mainHandler.post(() -> {
-                if (!isAdded() || binding == null) return;
-                binding.cardStudentResult.setVisibility(View.VISIBLE);
-                binding.tvStudentResultSummary.setText(getString(R.string.import_summary_format));
-                binding.tvStudentResultDetail.setText(
-                        "Tổng cộng: " + total + " · Thành công: " + success + " · Thất bại: " + failed);
-                Toast.makeText(requireContext(), "Đã nhập " + success + "/" + total + " sinh viên vào Firestore.", Toast.LENGTH_SHORT).show();
-            });
+    private void showStudentImportResult(int total, int success, List<String> errors) {
+        mainHandler.post(() -> {
+            if (!isAdded() || binding == null) return;
+            int skipped = Math.max(0, total - success);
+            binding.cardStudentResult.setVisibility(View.VISIBLE);
+            binding.tvStudentResultSummary.setText(getString(
+                    R.string.student_import_summary_format, success, skipped));
+            binding.tvStudentResultDetail.setText(errors == null || errors.isEmpty()
+                    ? "Tổng cộng: " + total + " dòng · Không có lỗi."
+                    : "Tổng cộng: " + total + " dòng\n" + joinLines(errors));
+            Toast.makeText(requireContext(), getString(
+                    R.string.student_import_toast_format, success, skipped), Toast.LENGTH_LONG).show();
+        });
+    }
+
+    private String joinLines(List<String> lines) {
+        StringBuilder result = new StringBuilder();
+        for (String line : lines) {
+            if (result.length() > 0) result.append('\n');
+            result.append("• ").append(line);
         }
+        return result.toString();
+    }
+
+    private String withStudentCsvRowNumber(String error, Map<String, Integer> sourceRows) {
+        if (error == null || sourceRows == null || !error.startsWith("MSSV ")) return error;
+        int idEnd = error.indexOf(' ', 5);
+        if (idEnd <= 5) return error;
+        Integer row = sourceRows.get(error.substring(5, idEnd));
+        return row == null ? error : "Dòng " + row + ": " + error;
     }
 
     private void shareText(String text) {
