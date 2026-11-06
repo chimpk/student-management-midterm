@@ -163,11 +163,11 @@ public final class StudentCsvHelper {
                 continue;
             }
 
-            String id = unescapeCsvField(row.get(0)).toUpperCase(Locale.ROOT);
-            String name = unescapeCsvField(row.get(1));
-            String dob = normalizeDate(unescapeCsvField(row.get(2)));
-            String className = unescapeCsvField(row.get(3)).toUpperCase(Locale.ROOT);
-            String faculty = unescapeCsvField(row.get(4));
+            String id = row.get(0).trim().toUpperCase(Locale.ROOT);
+            String name = row.get(1).trim();
+            String dob = normalizeDate(row.get(2));
+            String className = row.get(3).trim().toUpperCase(Locale.ROOT);
+            String faculty = row.get(4).trim();
             String validationError = StudentDataValidation.validateStudent(
                     id, name, dob, className, faculty);
             if (validationError != null) {

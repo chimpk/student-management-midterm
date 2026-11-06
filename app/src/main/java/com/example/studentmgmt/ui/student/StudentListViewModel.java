@@ -185,18 +185,10 @@ public class StudentListViewModel extends ViewModel {
 
         switch (criteria) {
             case NAME_ASC:
-                Collections.sort(list, (a, b) -> {
-                    String nameA = a.getName() != null ? a.getName() : "";
-                    String nameB = b.getName() != null ? b.getName() : "";
-                    return collator.compare(nameA, nameB);
-                });
+                Collections.sort(list, (a, b) -> compareVietnameseNames(a.getName(), b.getName(), collator));
                 break;
             case NAME_DESC:
-                Collections.sort(list, (a, b) -> {
-                    String nameA = a.getName() != null ? a.getName() : "";
-                    String nameB = b.getName() != null ? b.getName() : "";
-                    return collator.compare(nameB, nameA);
-                });
+                Collections.sort(list, (a, b) -> compareVietnameseNames(b.getName(), a.getName(), collator));
                 break;
             case CLASS_ASC:
                 Collections.sort(list, (a, b) -> {
@@ -213,6 +205,26 @@ public class StudentListViewModel extends ViewModel {
                 });
                 break;
         }
+    }
+
+    private static int compareVietnameseNames(String rawA, String rawB, Collator collator) {
+        String fullA = rawA != null ? rawA.trim() : "";
+        String fullB = rawB != null ? rawB.trim() : "";
+        String givenA = extractGivenName(fullA);
+        String givenB = extractGivenName(fullB);
+        int givenCmp = collator.compare(givenA, givenB);
+        if (givenCmp != 0) {
+            return givenCmp;
+        }
+        return collator.compare(fullA, fullB);
+    }
+
+    private static String extractGivenName(String fullName) {
+        if (fullName == null || fullName.isEmpty()) {
+            return "";
+        }
+        int lastSpace = fullName.lastIndexOf(' ');
+        return lastSpace >= 0 ? fullName.substring(lastSpace + 1) : fullName;
     }
 
     public void addStudent(Student student) {

@@ -521,7 +521,8 @@ public class ImportExportFragment extends Fragment {
                 continue;
             }
 
-            String duplicateKey = mssv + "\u0000" + certName + "\u0000" + stdDate + "\u0000" + issuer;
+            String duplicateKey = mssv + "\u0000" + certName.toLowerCase(Locale.ROOT)
+                    + "\u0000" + stdDate + "\u0000" + issuer.toLowerCase(Locale.ROOT);
             if (!seenCertificateValues.add(duplicateKey)) {
                 failed.incrementAndGet();
                 synchronized (errorLog) {
@@ -718,15 +719,31 @@ public class ImportExportFragment extends Fragment {
     }
 
     private void importStudentCsvFromUri(Uri uri) {
+        String fileName = getFileName(uri).toLowerCase(Locale.US);
+        if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+            showStudentImportResult(0, 0, Collections.singletonList(
+                    "Định dạng không hỗ trợ (.xlsx/.xls). Vui lòng xuất sang tệp CSV UTF-8."));
+            return;
+        }
+
+        long fileSize = getFileSize(uri);
+        if (fileSize > 5 * 1024 * 1024) {
+            double mb = fileSize / (1024.0 * 1024.0);
+            showStudentImportResult(0, 0, Collections.singletonList(
+                    String.format(Locale.US, "Tệp quá lớn (%.1f MB). Kích thước tối đa cho phép là 5 MB.", mb)));
+            return;
+        }
+
         android.content.ContentResolver contentResolver = requireContext().getContentResolver();
         ioExecutor.execute(() -> {
             StudentCsvHelper.StudentImportResult parsed;
             try (InputStream is = contentResolver.openInputStream(uri);
                  BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line).append("\n");
+                char[] buffer = new char[4096];
+                int read;
+                while ((read = reader.read(buffer)) != -1) {
+                    sb.append(buffer, 0, read);
                 }
                 parsed = StudentCsvHelper.parseStudentImport(sb.toString());
             } catch (Exception e) {
@@ -820,5 +837,11 @@ public class ImportExportFragment extends Fragment {
             studentListenerHandle = null;
         }
         binding = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ioExecutor.shutdown();
     }
 }

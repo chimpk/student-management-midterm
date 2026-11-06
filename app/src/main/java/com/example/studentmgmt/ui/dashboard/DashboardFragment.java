@@ -59,6 +59,16 @@ public class DashboardFragment extends Fragment {
         loadStudentStats();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AppUser latestUser = AuthRepositoryProvider.getRepository().getCurrentUser();
+        if (latestUser != null && binding != null) {
+            currentUser = latestUser;
+            setupHeader();
+        }
+    }
+
     private void setupHeader() {
         String displayName = currentUser.getName();
         if (displayName == null || displayName.trim().isEmpty()) {

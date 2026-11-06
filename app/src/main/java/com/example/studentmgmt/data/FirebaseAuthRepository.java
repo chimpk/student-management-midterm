@@ -141,6 +141,13 @@ public class FirebaseAuthRepository implements AuthRepository {
     }
 
     @Override
+    public void updateCurrentUser(AppUser user) {
+        if (user != null && (this.currentUser == null || this.currentUser.getUid().equals(user.getUid()))) {
+            this.currentUser = user;
+        }
+    }
+
+    @Override
     public boolean isSignedIn() {
         return currentUser != null && firebaseAuth != null && firebaseAuth.getCurrentUser() != null;
     }

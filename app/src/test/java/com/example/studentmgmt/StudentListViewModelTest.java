@@ -129,4 +129,16 @@ public class StudentListViewModelTest {
             assertFalse("Deleted student must not appear in list", "524H0001".equals(s.getStudentId()));
         }
     }
+
+    @Test
+    public void sortByName_sortsByVietnameseGivenNameFirst() {
+        viewModel.setSortCriteria(StudentListViewModel.SortCriteria.NAME_ASC);
+        UiState<List<Student>> state = viewModel.getStudentListState().getValue();
+        assertNotNull(state);
+        assertTrue(state.isContent());
+        List<Student> list = state.getData();
+        // Given name "An" (e.g. Nguyễn Văn An) should appear before "Bình" (Trần Thị Bình)
+        // even if family name starts with a later letter.
+        assertEquals("Nguyễn Văn An", list.get(0).getName());
+    }
 }

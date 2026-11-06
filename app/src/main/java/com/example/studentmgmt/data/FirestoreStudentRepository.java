@@ -110,10 +110,14 @@ public final class FirestoreStudentRepository implements StudentRepository {
                             if (certificates == null) {
                                 return;
                             }
-                            certificateCounts.put(studentId, certificates.size());
+                            int newCount = certificates.size();
+                            Integer previousCount = certificateCounts.put(studentId, newCount);
+                            if (previousCount != null && previousCount == newCount) {
+                                return;
+                            }
                             for (Student current : visibleStudents) {
                                 if (studentId.equals(current.getStudentId())) {
-                                    current.setCertificateCount(certificates.size());
+                                    current.setCertificateCount(newCount);
                                     callback.onSuccess(new ArrayList<>(visibleStudents));
                                     break;
                                 }

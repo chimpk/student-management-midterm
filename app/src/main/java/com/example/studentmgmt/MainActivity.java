@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
                             ? com.example.studentmgmt.ui.auth.AuthTerminalActivity.TYPE_ACCOUNT_LOCKED
                             : com.example.studentmgmt.ui.auth.AuthTerminalActivity.TYPE_SESSION_EXPIRED;
                     redirectToTerminal(type);
+                } else if (user != null) {
+                    currentUser = user;
+                    AuthRepositoryProvider.getRepository().updateCurrentUser(user);
                 }
             }
 

@@ -100,6 +100,29 @@ public class CertificateRepositoryTest {
     }
 
     @Test
+    public void updateCertificate_rejectsCaseInsensitiveDuplicateWithAnotherCert() {
+        // c2 is ("c2", "MOS Excel 2019", "2023-11-20", "Certiport")
+        // Updating c1 to match c2 (even with different casing) must fail
+        Certificate duplicateUpdate = new Certificate("c1", "mos excel 2019", "2023-11-20", "certiport");
+        AtomicBoolean rejected = new AtomicBoolean(false);
+
+        repository.updateCertificate("524H0001", duplicateUpdate, new CertificateRepository.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                fail("Updating to duplicate another certificate must fail");
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                assertEquals("Đã có chứng chỉ này.", errorMessage);
+                rejected.set(true);
+            }
+        });
+
+        assertTrue(rejected.get());
+    }
+
+    @Test
     public void deleteCertificate_removesCertificate() {
         AtomicBoolean success = new AtomicBoolean(false);
         repository.deleteCertificate("524H0001", "c1", new CertificateRepository.ActionCallback() {

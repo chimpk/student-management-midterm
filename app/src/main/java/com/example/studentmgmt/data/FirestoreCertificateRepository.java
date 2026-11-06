@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -176,10 +177,21 @@ public final class FirestoreCertificateRepository implements CertificateReposito
             return;
         }
 
-        certificates(studentId.trim()).document(certificate.getCertId().trim())
-                .update(toFields(certificate))
-                .addOnSuccessListener(ignored -> succeed(callback))
-                .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+        String certId = certificate.getCertId().trim();
+        CollectionReference collection = certificates(studentId.trim());
+        collection.get().addOnSuccessListener(snapshot -> {
+            for (DocumentSnapshot document : snapshot.getDocuments()) {
+                if (!certId.equals(document.getId())
+                        && hasSameCertificateValues(document, certificate)) {
+                    fail(callback, "Đã có chứng chỉ này.");
+                    return;
+                }
+            }
+            collection.document(certId)
+                    .update(toFields(certificate))
+                    .addOnSuccessListener(ignored -> succeed(callback))
+                    .addOnFailureListener(error -> fail(callback, errorMessage(error)));
+        }).addOnFailureListener(error -> fail(callback, errorMessage(error)));
     }
 
     @Override
@@ -252,13 +264,13 @@ public final class FirestoreCertificateRepository implements CertificateReposito
 
     private static boolean equalTrimmed(Object storedValue, String newValue) {
         return storedValue instanceof String && newValue != null
-                && ((String) storedValue).trim().equals(newValue.trim());
+                && ((String) storedValue).trim().equalsIgnoreCase(newValue.trim());
     }
 
     private static String stableCertificateDocumentId(Certificate certificate) {
-        String key = certificate.getCertName().trim() + "\u0000"
+        String key = certificate.getCertName().trim().toLowerCase(Locale.ROOT) + "\u0000"
                 + certificate.getIssueDate().trim() + "\u0000"
-                + certificate.getIssuedBy().trim();
+                + certificate.getIssuedBy().trim().toLowerCase(Locale.ROOT);
         return UUID.nameUUIDFromBytes(key.getBytes(StandardCharsets.UTF_8)).toString();
     }
 

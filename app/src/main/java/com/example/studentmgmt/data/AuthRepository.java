@@ -32,6 +32,11 @@ public interface AuthRepository {
     AppUser getCurrentUser();
 
     /**
+     * Updates cached authenticated user profile in memory when profile fields change.
+     */
+    default void updateCurrentUser(AppUser user) {}
+
+    /**
      * Returns true if user is currently signed in.
      */
     boolean isSignedIn();

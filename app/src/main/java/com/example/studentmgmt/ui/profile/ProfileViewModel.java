@@ -80,6 +80,9 @@ public class ProfileViewModel extends ViewModel {
                         return; // Stale callback from older listener, discard
                     }
                     profileLoadError.postValue(null);
+                    if (authRepository != null && user != null) {
+                        authRepository.updateCurrentUser(user);
+                    }
                     currentUser.postValue(user);
                     AvatarUploadPolicy.UploadUiState currentUpload = uploadState.getValue();
                     if (currentUpload == null || currentUpload.getStep() == AvatarUploadPolicy.UploadStep.IDLE) {
@@ -140,6 +143,9 @@ public class ProfileViewModel extends ViewModel {
                         AppUser updated = new AppUser(
                                 user.getUid(), user.getUsername(), user.getEmail(), cleanName, age,
                                 cleanPhone, user.getStatus(), user.getRole(), user.getAvatarUrl());
+                        if (authRepository != null) {
+                            authRepository.updateCurrentUser(updated);
+                        }
                         currentUser.postValue(updated);
                         profileUpdateState.postValue(UiState.content(updated));
                     }
@@ -264,6 +270,9 @@ public class ProfileViewModel extends ViewModel {
                             user.getRole(),
                             downloadUrl
                     );
+                    if (authRepository != null) {
+                        authRepository.updateCurrentUser(updated);
+                    }
                     currentUser.postValue(updated);
                 }
             }

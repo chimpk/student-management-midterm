@@ -226,6 +226,7 @@ public class ProfileViewModelTest {
         assertEquals("Nguyễn Văn B", viewModel.getCurrentUser().getValue().getName());
         assertEquals(30, viewModel.getCurrentUser().getValue().getAge());
         assertEquals("0912345678", viewModel.getCurrentUser().getValue().getPhone());
+        assertEquals("Nguyễn Văn B", fakeAuthRepository.getCurrentUser().getName());
         UiState<AppUser> state = viewModel.getProfileUpdateState().getValue();
         assertNotNull(state);
         assertTrue(state.isContent());
@@ -346,6 +347,11 @@ public class ProfileViewModelTest {
         @Override
         public AppUser getCurrentUser() {
             return currentUser;
+        }
+
+        @Override
+        public void updateCurrentUser(AppUser user) {
+            this.currentUser = user;
         }
 
         @Override

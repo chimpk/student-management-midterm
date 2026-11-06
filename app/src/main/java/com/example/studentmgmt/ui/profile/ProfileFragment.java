@@ -173,6 +173,9 @@ public class ProfileFragment extends Fragment {
     private void renderProfileUpdateState(UiState<AppUser> state) {
         if (state == null || editProfileBinding == null) return;
         boolean saving = state.isLoading();
+        if (editProfileDialog != null) {
+            editProfileDialog.setCancelable(!saving);
+        }
         editProfileBinding.btnSaveProfile.setEnabled(!saving);
         editProfileBinding.btnSaveProfile.setText(saving ? R.string.btn_saving : R.string.btn_save);
         editProfileBinding.btnCancelProfile.setEnabled(!saving);

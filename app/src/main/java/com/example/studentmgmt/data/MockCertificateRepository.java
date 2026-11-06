@@ -99,7 +99,7 @@ public class MockCertificateRepository implements CertificateRepository {
     }
 
     private static boolean equalsTrimmed(String left, String right) {
-        return left != null && right != null && left.trim().equals(right.trim());
+        return left != null && right != null && left.trim().equalsIgnoreCase(right.trim());
     }
 
     @Override
@@ -109,23 +109,32 @@ public class MockCertificateRepository implements CertificateRepository {
             return;
         }
 
-        List<Certificate> list = certMap.get(studentId);
+        List<Certificate> list = certMap.get(studentId.trim());
         if (list == null) {
             if (callback != null) callback.onError("Không tìm thấy danh sách chứng chỉ.");
             return;
         }
 
         boolean found = false;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getCertId().equals(certificate.getCertId())) {
-                list.set(i, certificate);
-                found = true;
-                break;
+        synchronized (list) {
+            for (Certificate existing : list) {
+                if (!existing.getCertId().equals(certificate.getCertId())
+                        && sameCertificateValues(existing, certificate)) {
+                    if (callback != null) callback.onError("Đã có chứng chỉ này.");
+                    return;
+                }
+            }
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getCertId().equals(certificate.getCertId())) {
+                    list.set(i, certificate);
+                    found = true;
+                    break;
+                }
             }
         }
 
         if (found) {
-            notifyListeners(studentId);
+            notifyListeners(studentId.trim());
             if (callback != null) callback.onSuccess();
         } else {
             if (callback != null) callback.onError("Không tìm thấy chứng chỉ để cập nhật.");
