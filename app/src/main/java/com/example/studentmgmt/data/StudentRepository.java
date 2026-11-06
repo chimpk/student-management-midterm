@@ -24,6 +24,11 @@ public interface StudentRepository {
         void onError(String errorMessage);
     }
 
+    interface BatchAddCallback {
+        void onSuccess(int addedCount, List<String> rowErrors);
+        void onError(String errorMessage);
+    }
+
     interface ListenerRegistrationHandle {
         void remove();
     }
@@ -42,6 +47,9 @@ public interface StudentRepository {
      * Adds a new student document to Firestore.
      */
     void addStudent(Student student, ActionCallback callback);
+
+    /** Adds validated students without overwriting existing IDs, in bounded batches. */
+    void addStudents(List<Student> students, BatchAddCallback callback);
 
     /**
      * Updates an existing student document.

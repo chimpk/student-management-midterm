@@ -76,6 +76,39 @@ public class MockStudentRepository implements StudentRepository {
     }
 
     @Override
+    public void addStudents(List<Student> imported, BatchAddCallback callback) {
+        if (imported == null) {
+            if (callback != null) callback.onError("Danh sách sinh viên không hợp lệ.");
+            return;
+        }
+        int added = 0;
+        List<String> errors = new ArrayList<>();
+        for (Student student : imported) {
+            if (student == null || student.getStudentId() == null
+                    || student.getStudentId().trim().isEmpty()) {
+                errors.add("Bản ghi thiếu MSSV.");
+                continue;
+            }
+            String id = student.getStudentId().trim();
+            boolean exists = false;
+            for (Student existing : students) {
+                if (existing.getStudentId().equalsIgnoreCase(id)) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (exists) {
+                errors.add("MSSV " + id + " đã tồn tại trong hệ thống.");
+            } else {
+                students.add(student);
+                added++;
+            }
+        }
+        if (added > 0) notifyListeners();
+        if (callback != null) callback.onSuccess(added, errors);
+    }
+
+    @Override
     public void updateStudent(Student student, ActionCallback callback) {
         if (student == null || student.getStudentId() == null) {
             if (callback != null) callback.onError("Dữ liệu cập nhật không hợp lệ.");

@@ -81,7 +81,7 @@
     <string name="sort_name_asc">Tên A → Z (mặc định)</string>
     <string name="sort_name_desc">Tên Z → A</string>
     <string name="sort_class_asc">Lớp tăng dần</string>
-    <string name="sort_birth_asc">Ngày sinh cũ nhất</string>
+    <string name="sort_birth_asc">Ngày sinh lớn nhất</string>
     <string name="btn_apply_sort">Áp dụng</string>
     <string name="snackbar_deleted_student_format">Đã xóa %s</string>
     <string name="btn_undo">Hoàn tác</string>
@@ -258,6 +258,8 @@
     <string name="toast_employee_no_access">Nhân viên không có quyền truy cập Import/Export.</string>
     <string name="title_import_result">Kết quả nhập dữ liệu</string>
     <string name="import_summary_format">5 dòng: 3 thành công, 2 lỗi</string>
+    <string name="student_import_summary_format">Đã nhập thành công %1$d sinh viên, bỏ qua %2$d dòng lỗi.</string>
+    <string name="student_import_toast_format">Đã nhập %1$d sinh viên, bỏ qua %2$d dòng lỗi.</string>
     <string name="import_detail_summary">6 hồ sơ ban đầu → 9 hồ sơ hiện tại.</string>
     <string name="btn_share_error_report">Chia sẻ báo cáo lỗi</string>
     <string name="csv_exported_toast">Đã xuất %1$d sinh viên ra tệp CSV thành công.</string>

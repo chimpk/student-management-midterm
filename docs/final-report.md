@@ -140,8 +140,11 @@ Theo đúng quy ước phân rã trách nhiệm giữa hai thành viên, các ch
 
 **Hiện trạng tích hợp trên nhánh mã nguồn:**
 - `nav_student_list` hiện liên kết trực tiếp với `StudentListFragment`, không còn dùng `StudentPlaceholderFragment` cho route này.
-- `StudentRepositoryProvider` và `CertificateRepositoryProvider` hiện mặc định khởi tạo `MockStudentRepository`/`MockCertificateRepository`. Vì vậy CRUD hiện chỉ được chứng minh ở mức demo in-memory và unit test, chưa phải tích hợp Firestore realtime.
-- Các yêu cầu bắt buộc còn thiếu ở phần này: sắp xếp sinh viên; sửa chứng chỉ từ UI; import/export sinh viên bằng file thật; import/export chứng chỉ. `StudentCsvHelper` mới xử lý chuỗi CSV, UI import còn dùng sample hardcode và export chỉ hiển thị Toast.
+- `StudentRepositoryProvider` và `CertificateRepositoryProvider` mặc định khởi tạo `FirestoreStudentRepository` và `FirestoreCertificateRepository`; các Mock repositories vẫn được giữ để demo/unit test.
+- Danh sách sinh viên và chứng chỉ được đồng bộ bằng Firestore snapshot listener. UI hỗ trợ thêm/sửa/xóa sinh viên và chứng chỉ, tìm kiếm, sắp xếp và xuất CSV.
+- Nhập sinh viên CSV dùng bộ chọn tệp hệ thống, loại dòng sai định dạng/kèm số dòng lỗi, kiểm tra trùng MSSV và ghi bằng `WriteBatch` từng nhóm tối đa 400 sinh viên; MSSV đã tồn tại được bỏ qua.
+- Nhập chứng chỉ CSV kiểm tra cấu trúc cột, định dạng MSSV, ngày cấp không ở tương lai và xác minh sinh viên tồn tại trước khi tạo chứng chỉ trong subcollection `students/{studentId}/certificates`.
+- CSV xuất ra có UTF-8 BOM để Excel nhận diện tiếng Việt. Kịch bản nghiệm thu nhập 50 sinh viên hợp lệ và 2 dòng lỗi cần được chạy trên Firebase trước khi ghi nhận là đã xác minh end-to-end.
 
 ---
 
@@ -159,6 +162,8 @@ Lệnh kiểm thử fresh toàn diện đã được thực thi trên môi trư�
   - **Thành viên 2:** 5 suites / 24 unit tests (PASS 100%).
 - **Kiểm tra Lint (`lintDebug`):** 0 errors. Scoped `HardcodedText`, `SetTextI18n`, `DefaultLocale` đạt **0 warnings**.
 - **Đóng gói APK (`assembleDebug`):** Hoàn thành thành công, sinh tệp APK debug sẵn sàng cài đặt.
+
+**Cập nhật Sprint 5:** Sau các thay đổi CSV được mô tả ở Mục 3, lệnh `:app:assembleDebug` đã chạy thành công. Bộ unit test 170 bài ở trên là kết quả của lần gate trước; chưa chạy lại sau phần Sprint 5. Kịch bản Firebase 50 sinh viên hợp lệ + 2 dòng MSSV sai cũng chưa được chạy end-to-end.
 
 ### 4.2. Bảng phân rã chi tiết 21 Test Suites (170 Tests)
 
@@ -198,7 +203,7 @@ Nhằm đảm bảo tính trung thực tuyệt đối trong báo cáo khoa học
 | **Thiết bị thật / Máy ảo AVD** | **NOT TESTED** | Chưa kết nối thiết bị online tại thời điểm chạy gate tự động (`adb devices` rỗng). |
 | **Giao diện Visual Light / Dark** | **NOT TESTED** | Cần khởi chạy trực tiếp trên màn hình thiết bị để chụp ảnh minh chứng visual. |
 | **Firebase Live Backend** | **NOT TESTED / CHƯA ĐỦ** | Storage live chưa có bằng chứng; backend Admin SDK cho tạo/xóa danh tính Auth cũng chưa được triển khai. |
-| **Kịch bản Thành viên 2 (Student/CSV)** | **NOT TESTED** | Giữ nguyên độc lập theo đúng thỏa thuận phân rã trách nhiệm. |
+| **Kịch bản Thành viên 2 (Student/CSV)** | **CHƯA CHẠY END-TO-END** | Mã nhập/xuất và kiểm tra dữ liệu đã được triển khai; cần chạy trên Firebase kịch bản 50 dòng hợp lệ + 2 dòng sai MSSV, đồng thời xác minh nhập chứng chỉ và dòng lỗi trên thiết bị. |
 
 ---
 
